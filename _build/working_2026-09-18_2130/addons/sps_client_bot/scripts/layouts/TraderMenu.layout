@@ -1,0 +1,744 @@
+// ============================================================
+// FILE: TraderMenu.layout  (trader BUY/SELL window, v2 - vanilla look)
+//
+// v2 fixed the layout defects found by the geometry audit:
+//   * Background used size 1300 990 together with hexactsize 0, i.e. a FRACTION
+//     of the parent - the panel ended up 1 690 000 px wide. Now size 1 1.
+//   * the money value started at x 1110 with a width of 300 inside a 1300 px
+//     window, so 110 px of it were off-screen. The money block is right-aligned
+//     inside the window now.
+//   * the item preview was 470x257 px, so the wheel-zoom guard in TraderMenu.c
+//     (if (w > 0.5 && w < 3)) could never match. It is a fraction-sized widget
+//     inside a square panel now, exactly like the vanilla inspect window.
+//   * all widgets declare exp/eyp/exs/eys explicitly, so no value is left to
+//     the layout engine default.
+//
+// Styles are the vanilla ones from gui/looknfeel/dayzwidgets.styles:
+//   DayZDefaultPanel / DayZDefaultPanelTop / rover_sim_black /
+//   rover_sim_blackbox / ColorablePanel, buttons MenuDefault, listbox
+//   Default, combobox Default, checkbox Default, slider Default, editbox Default.
+// scaled 1 - the whole window scales with the resolution, as vanilla menus do.
+//
+// Icons: icon_plus (buy), iconArrowUp (sell), circle (quality), right_mouse
+// (right-click hint). The search icon is the mod's own magnifier texture
+// sps_client_bot/images/search.edds.
+//
+// New widgets for the functionality added in the same pass:
+//   text_discount      - current survival rating discount
+//   ItemQuality        - condition in words
+//   SellBonusWidget    - price breakdown (condition + accessories + rounds)
+//   SellAmountText     - sell X of Y
+//   SellQuantitySlider - amount slider, for selling part of a stack
+//   SellHint / SellHintIcon - right mouse button = sell
+//
+// Fonts follow the vanilla distribution: Light24 @18 for the list and the
+// details, Book24 @20/22/24/28 for buttons, money and the title.
+// ============================================================
+FrameWidgetClass TraderMenu {
+ visible 0
+ color 0 0 0 0
+ position 0 0
+ size 1300 990
+ halign center_ref
+ valign center_ref
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ scaled 1
+ {
+  PanelWidgetClass Background {
+   visible 1
+   color 0 0 0 0.85
+   position 0 0
+   size 1 1
+   halign left_ref
+   valign top_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   priority 0
+   style DayZDefaultPanel
+  }
+  PanelWidgetClass title_wrapper {
+   visible 1
+   color 0 0 0 0.55
+   position 0 0
+   size 1 52
+   halign left_ref
+   valign top_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 1
+   priority 1
+   style DayZDefaultPanelTop
+   {
+   TextWidgetClass title_text {
+    visible 1
+    clipchildren 0
+    ignorepointer 1
+    position 0 0
+    size 1 1
+    halign center_ref
+    valign center_ref
+    hexactpos 0
+    vexactpos 0
+    hexactsize 0
+    vexactsize 0
+    priority 2
+    style Bold
+    font "gui/fonts/sdf_MetronBook72"
+    "text color" 0.890 0.898 0.925 1
+    "exact text" 1
+    "exact text size" 32
+    "bold text" 1
+    "text halign" center
+    "text valign" center
+    text "#tm_trader"
+   }
+   CheckBoxWidgetClass SellablesCheckBox {
+    visible 1
+    ignorepointer 0
+    position 0.62 0.22
+    size 0.34 0.50
+    halign left_ref
+    valign top_ref
+    hexactpos 0
+    vexactpos 0
+    hexactsize 0
+    vexactsize 0
+    priority 2
+    style Default
+    font "gui/fonts/Metron22"
+    text "#tm_sellables_only"
+   }
+   }
+  }
+  XComboBoxWidgetClass xcombobox_categorys {
+   visible 1
+   ignorepointer 0
+   position 8 58
+   size 516 40
+   halign left_ref
+   valign top_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   priority 2
+   style Default
+   font "gui/fonts/sdf_MetronLight24"
+  }
+  PanelWidgetClass SearchPanelWidget {
+   visible 1
+   ignorepointer 0
+   color 0 0 0 0.55
+   position 576 58
+   size 300 40
+   halign left_ref
+   valign top_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   priority 2
+   style ColorablePanel
+   {
+   EditBoxWidgetClass SearchBox {
+    visible 1
+    ignorepointer 0
+    position 0 0
+    size 0.96 0.80
+    halign center_ref
+    valign center_ref
+    hexactpos 0
+    vexactpos 0
+    hexactsize 0
+    vexactsize 0
+    priority 2
+    style Default
+    font "gui/fonts/sdf_MetronLight24"
+    "exact text" 1
+   }
+   }
+  }
+  ImageWidgetClass SearchIcon {
+   visible 1
+   ignorepointer 1
+   color 1 1 1 0.85
+   position 532 62
+   size 32 32
+   halign left_ref
+   valign top_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   priority 2
+   imageTexture "sps_client_bot/images/search.edds"
+   mode blend
+   "src alpha" 1
+   stretch 1
+  }
+  PanelWidgetClass MoneyPanel {
+   visible 1
+   ignorepointer 1
+   color 0 0 0 0.5
+   position 884 58
+   size 408 40
+   halign left_ref
+   valign top_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   priority 2
+   style rover_sim_blackbox
+   {
+   TextWidgetClass text_saldo {
+    visible 1
+    clipchildren 0
+    ignorepointer 1
+    position 10 0
+    size 90 40
+    halign left_ref
+    valign top_ref
+    hexactpos 1
+    vexactpos 1
+    hexactsize 1
+    vexactsize 1
+    priority 3
+    style Normal
+    text "#tm_money"
+    font "gui/fonts/sdf_MetronLight24"
+    "text color" 0.580 0.588 0.667 1
+    "exact text" 1
+    "exact text size" 18
+    "bold text" 0
+    "text halign" left
+    "text valign" center
+   }
+   TextWidgetClass text_discount {
+    visible 1
+    clipchildren 0
+    ignorepointer 1
+    position 10 0
+    size 200 40
+    halign right_ref
+    valign top_ref
+    hexactpos 1
+    vexactpos 1
+    hexactsize 1
+    vexactsize 1
+    priority 3
+    style Normal
+    text ""
+    font "gui/fonts/sdf_MetronLight24"
+    "text color" 0.451 0.902 0.627 1
+    "exact text" 1
+    "exact text size" 18
+    "bold text" 0
+    "text halign" right
+    "text valign" center
+   }
+   TextWidgetClass text_saldoValue {
+    visible 1
+    clipchildren 0
+    ignorepointer 1
+    position 216 0
+    size 180 40
+    halign right_ref
+    valign top_ref
+    hexactpos 1
+    vexactpos 1
+    hexactsize 1
+    vexactsize 1
+    priority 3
+    style Bold
+    text ""
+    font "gui/fonts/sdf_MetronBook24"
+    "text color" 0.890 0.898 0.925 1
+    "exact text" 1
+    "exact text size" 22
+    "bold text" 1
+    "text halign" right
+    "text valign" center
+   }
+   }
+  }
+  TextWidgetClass colTitleItem {
+   visible 1
+   ignorepointer 1
+   position 12 102
+   size 788 20
+   halign left_ref
+   valign top_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   priority 2
+   style Normal
+   text "#tm_item"
+   font "gui/fonts/sdf_MetronLight24"
+   "text color" 0.580 0.588 0.667 1
+   "exact text" 1
+   "exact text size" 18
+   "text halign" left
+   "text valign" center
+  }
+  TextWidgetClass colTitleBuy {
+   visible 1
+   ignorepointer 1
+   position 808 102
+   size 159 20
+   halign left_ref
+   valign top_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   priority 2
+   style Normal
+   text "#tm_price_buy"
+   font "gui/fonts/sdf_MetronLight24"
+   "text color" 0.580 0.588 0.667 1
+   "exact text" 1
+   "exact text size" 18
+   "text halign" left
+   "text valign" center
+  }
+  TextWidgetClass colTitleSell {
+   visible 1
+   ignorepointer 1
+   position 975 102
+   size 159 20
+   halign left_ref
+   valign top_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   priority 2
+   style Normal
+   text "#tm_price_sell"
+   font "gui/fonts/sdf_MetronLight24"
+   "text color" 0.580 0.588 0.667 1
+   "exact text" 1
+   "exact text size" 18
+   "text halign" left
+   "text valign" center
+  }
+  TextWidgetClass colTitleOwned {
+   visible 1
+   ignorepointer 1
+   position 1142 102
+   size 146 20
+   halign left_ref
+   valign top_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   priority 2
+   style Normal
+   text "#tm_owned"
+   font "gui/fonts/sdf_MetronLight24"
+   "text color" 0.580 0.588 0.667 1
+   "exact text" 1
+   "exact text size" 18
+   "text halign" left
+   "text valign" center
+  }
+  TextListboxWidgetClass txtlist_items {
+   visible 1
+   clipchildren 0
+   color 1 1 1 0.5843
+   position 8 126
+   size 1284 448
+   halign left_ref
+   valign top_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   priority 2
+   style Default
+   font "gui/fonts/Metron22"
+   colums "#tm_item;62;#tm_price_buy;13;#tm_price_sell;13;#tm_owned;12"
+   lines 17
+   "title visible" 0
+   "highlight row" 1
+  }
+  PanelWidgetClass DetailsPanel {
+   visible 1
+   ignorepointer 1
+   color 0 0 0 0.35
+   position 8 582
+   size 1284 300
+   halign left_ref
+   valign top_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   priority 2
+   style rover_sim_black
+   {
+   TextWidgetClass ItemWeight {
+    visible 1
+    clipchildren 0
+    ignorepointer 1
+    position 16 10
+    size 320 30
+    halign left_ref
+    valign top_ref
+    hexactpos 1
+    vexactpos 1
+    hexactsize 1
+    vexactsize 1
+    priority 3
+    style Normal
+    text ""
+    font "gui/fonts/sdf_MetronLight24"
+    "text color" 0.890 0.898 0.925 1
+    "exact text" 1
+    "exact text size" 18
+    "bold text" 0
+    "text halign" left
+    "text valign" center
+   }
+   TextWidgetClass ItemQuantity {
+    visible 1
+    clipchildren 0
+    ignorepointer 1
+    position 344 10
+    size 300 30
+    halign left_ref
+    valign top_ref
+    hexactpos 1
+    vexactpos 1
+    hexactsize 1
+    vexactsize 1
+    priority 3
+    style Normal
+    text ""
+    font "gui/fonts/sdf_MetronLight24"
+    "text color" 0.890 0.898 0.925 1
+    "exact text" 1
+    "exact text size" 18
+    "bold text" 0
+    "text halign" left
+    "text valign" center
+   }
+   TextWidgetClass ItemQuality {
+    visible 1
+    clipchildren 0
+    ignorepointer 1
+    position 652 10
+    size 300 30
+    halign left_ref
+    valign top_ref
+    hexactpos 1
+    vexactpos 1
+    hexactsize 1
+    vexactsize 1
+    priority 3
+    style Normal
+    text ""
+    font "gui/fonts/sdf_MetronLight24"
+    "text color" 0.451 0.902 0.627 1
+    "exact text" 1
+    "exact text size" 18
+    "bold text" 0
+    "text halign" left
+    "text valign" center
+   }
+   MultilineTextWidgetClass ItemDescWidget {
+    visible 1
+    clipchildren 1
+    ignorepointer 1
+    position 16 46
+    size 920 150
+    halign left_ref
+    valign top_ref
+    hexactpos 1
+    vexactpos 1
+    hexactsize 1
+    vexactsize 1
+    priority 3
+    style DayZNormal
+    text ""
+    font "gui/fonts/sdf_MetronLight24"
+    color 0.890 0.898 0.925 1
+    "exact text" 1
+    "exact text size" 18
+    "text halign" left
+    "text valign" top
+    wrap 1
+    "condense whitespace" 1
+   }
+   TextWidgetClass SellBonusWidget {
+    visible 1
+    clipchildren 1
+    ignorepointer 1
+    position 16 202
+    size 920 88
+    halign left_ref
+    valign top_ref
+    hexactpos 1
+    vexactpos 1
+    hexactsize 1
+    vexactsize 1
+    priority 3
+    style Normal
+    text ""
+    font "gui/fonts/sdf_MetronLight24"
+    "text color" 0.451 0.902 0.627 1
+    "exact text" 1
+    "exact text size" 18
+    "bold text" 0
+    "text halign" left
+    "text valign" top
+   }
+   ItemPreviewWidgetClass ItemFrameWidgetPanel {
+    visible 1
+    clipchildren 0
+    ignorepointer 0
+    color 0 0 0 0.35
+    position 948 10
+    size 320 280
+    halign left_ref
+    valign top_ref
+    hexactpos 1
+    vexactpos 1
+    hexactsize 1
+    vexactsize 1
+    priority 2
+    {
+    ItemPreviewWidgetClass ItemFrameWidget {
+     visible 1
+     position 0 -8.313
+     size 1 1.025
+     halign center_ref
+     valign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 0
+     priority 1
+     "force flip enable" 1
+    }
+    }
+   }
+   }
+  }
+  PanelWidgetClass SellBar {
+   visible 1
+   ignorepointer 0
+   color 0 0 0 0.35
+   position 8 888
+   size 1284 44
+   halign left_ref
+   valign top_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   priority 2
+   style rover_sim_black
+   {
+   TextWidgetClass SellAmountText {
+    visible 1
+    clipchildren 0
+    ignorepointer 1
+    position 12 0
+    size 300 44
+    halign left_ref
+    valign top_ref
+    hexactpos 1
+    vexactpos 1
+    hexactsize 1
+    vexactsize 1
+    priority 3
+    style Normal
+    text ""
+    font "gui/fonts/sdf_MetronLight24"
+    "text color" 0.890 0.898 0.925 1
+    "exact text" 1
+    "exact text size" 18
+    "bold text" 0
+    "text halign" left
+    "text valign" center
+   }
+   SliderWidgetClass SellQuantitySlider {
+    visible 0
+    clipchildren 0
+    ignorepointer 0
+    color 1 1 1 0.549
+    position 320 12
+    size 620 20
+    halign left_ref
+    valign top_ref
+    hexactpos 1
+    vexactpos 1
+    hexactsize 1
+    vexactsize 1
+    priority 3
+    style Default
+    "no focus" 0
+    maximum 1
+    step 1
+    current 1
+    "fill in" 1
+    "listen to input" 1
+   }
+   ImageWidgetClass SellHintIcon {
+    visible 1
+    ignorepointer 1
+    color 1 1 1 1
+    fixaspect fixwidth
+    mode blend
+    "src alpha" 1
+    "clamp mode" clamp
+    filter 1
+    image0 "set:dayz_gui image:right_mouse"
+    position 266 13
+    size 18 18
+    halign right_ref
+    valign top_ref
+    hexactpos 1
+    vexactpos 1
+    hexactsize 1
+    vexactsize 1
+    priority 3
+   }
+   TextWidgetClass SellHint {
+    visible 1
+    clipchildren 0
+    ignorepointer 1
+    position 12 0
+    size 246 44
+    halign right_ref
+    valign top_ref
+    hexactpos 1
+    vexactpos 1
+    hexactsize 1
+    vexactsize 1
+    priority 3
+    style Normal
+    text "#tm_sell_hint"
+    font "gui/fonts/sdf_MetronLight24"
+    "text color" 0.580 0.588 0.667 1
+    "exact text" 1
+    "exact text size" 18
+    "bold text" 0
+    "text halign" right
+    "text valign" center
+   }
+   }
+  }
+  ButtonWidgetClass btn_cancel {
+   visible 1
+   ignorepointer 0
+   color 1 1 1 1
+   position 8 8
+   size 180 44
+   halign left_ref
+   valign bottom_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   priority 5
+   style MenuDefault
+   "no focus" 1
+   font "gui/fonts/sdf_MetronBook24"
+   text "#tm_cancel"
+  }
+  ButtonWidgetClass btn_buy {
+   visible 1
+   ignorepointer 0
+   color 1 1 1 1
+   position 216 8
+   size 200 44
+   halign right_ref
+   valign bottom_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   priority 5
+   style MenuDefault
+   "no focus" 1
+   font "gui/fonts/sdf_MetronBook24"
+   "bold text" 1
+   text "#tm_buy"
+   {
+   ImageWidgetClass BuyIcon {
+    visible 1
+    ignorepointer 1
+    color 1 1 1 1
+    fixaspect fixwidth
+    mode blend
+    "src alpha" 1
+    "clamp mode" clamp
+    filter 1
+    image0 "set:dayz_gui image:icon_plus"
+    position 14 0
+    size 18 18
+    halign left_ref
+    valign center_ref
+    hexactpos 1
+    vexactpos 1
+    hexactsize 1
+    vexactsize 1
+    priority 2
+   }
+   }
+  }
+  ButtonWidgetClass btn_sell {
+   visible 1
+   ignorepointer 0
+   color 1 1 1 1
+   position 8 8
+   size 200 44
+   halign right_ref
+   valign bottom_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   priority 5
+   style MenuDefault
+   "no focus" 1
+   font "gui/fonts/sdf_MetronBook24"
+   "bold text" 1
+   text "#tm_sell"
+   {
+   ImageWidgetClass SellIcon {
+    visible 1
+    ignorepointer 1
+    color 1 1 1 1
+    fixaspect fixwidth
+    mode blend
+    "src alpha" 1
+    "clamp mode" clamp
+    filter 1
+    image0 "set:dayz_gui image:iconArrowUp"
+    position 14 0
+    size 18 18
+    halign left_ref
+    valign center_ref
+    hexactpos 1
+    vexactpos 1
+    hexactsize 1
+    vexactsize 1
+    priority 2
+   }
+   }
+  }
+ }
+}

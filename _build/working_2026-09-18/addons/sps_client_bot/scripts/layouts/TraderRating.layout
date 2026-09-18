@@ -1,0 +1,205 @@
+// ============================================================
+// FILE: TraderRating.layout  (survival-rating badge, DeepSeek Harness style)
+// Instanced twice as a CHILD overlay (never replaces a host layout):
+//   * InventoryMenu  -> bottom-left badge (TraderRatingUI.c)
+//   * TraderMenu     -> same badge under the trader window (TraderMenu.c)
+// Widget contract used by TraderRatingUI_Refresh():
+//   RatingRoot, RatingValue, RatingInfo, RatingBarTrack, RatingBarFill
+//
+// GEOMETRY: fractions of the PARENT (hexact*=0). The root is anchored to the
+// parent's bottom-left corner, so it is easy to move by editing the two
+// numbers in "position" (or with layout_viewer.html).
+//   position 0.015 -0.03  ->  1.5% from the left, 3% above the bottom edge
+//   size     0.20  0.098  ->  20% x 9.8% of the screen
+// ============================================================
+FrameWidgetClass RatingRoot {
+ visible 1
+ clipchildren 1
+ ignorepointer 1
+ position 0.015 -0.03
+ size 0.20 0.098
+ halign left_ref
+ valign bottom_ref
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ priority 90
+ {
+  // ---- card: border + fill + left accent line --------------------------
+  ImageWidgetClass RatingBorder {
+   visible 1
+   ignorepointer 1
+   color 0.228 0.228 0.302 1
+   position 0 0
+   size 1 1
+   halign left_ref
+   valign top_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   priority 1
+   image0 "set:dayz_gui image:ColorableBar"
+   mode blend
+   "src alpha" 1
+   "clamp mode" clamp
+   "stretch mode" stretch_w_h
+  }
+  ImageWidgetClass RatingFill {
+   visible 1
+   ignorepointer 1
+   color 0.071 0.071 0.102 0.96
+   position 0.005 0.012
+   size 0.990 0.976
+   halign left_ref
+   valign top_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   priority 2
+   image0 "set:dayz_gui image:ColorableBar"
+   mode blend
+   "src alpha" 1
+   "clamp mode" clamp
+   "stretch mode" stretch_w_h
+  }
+  ImageWidgetClass RatingAccent {
+   visible 1
+   ignorepointer 1
+   color 0.353 0.655 1 0.9
+   position 0.005 0.012
+   size 0.007 0.976
+   halign left_ref
+   valign top_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   priority 3
+   image0 "set:dayz_gui image:ColorableBar"
+   mode blend
+   "src alpha" 1
+   "clamp mode" clamp
+   "stretch mode" stretch_w_h
+  }
+  // ---- texts -----------------------------------------------------------
+  TextWidgetClass RatingTitle {
+   visible 1
+   clipchildren 0
+   ignorepointer 1
+   position 0.055 0.10
+   size 0.560 0.30
+   halign left_ref
+   valign top_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   priority 4
+   style Normal
+   text "#tm_rating_title"
+   font "gui/fonts/sdf_MetronLight24"
+   "text color" 0.580 0.588 0.667 1
+   "exact text" 1
+   "exact text size" 13
+   "size to text h" 0
+   "size to text v" 0
+   "text halign" left
+   "text valign" center
+   wrap 0
+  }
+  TextWidgetClass RatingValue {
+   visible 1
+   clipchildren 0
+   ignorepointer 1
+   position 0.600 0.06
+   size 0.360 0.38
+   halign left_ref
+   valign top_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   priority 4
+   style Bold
+   text "-0%"
+   font "gui/fonts/sdf_MetronBold24"
+   "text color" 0.451 0.902 0.627 1
+   "exact text" 1
+   "exact text size" 22
+   "size to text h" 0
+   "size to text v" 0
+   "text halign" right
+   "text valign" center
+   wrap 0
+  }
+  TextWidgetClass RatingInfo {
+   visible 1
+   clipchildren 0
+   ignorepointer 1
+   position 0.055 0.42
+   size 0.905 0.26
+   halign left_ref
+   valign top_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   priority 4
+   style Normal
+   text ""
+   font "gui/fonts/sdf_MetronLight24"
+   "text color" 0.890 0.898 0.925 1
+   "exact text" 1
+   "exact text size" 13
+   "size to text h" 0
+   "size to text v" 0
+   "text halign" left
+   "text valign" center
+   wrap 0
+  }
+  // ---- progress bar towards the maximum discount -----------------------
+  ImageWidgetClass RatingBarTrack {
+   visible 1
+   ignorepointer 1
+   color 0.149 0.149 0.204 1
+   position 0.055 0.76
+   size 0.905 0.12
+   halign left_ref
+   valign top_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   priority 4
+   image0 "set:dayz_gui image:ColorableBar"
+   mode blend
+   "src alpha" 1
+   "clamp mode" clamp
+   "stretch mode" stretch_w_h
+   {
+    ImageWidgetClass RatingBarFill {
+     visible 1
+     ignorepointer 1
+     color 0.353 0.655 1 1
+     position 0 0
+     size 0 1
+     halign left_ref
+     valign top_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     priority 1
+     image0 "set:dayz_gui image:ColorableBar"
+     mode blend
+     "src alpha" 1
+     "clamp mode" clamp
+     "stretch mode" stretch_w_h
+    }
+   }
+  }
+ }
+}

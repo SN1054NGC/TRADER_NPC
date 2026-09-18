@@ -1,0 +1,105 @@
+FrameWidgetClass rootFrame {
+ clipchildren 1
+ size 1 1
+ priority 2
+ {
+  FrameWidgetClass WindowWidget {
+   position 0 0
+   size 1 1
+   halign center_ref
+   valign center_ref
+   priority 1
+   {
+    FrameWidgetClass BackPanelWidget {
+     position 0 0
+     size 1.6 0.92
+     halign center_ref
+     valign center_ref
+     fixaspect inside
+     priority 1
+     {
+      FrameWidgetClass NameBarWidget {
+       visible 1
+       position 0 0.045
+       size 0.95 0.055
+       halign center_ref
+       priority 1
+       color 0 0 0 0.9
+       {
+        TextWidgetClass ItemNameWidget {
+         position 0 0
+         size 1 1
+         halign center_ref
+         valign center_ref
+         style Normal
+         text "ITEM"
+         font "gui/fonts/sdf_MetronBook24"
+         "text halign" center
+         "text valign" center
+        }
+       }
+      }
+      PanelWidgetClass InventoryInfoPanelWidget {
+       visible 1
+       position 0.025 0.12
+       size 0.56 0.80
+       halign left_ref
+       priority 1
+       color 0 0 0 0.55
+       {
+        MultilineTextWidgetClass ItemDescWidget {
+         clipchildren 0
+         position 0.03 0.02
+         size 0.5 0.25
+         halign left_ref
+         priority 1
+         style None
+         text ""
+         font "gui/fonts/sdf_MetronLight24"
+         wrap 1
+        }
+        TextWidgetClass SellPriceWidget { visible 1 position 0.03 0.285 size 0.52 0.03 priority 3 style Normal text "" font "gui/fonts/sdf_MetronBook24" }
+        TextWidgetClass ItemQuantityWidget { visible 1 position 0.05 0.325 size 0.4 0.04 priority 1 style Normal text "" font "gui/fonts/sdf_MetronLight22" }
+        TextWidgetClass ItemWeightWidget   { visible 1 position 0.05 0.36 size 0.4 0.04 priority 1 style Normal text "" font "gui/fonts/sdf_MetronLight22" }
+        TextWidgetClass ItemDamageWidget   { visible 1 position 0.05 0.42 size 0.4 0.04 priority 1 style Normal text "" font "gui/fonts/sdf_MetronLight22" }
+        TextWidgetClass ItemWetnessWidget  { visible 1 position 0.05 0.48 size 0.4 0.04 priority 1 style Normal text "" font "gui/fonts/sdf_MetronLight22" }
+        TextWidgetClass ItemTemperatureWidget { visible 1 position 0.05 0.54 size 0.4 0.04 priority 1 style Normal text "" font "gui/fonts/sdf_MetronLight22" }
+        TextWidgetClass ItemCleannessWidget { visible 1 position 0.05 0.60 size 0.4 0.04 priority 1 style Normal text "" font "gui/fonts/sdf_MetronLight22" }
+        TextWidgetClass ItemFoodStageWidget { visible 1 position 0.05 0.66 size 0.4 0.04 priority 1 style Normal text "" font "gui/fonts/sdf_MetronLight22" }
+        ButtonWidgetClass SellButton {
+         visible 1
+         position 0.02 0.71
+         size 0.44 0.08
+         halign left_ref
+         priority 2
+         userID 90001
+         style Default
+         text "SELL ITEM"
+         "text halign" center
+         "text valign" center
+        }
+       }
+      }
+      FrameWidgetClass ItemFrameWidgetPanel {
+       visible 1
+       position 0.60 0.12
+       size 0.40 0.80
+       halign left_ref
+       priority 1
+       {
+        ItemPreviewWidgetClass ItemFrameWidget {
+         position 0 0
+         size 1 1
+         halign center_ref
+         valign center_ref
+         hexactpos 1
+         vexactpos 1
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,644 @@
+// ============================================================
+// FILE: TraderSellPopup.layout  (compact item-sell window)
+// Visual language: DeepSeek-Harness-like dark UI (flat cards, thin accent
+// line, blue accent, muted gray text) - expressed with plain ImageWidget
+// fills ("set:dayz_gui image:ColorableBar"), so no new art is required.
+//
+// PALETTE (DeepSeek Harness)
+//   bg    #12121a  0.071 0.071 0.102
+//   pan   #1c1c27  0.110 0.110 0.153
+//   pan2  #262634  0.149 0.149 0.204
+//   line  #3a3a4d  0.228 0.228 0.302
+//   txt   #e3e5ec  0.890 0.898 0.925
+//   mut   #9496aa  0.580 0.588 0.667
+//   acc   #5aa7ff  0.353 0.655 1.000
+//   ok    #73e6a0  0.451 0.902 0.627
+//   red   #532029  0.325 0.125 0.161
+//
+// GEOMETRY RULES (fractions are relative to the PARENT widget):
+//   * hexactpos/vexactpos/hexactsize/vexactsize = 0 -> fractions of parent.
+//   * WindowWidget = 46% x 52% of the screen, centred by center_ref.
+//   * Card border = 2-3 px: CardBorder (line) with CardFill (bg) inset over it.
+//
+// REQUIRED WIDGET NAMES (vanilla InspectMenuNew.SetItem writes into them and
+// dereferences ItemFrameWidget with no null check):
+//   InventoryInfoPanelWidget, ItemFrameWidget, ItemNameWidget,
+//   ItemDamageWidget, ItemLiquidTypeWidget, ItemTemperatureWidget,
+//   ItemWetnessWidget, ItemFoodStageWidget, ItemWeightWidget,
+//   ItemQuantityWidget, ItemCleannessWidget, ItemDescWidget,
+//   BackBtn1 (userID 2 = IDC_CANCEL)
+// Sell area added by the mod:
+//   SellRow, SellRowBg, SellPriceWidget, SellAmountWidget, SellSlider,
+//   SellButton (userID 90012), SellButtonRed, NoPriceWidget
+// ============================================================
+FrameWidgetClass rootFrame {
+ clipchildren 1
+ ignorepointer 0
+ color 1 1 1 1
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ priority 2
+ {
+  FrameWidgetClass WindowWidget {
+   ignorepointer 0
+   position 0 0
+   size 0.46 0.52
+   halign center_ref
+   valign center_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   priority 1
+   {
+    FrameWidgetClass BackPanelWidget {
+     visible 1
+     clipchildren 1
+     position 0 0
+     size 1 1
+     halign center_ref
+     valign center_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     priority 1
+     style blank
+     {
+      // ---------------- card frame: border + fill + top accent ---------
+      ImageWidgetClass CardBorder {
+       visible 1
+       ignorepointer 1
+       color 0.228 0.228 0.302 1
+       position 0 0
+       size 1 1
+       halign left_ref
+       valign top_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       priority 1
+       image0 "set:dayz_gui image:ColorableBar"
+       mode blend
+       "src alpha" 1
+       "clamp mode" clamp
+       "stretch mode" stretch_w_h
+      }
+      ImageWidgetClass CardFill {
+       visible 1
+       ignorepointer 1
+       color 0.071 0.071 0.102 0.985
+       position 0.005 0.009
+       size 0.990 0.982
+       halign left_ref
+       valign top_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       priority 2
+       image0 "set:dayz_gui image:ColorableBar"
+       mode blend
+       "src alpha" 1
+       "clamp mode" clamp
+       "stretch mode" stretch_w_h
+      }
+      ImageWidgetClass AccentLine {
+       visible 1
+       ignorepointer 1
+       color 0.353 0.655 1 0.9
+       position 0.005 0.009
+       size 0.990 0.006
+       halign left_ref
+       valign top_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       priority 3
+       image0 "set:dayz_gui image:ColorableBar"
+       mode blend
+       "src alpha" 1
+       "clamp mode" clamp
+       "stretch mode" stretch_w_h
+      }
+      // ---------------- header: quality dot + name + close --------------
+      ImageWidgetClass HeaderBar {
+       visible 1
+       clipchildren 0
+       ignorepointer 1
+       color 0.149 0.149 0.204 1
+       position 0.005 0.017
+       size 0.990 0.098
+       halign left_ref
+       valign top_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       priority 3
+       image0 "set:dayz_gui image:ColorableBar"
+       mode blend
+       "src alpha" 1
+       "clamp mode" clamp
+       "stretch mode" stretch_w_h
+       {
+        ImageWidgetClass ItemDamageWidgetBackground {
+         visible 1
+         clipchildren 0
+         ignorepointer 1
+         inheritalpha 0
+         color 0.451 0.902 0.627 1
+         position 0.028 0.30
+         size 0.045 0.40
+         halign left_ref
+         valign top_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         priority 1
+         image0 "set:dayz_gui image:circle"
+         mode additive
+         "src alpha" 1
+         "clamp mode" clamp
+         "stretch mode" stretch_w_h
+         filter 1
+        }
+        ImageWidgetClass ItemNameBackground {
+         visible 1
+         ignorepointer 1
+         color 0 0 0 0.22
+         position 0.098 0.10
+         size 0.760 0.80
+         halign left_ref
+         valign top_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         priority 1
+         image0 "set:dayz_gui image:ColorableBar"
+         mode blend
+         "src alpha" 1
+         "clamp mode" clamp
+         "stretch mode" stretch_w_h
+        }
+        TextWidgetClass ItemNameWidget {
+         visible 1
+         clipchildren 0
+         ignorepointer 1
+         position 0.098 0.10
+         size 0.760 0.44
+         halign left_ref
+         valign top_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         priority 4
+         style Bold
+         text " "
+         font "gui/fonts/sdf_MetronBook24"
+         "text color" 0.890 0.898 0.925 1
+         "exact text" 1
+         "exact text size" 18
+         "size to text h" 0
+         "size to text v" 0
+         "text halign" left
+         "text valign" center
+         wrap 0
+        }
+        TextWidgetClass ItemDamageWidget {
+         visible 1
+         clipchildren 0
+         ignorepointer 1
+         position 0.098 0.54
+         size 0.760 0.40
+         halign left_ref
+         valign top_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         priority 4
+         style Normal
+         text ""
+         font "gui/fonts/sdf_MetronLight24"
+         "text color" 0.580 0.588 0.667 1
+         "exact text" 1
+         "exact text size" 13
+         "size to text h" 0
+         "size to text v" 0
+         "text halign" left
+         "text valign" center
+         wrap 0
+        }
+        ButtonWidgetClass BackBtn1 {
+         visible 1
+         clipchildren 1
+         ignorepointer 0
+         position -0.008 0.10
+         size 0.058 0.80
+         halign right_ref
+         valign top_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         priority 5
+         userID 2
+         style Default
+         "no focus" 1
+         text ""
+         {
+          ImageWidgetClass IconClose {
+           visible 1
+           ignorepointer 1
+           position 0 0
+           size 1 1
+           halign center_ref
+           valign center_ref
+           hexactpos 0
+           vexactpos 0
+           hexactsize 0
+           vexactsize 0
+           priority 1
+           image0 "set:dayz_gui image:icon_x"
+           mode additive
+           "src alpha" 1
+           "clamp mode" clamp
+           "stretch mode" stretch_w_h
+          }
+         }
+        }
+       }
+      }
+      // ---------------- body: 3D preview | item stats -------------------
+      FrameWidgetClass PreviewCard {
+       visible 1
+       clipchildren 1
+       ignorepointer 1
+       color 0.110 0.110 0.153 1
+       position 0.022 0.130
+       size 0.410 0.415
+       halign left_ref
+       valign top_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       priority 3
+       style blank
+       {
+        ImageWidgetClass PreviewBg {
+         visible 1
+         ignorepointer 1
+         color 0.110 0.110 0.153 1
+         position 0 0
+         size 1 1
+         halign left_ref
+         valign top_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         priority 1
+         image0 "set:dayz_gui image:ColorableBar"
+         mode blend
+         "src alpha" 1
+         "clamp mode" clamp
+         "stretch mode" stretch_w_h
+        }
+        ItemPreviewWidgetClass ItemFrameWidgetPanel {
+         visible 1
+         clipchildren 1
+         ignorepointer 0
+         position 0.03 0.03
+         size 0.94 0.94
+         halign left_ref
+         valign top_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         priority 2
+         {
+          ItemPreviewWidgetClass ItemFrameWidget {
+           visible 1
+           position 0 0
+           size 1 1
+           halign center_ref
+           valign center_ref
+           hexactpos 0
+           vexactpos 0
+           hexactsize 0
+           vexactsize 0
+           priority 1
+           "force flip enable" 1
+          }
+         }
+        }
+       }
+      }
+      PanelWidgetClass InventoryInfoPanelWidget {
+       visible 1
+       clipchildren 1
+       ignorepointer 1
+       color 0.110 0.110 0.153 1
+       position 0.442 0.130
+       size 0.536 0.415
+       halign left_ref
+       valign top_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       priority 3
+       style blank
+       {
+        ImageWidgetClass InfoBg {
+         visible 1
+         ignorepointer 1
+         color 0.110 0.110 0.153 1
+         position 0 0
+         size 1 1
+         halign left_ref
+         valign top_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         priority 1
+         image0 "set:dayz_gui image:ColorableBar"
+         mode blend
+         "src alpha" 1
+         "clamp mode" clamp
+         "stretch mode" stretch_w_h
+        }
+        MultilineTextWidgetClass ItemDescWidget {
+         clipchildren 1
+         ignorepointer 1
+         position 0.04 0.035
+         size 0.92 0.40
+         halign left_ref
+         valign top_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         priority 2
+         style DayZNormal
+         text ""
+         font "gui/fonts/sdf_MetronLight24"
+         "text color" 0.890 0.898 0.925 1
+         "exact text" 0
+         "size to text h" 0
+         "size to text v" 0
+         "text halign" left
+         "text valign" top
+         wrap 1
+         "condense whitespace" 1
+        }
+        ImageWidgetClass ItemLiquidTypeWidgetBackground { visible 0 ignorepointer 1 color 0 0 0 0.5 position 0.04 0.455 size 0.92 0.068 halign left_ref valign top_ref hexactpos 0 vexactpos 0 hexactsize 0 vexactsize 0 priority 2 image0 "set:dayz_gui image:ColorableBar" mode blend "src alpha" 1 "stretch mode" stretch_w_h }
+        TextWidgetClass ItemLiquidTypeWidget { visible 1 clipchildren 0 ignorepointer 1 position 0.055 0.455 size 0.89 0.068 halign left_ref valign top_ref hexactpos 0 vexactpos 0 hexactsize 0 vexactsize 0 priority 3 style Normal text "" font "gui/fonts/sdf_MetronLight24" "text color" 0.890 0.898 0.925 1 "exact text" 1 "exact text size" 13 "text halign" left "text valign" center }
+        ImageWidgetClass ItemTemperatureWidgetBackground { visible 0 ignorepointer 1 color 0 0 0 0.5 position 0.04 0.525 size 0.92 0.068 halign left_ref valign top_ref hexactpos 0 vexactpos 0 hexactsize 0 vexactsize 0 priority 2 image0 "set:dayz_gui image:ColorableBar" mode blend "src alpha" 1 "stretch mode" stretch_w_h }
+        TextWidgetClass ItemTemperatureWidget { visible 1 clipchildren 0 ignorepointer 1 position 0.055 0.525 size 0.89 0.068 halign left_ref valign top_ref hexactpos 0 vexactpos 0 hexactsize 0 vexactsize 0 priority 3 style Normal text "" font "gui/fonts/sdf_MetronLight24" "text color" 0.890 0.898 0.925 1 "exact text" 1 "exact text size" 13 "text halign" left "text valign" center }
+        ImageWidgetClass ItemWetnessWidgetBackground { visible 0 ignorepointer 1 color 0 0 0 0.5 position 0.04 0.595 size 0.92 0.068 halign left_ref valign top_ref hexactpos 0 vexactpos 0 hexactsize 0 vexactsize 0 priority 2 image0 "set:dayz_gui image:ColorableBar" mode blend "src alpha" 1 "stretch mode" stretch_w_h }
+        TextWidgetClass ItemWetnessWidget { visible 1 clipchildren 0 ignorepointer 1 position 0.055 0.595 size 0.89 0.068 halign left_ref valign top_ref hexactpos 0 vexactpos 0 hexactsize 0 vexactsize 0 priority 3 style Normal text "" font "gui/fonts/sdf_MetronLight24" "text color" 0.890 0.898 0.925 1 "exact text" 1 "exact text size" 13 "text halign" left "text valign" center }
+        ImageWidgetClass ItemFoodStageWidgetBackground { visible 0 ignorepointer 1 color 0 0 0 0.5 position 0.04 0.665 size 0.92 0.068 halign left_ref valign top_ref hexactpos 0 vexactpos 0 hexactsize 0 vexactsize 0 priority 2 image0 "set:dayz_gui image:ColorableBar" mode blend "src alpha" 1 "stretch mode" stretch_w_h }
+        TextWidgetClass ItemFoodStageWidget { visible 1 clipchildren 0 ignorepointer 1 position 0.055 0.665 size 0.89 0.068 halign left_ref valign top_ref hexactpos 0 vexactpos 0 hexactsize 0 vexactsize 0 priority 3 style Normal text "" font "gui/fonts/sdf_MetronLight24" "text color" 0.890 0.898 0.925 1 "exact text" 1 "exact text size" 13 "text halign" left "text valign" center }
+        ImageWidgetClass ItemWeightWidgetBackground { visible 0 ignorepointer 1 color 0 0 0 0.5 position 0.04 0.735 size 0.92 0.068 halign left_ref valign top_ref hexactpos 0 vexactpos 0 hexactsize 0 vexactsize 0 priority 2 image0 "set:dayz_gui image:ColorableBar" mode blend "src alpha" 1 "stretch mode" stretch_w_h }
+        TextWidgetClass ItemWeightWidget { visible 1 clipchildren 0 ignorepointer 1 position 0.055 0.735 size 0.89 0.068 halign left_ref valign top_ref hexactpos 0 vexactpos 0 hexactsize 0 vexactsize 0 priority 3 style Normal text "" font "gui/fonts/sdf_MetronLight24" "text color" 0.890 0.898 0.925 1 "exact text" 1 "exact text size" 13 "text halign" left "text valign" center }
+        ImageWidgetClass ItemQuantityWidgetBackground { visible 0 ignorepointer 1 color 0 0 0 0.5 position 0.04 0.805 size 0.92 0.068 halign left_ref valign top_ref hexactpos 0 vexactpos 0 hexactsize 0 vexactsize 0 priority 2 image0 "set:dayz_gui image:ColorableBar" mode blend "src alpha" 1 "stretch mode" stretch_w_h }
+        TextWidgetClass ItemQuantityWidget { visible 1 clipchildren 0 ignorepointer 1 position 0.055 0.805 size 0.89 0.068 halign left_ref valign top_ref hexactpos 0 vexactpos 0 hexactsize 0 vexactsize 0 priority 3 style Normal text "" font "gui/fonts/sdf_MetronLight24" "text color" 0.890 0.898 0.925 1 "exact text" 1 "exact text size" 13 "text halign" left "text valign" center }
+        ImageWidgetClass ItemCleannessWidgetBackground { visible 0 ignorepointer 1 color 0 0 0 0.5 position 0.04 0.875 size 0.92 0.068 halign left_ref valign top_ref hexactpos 0 vexactpos 0 hexactsize 0 vexactsize 0 priority 2 image0 "set:dayz_gui image:ColorableBar" mode blend "src alpha" 1 "stretch mode" stretch_w_h }
+        TextWidgetClass ItemCleannessWidget { visible 1 clipchildren 0 ignorepointer 1 position 0.055 0.875 size 0.89 0.068 halign left_ref valign top_ref hexactpos 0 vexactpos 0 hexactsize 0 vexactsize 0 priority 3 style Normal text "" font "gui/fonts/sdf_MetronLight24" "text color" 0.890 0.898 0.925 1 "exact text" 1 "exact text size" 13 "text halign" left "text valign" center }
+       }
+      }
+      // ---------------- footer: price + amount + SELL -------------------
+      FrameWidgetClass SellRow {
+       visible 0
+       clipchildren 1
+       ignorepointer 0
+       position 0.005 0.565
+       size 0.990 0.418
+       halign left_ref
+       valign top_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       priority 40
+       {
+        ImageWidgetClass SellRowBg {
+         visible 1
+         ignorepointer 1
+         color 0.149 0.149 0.204 0.92
+         position 0 0
+         size 1 1
+         halign left_ref
+         valign top_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         priority 1
+         image0 "set:dayz_gui image:ColorableBar"
+         mode blend
+         "src alpha" 1
+         "clamp mode" clamp
+         "stretch mode" stretch_w_h
+        }
+        ImageWidgetClass SellAccent {
+         visible 1
+         ignorepointer 1
+         color 0.353 0.655 1 0.75
+         position 0 0
+         size 0.004 1
+         halign left_ref
+         valign top_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         priority 2
+         image0 "set:dayz_gui image:ColorableBar"
+         mode blend
+         "src alpha" 1
+         "stretch mode" stretch_w_h
+        }
+        TextWidgetClass SellPriceWidget {
+         visible 1
+         clipchildren 0
+         ignorepointer 1
+         position 0.030 0.06
+         size 0.470 0.38
+         halign left_ref
+         valign top_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         priority 3
+         style Bold
+         text ""
+         font "gui/fonts/sdf_MetronBold24"
+         "text color" 0.451 0.902 0.627 1
+         "exact text" 1
+         "exact text size" 17
+         "size to text h" 0
+         "size to text v" 0
+         "text halign" left
+         "text valign" center
+         wrap 0
+        }
+        TextWidgetClass SellAmountWidget {
+         visible 0
+         clipchildren 0
+         ignorepointer 1
+         position 0.030 0.53
+         size 0.300 0.38
+         halign left_ref
+         valign top_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         priority 3
+         style Normal
+         text ""
+         font "gui/fonts/sdf_MetronLight24"
+         "text color" 0.580 0.588 0.667 1
+         "exact text" 1
+         "exact text size" 14
+         "size to text h" 0
+         "size to text v" 0
+         "text halign" left
+         "text valign" center
+         wrap 0
+        }
+        SliderWidgetClass SellSlider {
+         visible 0
+         clipchildren 0
+         ignorepointer 0
+         color 0.353 0.655 1 0.85
+         position 0.320 0.58
+         size 0.400 0.34
+         halign left_ref
+         valign top_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         priority 3
+         style Default
+         "no focus" 0
+         maximum 1
+         step 1
+         current 1
+         "fill in" 1
+         "listen to input" 1
+        }
+        ButtonWidgetClass SellButton {
+         visible 0
+         clipchildren 1
+         ignorepointer 0
+         position -0.022 0
+         size 0.230 0.78
+         halign right_ref
+         valign center_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         priority 4
+         userID 90012
+         style Default
+         "no focus" 1
+         text "#tm_sell"
+         "text color" 1 0.690 0.722 1
+         "text halign" center
+         "text valign" center
+         "exact text" 1
+         "exact text size" 16
+         {
+          ImageWidgetClass SellButtonRed {
+           visible 1
+           ignorepointer 1
+           color 0.325 0.125 0.161 1
+           position 0 0
+           size 1 1
+           halign center_ref
+           valign center_ref
+           hexactpos 0
+           vexactpos 0
+           hexactsize 0
+           vexactsize 0
+           priority 1
+           image0 "set:dayz_gui image:ColorableBar"
+           mode blend
+           "src alpha" 1
+           "clamp mode" clamp
+           "stretch mode" stretch_w_h
+          }
+         }
+        }
+       }
+      }
+      TextWidgetClass NoPriceWidget {
+       visible 0
+       clipchildren 0
+       ignorepointer 1
+       position 0.005 0.565
+       size 0.990 0.418
+       halign left_ref
+       valign top_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       priority 41
+       style Bold
+       text "#tm_no_trader_nearby"
+       font "gui/fonts/sdf_MetronLight24"
+       "text color" 1 0.690 0.722 1
+       "exact text" 1
+       "exact text size" 18
+       "size to text h" 0
+       "size to text v" 0
+       "text halign" center
+       "text valign" center
+       wrap 1
+      }
+     }
+    }
+   }
+  }
+  ImageWidgetClass vignette {
+   visible 1
+   ignorepointer 0
+   color 0 0 0 0.784
+   position 0 0
+   size 1.6 0.9
+   halign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 0
+   fixaspect outside
+   imageTexture "{E6B3EF816E067499}Gui/textures/inventory_bgvignette.edds"
+   mode blend
+   "src alpha" 1
+   "clamp mode" clamp
+   "stretch mode" stretch_w_h
+   filter 0
+   nocache 1
+  }
+ }
+}
