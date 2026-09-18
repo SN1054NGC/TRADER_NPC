@@ -1,6 +1,7 @@
 # --- служебное и артефакты сборки ---
 _build/backup/
 _build/log/
+_build/stage/
 *.pbo
 *.bisign
 *.bak
