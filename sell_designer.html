@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DayZ Compact Sell Window · Layout Designer</title>
+<style>
+:root{--bg:#12121a;--pan:#1c1c27;--pan2:#262634;--line:#3a3a4d;--txt:#e3e5ec;--mut:#9496aa;--acc:#5aa7ff}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--txt);font:13px 'Segoe UI',system-ui,sans-serif}
+header{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:8px 14px;border-bottom:1px solid var(--line)}
+main{display:grid;grid-template-columns:340px 1fr;height:calc(100vh - 54px)}
+input,select,textarea{background:#15151f;color:var(--txt);border:1px solid var(--line);border-radius:4px;padding:2px 6px;font-size:12px}
+h3{font-size:11px;color:var(--mut);letter-spacing:.05em;text-transform:uppercase;margin:12px 0 6px}
+.btn{background:var(--pan2);border:1px solid var(--line);color:var(--txt);border-radius:5px;padding:4px 10px;cursor:pointer}
+.btn.on{background:#1d3a61;border-color:var(--acc)} .btn:hover{border-color:var(--acc)}
+#ctrl{overflow:auto;padding:10px 12px;border-right:1px solid var(--line);background:var(--pan)}
+details{border:1px solid var(--line);border-radius:6px;margin:4px 0;background:#20202e}
+summary{cursor:pointer;padding:5px 8px;font-size:12px;font-weight:600}
+details[open]>summary{background:#2a2a3e;border-radius:5px}
+.tag{display:inline-block;background:#2a2a4c;color:#9db8ff;border-radius:3px;padding:0 5px;margin-right:6px;font-size:10px}
+.tag.red{background:#532029;color:#ffb0b8} 
+.bd{padding:6px 8px;border-top:1px solid var(--line)}
+.f{display:grid;grid-template-columns:50px minmax(0,1fr);align-items:center;gap:5px;margin:3px 0}
+.f label{color:var(--mut);font-size:11px}
+.wrap2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.pick{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px}
+.pick input{width:100%}
+#out{border-top:1px solid var(--line);margin-top:12px;padding-top:6px}
+pre{white-space:pre-wrap;font-family:ui-monospace,Consolas,monospace;font-size:11px;color:#d5dcff;background:#0a0a10;padding:6px;border-radius:5px}
+#activeInfo{position:absolute;left:10px;bottom:8px;color:var(--mut);background:#000a;padding:2px 8px;border-radius:3px}
+#win{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);overflow:hidden;box-shadow:0 18px 70px #0009}
+#vign{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 110px #0006}
+#stage{position:relative;overflow:hidden;background:linear-gradient(60deg,#1b1b27,#292938,#1b1b27)}
+.el{position:absolute;cursor:move}
+.el .lab{position:absolute;left:1px;top:1px;font-size:9px;color:#fff;background:#000b;padding:0 3px;border-radius:2px;pointer-events:none;white-space:nowrap;z-index:4}
+.el .ct{position:absolute;inset:0;overflow:hidden;display:flex;pointer-events:none;padding:1px 3px;white-space:pre-wrap}
+.hint{color:var(--mut);font-size:10px;margin:6px 0}
+</style>
+</head>
+<body>
+<header>
+ <b>Compact Sell · Layout Designer</b>
+ <span style="color:var(--mut)">окно w</span><input id="winW" type="number" style="width:60px" min="5" max="95" step="1" value="43">
+ <span style="color:var(--mut)">h</span><input id="winH" type="number" style="width:60px" min="5" max="95" step="1" value="40">
+ <button id="mS" class="btn on">SELL-строка</button>
+ <button id="mN" class="btn">«нет продавца»</button>
+ <div style="flex:1"></div>
+ <button id="gen" class="btn">Сгенерировать отчёт</button>
+</header>
+<main>
+ <section id="ctrl">
+   <div class="hint">Тяни блоки мышью (меняет X/Y), правь Ш/В и цвета/шрифт/тексты ниже.
+   Всё в % от окна (0–100). Окно = % от высоты экрана, центрировано.
+   Подсказка как накладывать: SELL-режим рисует sell-строку, «нет продавца» рисует fallback — они параллельны.</div>
+   <h3>Элементы</h3>
+   <div id="blocks"></div>
+   <div id="out"></div>
+ </section>
+ <section id="stage"><div id="vign"></div><div id="win"></div><div id="activeInfo">Блоки тяни мышью</div></section>
+</main>
+<script>
+"use strict";
+let mode='sell';
+const win=document.getElementById('win'),stage=document.getElementById('stage');
+const CLS={
+ Text:'TextWidgetClass',Rich:'RichTextWidgetClass',Image:'ImageWidgetClass',
+ Frame:'FrameWidgetClass',Button:'ButtonWidgetClass',Preview:'ItemPreviewWidgetClass'};
+/* D E F I N E   M O D E L */
+const E=[
+ {id:'bg', grp:null, cls:CLS.Image, name:'PanelBg (фон окна)', x:0,y:0,w:100,h:100,
+   c:{r:56,g:60,b:72,a:245}, image:true},
+ {id:'hd',grp:null, cls:CLS.Image, name:'Header линия', x:0,y:0,w:100,h:9,
+   c:{r:15,g:16,b:22,a:150}, image:true},
+ {id:'name',grp:null, cls:CLS.Text, name:'ItemNameWidget',x:5,y:0.6,w:58,h:7.5,
+   c:{r:244,g:247,b:252,a:255}, bold:true, fs:15, ha:'left', va:'center', font:'sdf_MetronBook24', text:'Название предмета (напр. Каска) '},
+ {id:'qbg',grp:null, cls:CLS.Image, name:'ItemDamageWidgetBackground',x:5,y:10.5,w:26,h:6,
+   c:{r:120,g:128,b:148,a:70}, image:true},
+ {id:'q',grp:null, cls:CLS.Text, name:'ItemDamageWidget · качество',x:6,y:10.5,w:24,h:6,
+   c:{r:255,g:228,b:115,a:255}, bold:true, fs:13, ha:'center', va:'center', font:'sdf_MetronBold24', text:'Pristine'},
+ {id:'desc',grp:null, cls:CLS.Rich, name:'ItemDescWidget · описание',x:5,y:19,w:48,h:55,
+   c:{r:222,g:226,b:236,a:255}, fs:13, ha:'left', va:'top', wrap:true, font:'sdf_MetronLight24',
+   text:'Многострочное описание. Текст переносится по словам внутри этой области.'},
+ {id:'prev',grp:null, cls:CLS.Preview, name:'ItemFrameWidget · 3D',x:59,y:3,w:38,h:72,
+   c:{r:130,g:160,b:240,a:70}, text:''},
+ // ---- SELL ----
+ {id:'srow', grp:'SELL', cls:CLS.Frame, name:'SellRow контейнер',x:4,y:80,w:92,h:17,
+   c:{r:26,g:28,b:36,a:195}, bgShow:true },
+ {id:'price',grp:'SELL', cls:CLS.Text, name:'SellPriceWidget цена',x:4,y:82.5,w:57,h:12,
+   c:{r:130,g:255,b:138,a:255}, bold:true, fs:14, ha:'center', va:'center', font:'sdf_MetronBold24', text:'Trader pays: 245 Ruble'},
+ {id:'sbred',grp:'SELL', cls:CLS.Image, name:'SellButton красная подложка',x:63,y:83,w:30,h:10,
+   c:{r:150,g:15,b:16,a:255}, image:true},
+ {id:'sb',  grp:'SELL', cls:CLS.Button, name:'SellButton · SELL',x:63,y:83,w:30,h:10,
+   c:{r:255,g:255,b:255,a:255}, bold:true, fs:14, ha:'center', va:'center', text:'SELL'},
+ // ---- fallback (нет продавца) ----
+ {id:'np', grp:'NIL', cls:CLS.Text, name:'NoPriceWidget',x:4,y:80,w:92,h:16,
+   c:{r:255,g:232,b:150,a:255}, fs:14, ha:'center', va:'center', font:'sdf_MetronLight24', text:'#tm_no_trader_nearby — нет продавца / цены'},
+];
+function show(o){ if(o.grp==='SELL')return mode==='SELL'; if(o.grp==='NIL')return mode==='NIL'; return true; }
+/* Build list of controls */
+const B=document.getElementById('blocks');
+function num(b,k,label,parent){let d=document.createElement('div');d.className='f';let l=document.createElement('label');l.textContent=label;
+ let i=document.createElement('input');i.type='number';i.step='any';i.value=b[k];
+ i.oninput=function(){b[k]=parseFloat(this.value)||0;render();};d.append(l,i);parent.appendChild(d);}
+function selch(b,k,opts,label,parent){let d=document.createElement('div');d.className='f';let l=document.createElement('label');l.textContent=label;
+ let s=document.createElement('select');opts.forEach(function(x){let o=document.createElement('option');o.value=x;o.textContent=x;s.appendChild(o);});s.value=b[k]||opts[0];
+ s.onchange=function(){b[k]=this.value;render();};d.append(l,s);parent.appendChild(d);}
+function text_input(b,k,label,parent){let d=document.createElement('div');d.className='f';let l=document.createElement('label');l.textContent=label;
+ let i=document.createElement('input');i.type='text';i.value=b[k]||'';
+ i.oninput=function(){b[k]=this.value;render();};d.append(l,i);parent.appendChild(d);}
+function chan(b,k,label,parent){let d=document.createElement('div');d.className='f';let l=document.createElement('label');l.textContent=label;
+ let i=document.createElement('input');i.type='number';i.min=0;i.max=255;i.value=b.c[k];
+ i.oninput=function(){b.c[k]=Math.max(0,Math.min(255,parseInt(this.value)||0));render();};d.append(l,i);parent.appendChild(d);}
+E.forEach(function(o){
+  let el=document.createElement('details');el.id='d_'+o.id;
+  let s=document.createElement('summary');
+  if(o.grp){let t=document.createElement('span');t.className='tag '+(o.grp==='SELL'?'red':'');t.textContent=o.grp;s.appendChild(t);}
+  let nm=document.createElement('span');nm.textContent=o.name;s.appendChild(nm);el.appendChild(s);
+  let body=document.createElement('div');body.className='bd';
+  let w2=document.createElement('div');w2.className='wrap2';
+  num(o,'x','X %',w2);num(o,'y','Y %',w2);num(o,'w','Ш %',w2);num(o,'h','В %',w2);
+  body.appendChild(w2);
+  // color
+  let pick=document.createElement('div');pick.className='pick';pick.innerHTML='<b style="width:100%;text-align:center;color:var(--mut)">COLOR RGBA</b>';
+  body.appendChild(pick);
+  let pk2=document.createElement('div');pk2.className='pick';
+  chan(o,'r','R',pk2);chan(o,'g','G',pk2);chan(o,'b','B',pk2);chan(o,'a','A',pk2);
+  body.appendChild(pk2);
+  if(o.cls&&o.cls.indexOf('Text')===0){
+    num(o,'fs','Font px',body);
+    selch(o,'ha',['left','center','right'],'halign',body);
+    selch(o,'va',['top','center','bottom'],'valign',body);
+  }
+  if(typeof o.text==='string'){ text_input(o,'text','text',body);}
+  let n=document.createElement('div');n.className='hint';n.textContent='Класс: '+o.cls+(o.grp?(' · группа '+o.grp):'');body.appendChild(n);
+  el.appendChild(body);B.appendChild(el);
+});
+/* RENDER */
+function rgba(c){let a=Math.max(0,Math.min(1,c.a/255));return `rgba(${c.r},${c.g},${c.b},${(+a).toFixed(2)})`; }
+function texbg(o,c){let ga=Math.max(0,Math.min(1,c.a/255));
+ return `repeating-linear-gradient(180deg, rgba(${Math.min(255,c.r+24)},${Math.min(255,c.g+20)},${Math.min(255,c.b+18)},${(+ga).toFixed(2)}) 0 3px, rgba(0,0,0,0) 3px 5px)`;
+}
+function render(){
+  const ww=(+document.getElementById('winW').value)/100, hh=(+document.getElementById('winH').value)/100;
+  const st=window.getComputedStyle(stage);const W=parseInt(st.width),H=parseInt(st.height);
+  const pxW=Math.max(60,Math.round(W*ww)), pxH=Math.max(60,Math.round(H*hh));
+  win.style.width=pxW+'px';win.style.height=pxH+'px';
+  win.innerHTML='';
+  // underlying fill uses PanelBg (bg). give subtle tint so E bgs not fully opaque
+  win.style.background='#191924cc';
+  if(mode==='SELL'){ document.getElementById('mS').classList.add('on');document.getElementById('mN').classList.remove('on');}
+  else {document.getElementById('mN').classList.add('on');document.getElementById('mS').classList.remove('on');}
+  E.forEach(function(o){
+    if(!show(o))return;
+    const el=document.createElement('div');el.className='el';
+    el.style.left=(o.x)+'%';el.style.top=(o.y)+'%';el.style.width=(o.w)+'%';el.style.height=Math.max(1,o.h)+'%';
+    // visible tile colors
+    let fill;
+    if(o.image||o.id==='sbred'){ fill=texbg(o,o.c); }
+    else if(o.id==='srow'){ fill=rgba(o.c); }
+    else if(o.id==='bg'){ fill='linear-gradient(160deg,#23232f,#17171f)'; }
+    else if(o.id==='hd'){ fill=rgba(o.c); }
+    else { fill='rgba(80,140,255,0.10)'; }
+    el.style.background=fill;
+    el.style.border='1px dashed '+( o.grp==='SELL'?'#ff8f9530':(o.grp==='NIL'?'#ffe29a40':'#9dbfff30'));
+    // label
+    let lab=document.createElement('div');lab.className='lab';
+    lab.textContent=o.name+'  X'+o.x+' Y'+o.y+'  '+o.w+'\u00d7'+o.h;
+    el.appendChild(lab);
+    // text overlay
+    if(typeof o.text==='string' && o.text){
+      let ct=document.createElement('div');ct.className='ct';
+      let sp=document.createElement('span');
+      sp.textContent=o.text;
+      ct.style.justifyContent=(o.ha||'center')==='right'?'flex-end':((o.ha||'center')==='left'?'flex-start':'center');
+      ct.style.alignItems=(o.va||'center')==='bottom'?'flex-end':((o.va||'center')==='top'?'flex-start':'center');
+      ct.appendChild(sp);
+      ct.style.color=rgba(o.id==='sb'?{r:255,g:255,b:255,a:255}:o.c);
+      ct.style.fontSize=Math.max(6,o.fs||13)+'px';
+      ct.style.fontWeight=o.bold?'700':'400';
+      el.appendChild(ct);
+    } else if(o.cls===CLS.Preview){ let ct=document.createElement('div');ct.className='ct';ct.style.justifyContent='center';ct.style.alignItems='center';ct.textContent='\u25CB 3D';ct.style.color='#8fb0ff90';ct.style.fontSize='40px';el.appendChild(ct);}
+    if(o.image||o.id==='sbred'){ el.style.borderStyle='none'; }
+    // drag
+    el.addEventListener('mousedown',function(ev){
+      if(ev.target.closest('.lab'))return;
+      const r=win.getBoundingClientRect();const sx=ev.clientX,sy=ev.clientY,sx0=o.x,sy0=o.y;
+      let mx=function(e){ o.x=Math.max(-50,Math.min(150,(sx0)+(e.clientX-sx)/r.width*100));o.y=Math.max(-20,Math.min(120,(sy0)+(e.clientY-sy)/r.height*100));render();};
+      let u=function(){document.removeEventListener('mousemove',mx);document.removeEventListener('mouseup',u);};
+      document.addEventListener('mousemove',mx);document.addEventListener('mouseup',u);
+    });
+    win.appendChild(el);
+  });
+}
+function modeTick(){}
+/* outputs simple to take back to layout */
+function genReport(){
+  let wid=document.getElementById('winW').value,hgt=document.getElementById('winH').value;
+  let out=[];
+  out.push('// Окно = '+wid+'% x '+hgt+'% экрана, центрировано (в layout: rootFrame full->виньетка->центр. панель '+ (wid*10)+'/'+(hgt*10)+')');
+  out.push('');
+  E.forEach(function(o){
+    out.push('— '+o.name+'  ['+o.cls+']');
+    out.push('   доля: X='+(o.x/100).toFixed(3)+' Y='+(o.y/100).toFixed(3)+'  W='+(o.w/100).toFixed(3)+' H='+(o.h/100).toFixed(3));
+    out.push('   RGBA: '+o.c.r+','+o.c.g+','+o.c.b+', a='+o.c.a);
+    if(typeof o.fs==='number')out.push('   font-size: '+o.fs+'px');
+    if(o.bold)out.push('   font-weight: bold');
+    if(typeof o.text==='string')out.push('   text: '+JSON.stringify(o.text));
+  });
+  document.getElementById('out').innerHTML='<h3>Отчёт для правки .layout</h3><pre>'+out.join('\n').replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>';
+}
+document.getElementById('winW').addEventListener('input',render);
+document.getElementById('winH').addEventListener('input',render);
+document.getElementById('mS').addEventListener('click',function(){mode='SELL';render();});
+document.getElementById('mN').addEventListener('click',function(){mode='NIL';render();});
+document.getElementById('gen').addEventListener('click',genReport);
+render();
+genReport();
+</script>
+</body>
+</html>

@@ -1,0 +1,645 @@
+FrameWidgetClass rootFrame {
+ clipchildren 1
+ ignorepointer 0
+ color 0.882 0.882 0.882 0.882
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ priority 2
+ {
+  FrameWidgetClass WindowWidget {
+   ignorepointer 0
+   position 0 0
+   size 1 1
+   halign center_ref
+   valign center_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   priority 1
+   {
+    FrameWidgetClass BackPanelWidget {
+     visible 1
+     position 0 0
+     size 1.6 0.9
+     halign center_ref
+     valign center_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     fixaspect inside
+     priority 1
+     {
+      ItemPreviewWidgetClass ItemFrameWidgetPanel {
+       visible 1
+       position 0.159 0.095
+       size 500 308
+       halign center_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 1
+       vexactsize 1
+       priority 2
+       {
+        ItemPreviewWidgetClass ItemFrameWidget {
+         position 0 4.33
+         size 500 303
+         halign center_ref
+         valign center_ref
+         hexactpos 1
+         vexactpos 1
+         hexactsize 1
+         vexactsize 1
+         "force flip enable" 1
+        }
+       }
+      }
+      PanelWidgetClass InventoryInfoPanelWidget {
+       visible 1
+       clipchildren 0
+       inheritalpha 1
+       color 0 0 0 0.863
+       position 0 0.095
+       size 0.92 0.85
+       halign center_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       style DayZDefaultPanel
+       {
+        MultilineTextWidgetClass ItemDescWidget {
+         clipchildren 0
+         position 0.025 0.2
+         size 237 228
+         hexactpos 0
+         vexactpos 0
+         hexactsize 1
+         vexactsize 1
+         priority 1
+         style None
+         text "A box of large kitchen matches. Contains 250 matches. Store in dry place and keep away from children."
+         font "gui/fonts/sdf_MetronLight24"
+         "exact text" 1
+         "exact text size" 24
+         "size to text h" 0
+         "size to text v" 0
+         wrap 1
+         "condense whitespace" 1
+        }
+        ImageWidgetClass ItemDamageWidgetBackground {
+         visible 1
+         clipchildren 0
+         inheritalpha 0
+         ignorepointer 1
+         color 1 1 1 0
+         position -0.4 -0.45
+         size 0.15 0.03
+         halign center_ref
+         valign center_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         priority 1
+         image0 "set:dayz_gui image:ColorableBar"
+         mode blend
+         "src alpha" 0
+         filter 1
+         {
+          TextWidgetClass ItemDamageWidget {
+           visible 1
+           inheritalpha 0
+           size 1 1
+           halign center_ref
+           valign center_ref
+           hexactpos 0
+           vexactpos 0
+           hexactsize 0
+           vexactsize 0
+           priority 1
+           style Normal
+           text "#STR_rootFrame_WindowWidget_BackPanelWidget_InventoryInfoPanelWidget_ItemDamageWidgetBackground_ItemDamageWidget0"
+           font "gui/fonts/sdf_MetronLight24"
+           "text color" 1 1 1 1
+           "exact text" 1
+           "exact text size" 24
+           "text halign" center
+           "text valign" center
+          }
+         }
+        }
+        ImageWidgetClass ItemLiquidTypeWidgetBackground {
+         visible 1
+         clipchildren 0
+         inheritalpha 0
+         ignorepointer 1
+         color 1 1 1 0
+         position -0.4 -0.41
+         size 0.15 0.03
+         halign center_ref
+         valign center_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         priority 1
+         image0 "set:dayz_gui image:ColorableBar"
+         mode blend
+         "src alpha" 0
+         filter 1
+         {
+          TextWidgetClass ItemLiquidTypeWidget {
+           position 0 0
+           size 1 1
+           halign center_ref
+           valign center_ref
+           hexactpos 0
+           vexactpos 0
+           hexactsize 0
+           vexactsize 0
+           priority 1
+           style Normal
+           text "#STR_rootFrame_WindowWidget_BackPanelWidget_InventoryInfoPanelWidget_ItemLiquidTypeWidgetBackground_ItemLiquidTypeWidget0"
+           font "gui/fonts/sdf_MetronLight24"
+           "text color" 1 1 1 1
+           "exact text" 1
+           "exact text size" 24
+           "text halign" center
+           "text valign" center
+          }
+         }
+        }
+        ImageWidgetClass ItemTemperatureWidgetBackground {
+         visible 1
+         clipchildren 0
+         inheritalpha 0
+         ignorepointer 1
+         color 1 1 1 0
+         position -0.24 -0.37
+         size 0.15 0.03
+         halign center_ref
+         valign center_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         priority 1
+         image0 "set:dayz_gui image:ColorableBar"
+         mode blend
+         "src alpha" 0
+         filter 1
+         {
+          TextWidgetClass ItemTemperatureWidget {
+           position 0 0
+           size 1 1
+           halign center_ref
+           valign center_ref
+           hexactpos 0
+           vexactpos 0
+           hexactsize 0
+           vexactsize 0
+           priority 1
+           style Normal
+           text "#STR_rootFrame_WindowWidget_BackPanelWidget_InventoryInfoPanelWidget_ItemTemperatureWidgetBackground_ItemTemperatureWidget0"
+           font "gui/fonts/sdf_MetronLight24"
+           "text color" 1 1 1 1
+           "exact text" 1
+           "exact text size" 24
+           "text halign" center
+           "text valign" center
+          }
+         }
+        }
+        ImageWidgetClass ItemWetnessWidgetBackground {
+         visible 1
+         clipchildren 0
+         inheritalpha 0
+         ignorepointer 1
+         color 1 1 1 0
+         position -0.4 -0.37
+         size 0.15 0.03
+         halign center_ref
+         valign center_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         priority 1
+         image0 "set:dayz_gui image:ColorableBar"
+         mode blend
+         "src alpha" 0
+         filter 1
+         {
+          TextWidgetClass ItemWetnessWidget {
+           visible 1
+           position 0 0
+           size 1 1
+           halign center_ref
+           valign center_ref
+           hexactpos 0
+           vexactpos 0
+           hexactsize 0
+           vexactsize 0
+           priority 1
+           style Normal
+           text "#STR_rootFrame_WindowWidget_BackPanelWidget_InventoryInfoPanelWidget_ItemWetnessWidgetBackground_ItemWetnessWidget0"
+           font "gui/fonts/sdf_MetronLight24"
+           "text color" 1 1 1 1
+           "exact text" 1
+           "exact text size" 24
+           "text halign" center
+           "text valign" center
+          }
+         }
+        }
+        ImageWidgetClass ItemFoodStageWidgetBackground {
+         visible 1
+         clipchildren 0
+         inheritalpha 0
+         ignorepointer 1
+         color 1 1 1 0
+         position -0.4 -0.33
+         size 0.15 0.03
+         halign center_ref
+         valign center_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         priority 1
+         image0 "set:dayz_gui image:ColorableBar"
+         mode blend
+         "src alpha" 0
+         filter 1
+         {
+          TextWidgetClass ItemFoodStageWidget {
+           visible 1
+           inheritalpha 0
+           position 0 0
+           size 1 1
+           halign center_ref
+           valign center_ref
+           hexactpos 0
+           vexactpos 0
+           hexactsize 0
+           vexactsize 0
+           priority 1
+           style Normal
+           text "#STR_rootFrame_WindowWidget_BackPanelWidget_InventoryInfoPanelWidget_ItemFoodStageWidgetBackground_ItemFoodStageWidget0"
+           font "gui/fonts/sdf_MetronLight24"
+           "text color" 1 1 1 1
+           "exact text" 1
+           "exact text size" 24
+           "text halign" center
+           "text valign" center
+          }
+         }
+        }
+        ImageWidgetClass ItemWeightWidgetBackground {
+         visible 1
+         clipchildren 0
+         inheritalpha 0
+         ignorepointer 1
+         color 1 1 1 0
+         position -0.24 -0.45
+         size 0.15 0.03
+         halign center_ref
+         valign center_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         priority 1
+         image0 "set:dayz_gui image:ColorableBar"
+         mode blend
+         "src alpha" 0
+         filter 1
+         {
+          TextWidgetClass ItemWeightWidget {
+           position 0 0
+           size 1 1
+           halign center_ref
+           valign center_ref
+           hexactpos 0
+           vexactpos 0
+           hexactsize 0
+           vexactsize 0
+           priority 1
+           style Normal
+           text "#STR_rootFrame_WindowWidget_BackPanelWidget_InventoryInfoPanelWidget_ItemWeightWidgetBackground_ItemWeightWidget0"
+           font "gui/fonts/sdf_MetronLight24"
+           "text color" 1 1 1 1
+           "exact text" 1
+           "exact text size" 24
+           "text halign" center
+           "text valign" center
+          }
+         }
+        }
+        ImageWidgetClass ItemQuantityWidgetBackground {
+         visible 1
+         clipchildren 0
+         inheritalpha 0
+         ignorepointer 1
+         color 1 1 1 0
+         position -0.24 -0.41
+         size 0.15 0.03
+         halign center_ref
+         valign center_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         priority 1
+         image0 "set:dayz_gui image:ColorableBar"
+         mode blend
+         "src alpha" 0
+         filter 1
+         {
+          TextWidgetClass ItemQuantityWidget {
+           position 0 0
+           size 1 1
+           halign center_ref
+           valign center_ref
+           hexactpos 0
+           vexactpos 0
+           hexactsize 0
+           vexactsize 0
+           priority 1
+           style Normal
+           text "#STR_rootFrame_WindowWidget_BackPanelWidget_InventoryInfoPanelWidget_ItemQuantityWidgetBackground_ItemQuantityWidget0"
+           font "gui/fonts/sdf_MetronLight24"
+           "text color" 1 1 1 1
+           "exact text" 1
+           "exact text size" 24
+           "text halign" center
+           "text valign" center
+          }
+         }
+        }
+        ImageWidgetClass ItemCleannessWidgetBackground {
+         visible 1
+         clipchildren 0
+         inheritalpha 0
+         ignorepointer 1
+         color 1 1 1 0
+         position -0.24 -0.33
+         size 0.15 0.03
+         halign center_ref
+         valign center_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         priority 1
+         image0 "set:dayz_gui image:ColorableBar"
+         mode blend
+         "src alpha" 0
+         filter 1
+         {
+          TextWidgetClass ItemCleannessWidget {
+           position 0 0
+           size 1 1
+           halign center_ref
+           valign center_ref
+           hexactpos 0
+           vexactpos 0
+           hexactsize 0
+           vexactsize 0
+           priority 1
+           style Normal
+           text "#inv_inspect_cleaned"
+           font "gui/fonts/sdf_MetronLight24"
+           "text color" 1 1 1 1
+           "exact text" 1
+           "exact text size" 24
+           "text halign" center
+           "text valign" center
+          }
+         }
+        }
+       }
+      }
+      ImageWidgetClass ItemNameBackground {
+       visible 1
+       clipchildren 0
+       keepsafezone 0
+       color 0 0 0 0.941
+       position 0 0.05
+       size 0.92 0.045
+       halign center_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       priority 1
+       draggable 0
+       image0 "set:dayz_gui image:inv_header_3"
+       mode blend
+       "src alpha" 1
+       "clamp mode" clamp
+       "stretch mode" stretch_w_h
+       {
+        TextWidgetClass ItemNameWidget {
+         position 0 0
+         size 1 1
+         halign center_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         priority 1
+         style Normal
+         text "Item Name"
+         font "gui/fonts/sdf_MetronBook24"
+         "text offset" 10 0
+         "exact text" 0
+         text_proportion 0.55
+         "text halign" center
+         "text valign" center
+         {
+          ButtonWidgetClass BackBtn1 {
+           visible 1
+           disabled 0
+           clipchildren 1
+           inheritalpha 0
+           ignorepointer 0
+           keepsafezone 0
+           color 0.882 0.882 0.882 0
+           position 0.01 0
+           size 0.5 0.5
+           halign right_ref
+           valign center_ref
+           hexactpos 0
+           vexactpos 0
+           hexactsize 0
+           vexactsize 0
+           fixaspect fixwidth
+           priority 1
+           userID 2
+           style Default
+           "no focus" 1
+           text_offset 1 1
+           text_halign center
+           "text color" 1 1 1 1
+           switch normal
+           {
+            ImageWidgetClass IconClose {
+             visible 1
+             ignorepointer 1
+             size 1 1
+             halign center_ref
+             valign center_ref
+             hexactpos 0
+             vexactpos 0
+             hexactsize 0
+             vexactsize 0
+             priority 1
+             image0 "set:dayz_gui image:icon_x"
+             mode additive
+             "src alpha" 1
+             "clamp mode" invalid
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+      FrameWidgetClass SellRow {
+       visible 0
+       clipchildren 1
+       ignorepointer 0
+       position 0.012 0.813
+       size 0.976 0.17
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       priority 40
+       {
+        ImageWidgetClass SellRowBg {
+         visible 1
+         ignorepointer 1
+         color 0.05 0.05 0.05 0.85
+         position 0.061 0.284
+         size 0.936 1
+         halign center_ref
+         valign center_ref
+         hexactpos 0
+         vexactpos 0
+         priority 1
+         image0 "set:dayz_gui image:inv_header_3"
+         mode blend
+         "src alpha" 1
+         "clamp mode" clamp
+         "stretch mode" stretch_w_h
+        }
+        TextWidgetClass SellPriceWidget {
+         visible 1
+         ignorepointer 1
+         position 0.093 0.257
+         size 0.462 1
+         halign left_ref
+         valign center_ref
+         hexactpos 0
+         vexactpos 0
+         priority 1
+         style Bold
+         text ""
+         font "gui/fonts/sdf_MetronBold24"
+         "text color" 0.51 1 0.51 1
+         "exact text" 1
+         "exact text size" 20
+         "text halign" left
+         "text valign" center
+        }
+        ButtonWidgetClass SellButton {
+         visible 1
+         ignorepointer 0
+         position -0.022 0.226
+         size 0.28 0.9
+         halign right_ref
+         valign center_ref
+         hexactpos 0
+         vexactpos 0
+         priority 1
+         userID 90012
+         style Default
+         "no focus" 1
+         text "SELL"
+         "text color" 1 1 1 1
+         {
+          ImageWidgetClass SellButtonRed {
+           visible 1
+           ignorepointer 1
+           color 0.62 0.04 0.04 1
+           position 0 0
+           size 1 1
+           halign center_ref
+           valign center_ref
+           hexactpos 0
+           vexactpos 0
+           priority 1
+           image0 "set:dayz_gui image:inv_header_3"
+           mode additive
+           "src alpha" 1
+           "clamp mode" invalid
+           "stretch mode" invalid
+          }
+         }
+        }
+       }
+      }
+      TextWidgetClass NoPriceWidget {
+       visible 0
+       ignorepointer 1
+       position 0.026 0.423
+       size 0.976 0.17
+       halign center_ref
+       valign center_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       priority 41
+       style Bold
+       text "#tm_no_trader_nearby"
+       font "gui/fonts/sdf_MetronLight24"
+       "text color" 1 0.416 0.078 1
+       "exact text" 1
+       "exact text size" 32
+       "text halign" center
+       "text valign" center
+      }
+     }
+    }
+   }
+  }
+  ImageWidgetClass vignette {
+   visible 1
+   ignorepointer 0
+   color 0 0 0 0.784
+   position 0 0
+   size 1.6 0.9
+   halign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 0
+   fixaspect outside
+   imageTexture "{E6B3EF816E067499}Gui/textures/inventory_bgvignette.edds"
+   mode blend
+   "src alpha" 1
+   "clamp mode" clamp
+   "stretch mode" stretch_w_h
+   filter 0
+   nocache 1
+  }
+ }
+}

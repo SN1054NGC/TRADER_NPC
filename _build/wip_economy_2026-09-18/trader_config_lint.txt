@@ -1,0 +1,26 @@
+=== ЛИНТЕР TraderConfig  (v2: учитывает -1, 3 поля и <SellCoef>) ===
+файл: D:/steam/steamapps/common/DayZServer/Profiles/Trader/TraderConfig.txt
+types.xml: 2243 типов
+строк-итемов: 1702   трейдеров: 5   категорий: 68
+ОШИБКИ: 0   ПРЕДУПРЕЖДЕНИЯ: 0   ДУБЛИ: 83
+токены: *x1376, Wx84, Mx74, 1x64, 10x41, 30x40, Sx21, 5x2
+строк из 3 полей (цена продажи по коэф.): 0
+строк с ценой -1 (не торгуется в эту сторону): 30
+
+--- ДУБЛИ: 83 (первые 12) ---
+  стр.862  дубль: Weapon Trader / Ammunition / Ammo_556x45
+  стр.863  дубль: Weapon Trader / Ammunition / Ammo_556x45
+  стр.865  дубль: Weapon Trader / Ammunition / Ammo_556x45Tracer
+  стр.866  дубль: Weapon Trader / Ammunition / Ammo_556x45Tracer
+  стр.869  дубль: Weapon Trader / Ammunition / Ammo_762x39
+  стр.870  дубль: Weapon Trader / Ammunition / Ammo_762x39
+  стр.872  дубль: Weapon Trader / Ammunition / Ammo_762x39Tracer
+  стр.873  дубль: Weapon Trader / Ammunition / Ammo_762x39Tracer
+  стр.876  дубль: Weapon Trader / Ammunition / Ammo_545x39
+  стр.877  дубль: Weapon Trader / Ammunition / Ammo_545x39
+  стр.879  дубль: Weapon Trader / Ammunition / Ammo_545x39Tracer
+  стр.880  дубль: Weapon Trader / Ammunition / Ammo_545x39Tracer
+
+--- ИНФО ---
+  нет в types.xml: 250   <SellCoef>: 0   <OpenFile>: 0
+  кандидатов на авто-цены: 512  (tools/-=69, clothes/-=67, clothes/Town=59, food/-=40, weapons/Military=39, containers/Town=35, tools/Town=33, clothes/Military=26)

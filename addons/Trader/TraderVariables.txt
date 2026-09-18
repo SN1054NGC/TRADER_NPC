@@ -1,0 +1,50 @@
+// ============================================
+// ОПТИМИЗИРОВАННЫЕ НАСТРОЙКИ ДЛЯ СНИЖЕНИЯ НАГРУЗКИ
+// ============================================
+
+<BuySellTimer> 0.5		            // Увеличен с 0.3 до 0.5 секунд – снижает частоту торговых запросов
+// УДАЛЕНО: <VehicleCleanupTimer> 0.0
+<SafezoneTimeout> 15.0	            // Уменьшено с 30 до 15 секунд – быстрее снимает защиту после выхода из зоны
+<SafezoneRemoveAnimals> no 		    // ОТКЛЮЧЕНО – не удаляет животных в сейф-зоне (экономит CPU)
+<SafezoneRemoveInfected> no 	    // ОТКЛЮЧЕНО – не удаляет зомби в сейф-зоне (экономит CPU)
+<SafezoneRemoveEAI> no 		        // ОТКЛЮЧЕНО – не удаляет ИИ-ботов (если не используются)
+<TradingDistance> 2.0	            // Уменьшено с 2.4 до 2.0 – сужает зону проверки, снижая количество сканирований
+
+// ---- рейтинг выживания -> скидка у торговца ----
+<RatingEnabled> yes              // включить систему рейтинга (yes/no)
+<RatingMaxDiscount> 20           // максимальная скидка в % (0..100)
+<RatingFullHours> 100            // часов ЖИЗНИ в мире до максимальной скидки
+<RatingCurve> 1.35               // >1 = медленный старт, 1 = линейно
+// ---- авто-цены из types.xml (генератор файла TraderConfig_auto.txt) ----
+<AutoPrices> no                  // yes = генерировать файл с ценами для классов, которых нет в TraderConfig.txt
+<AutoPricesOnlyUnlisted> yes     // yes = не трогать классы, которые уже настроены руками
+<AutoPricesSellCoef> 0.10        // продажа = 10% от цены покупки
+<AutoPricesMinBuy> 5             // минимальная цена покупки
+<AutoPricesMaxBuy> 50000         // максимальная цена покупки
+<AutoPricesMaxRows> 3000         // предохранитель: максимум строк в файле
+<AutoPricesTrader> Misc Trader   // подсказка в файле: к какому торговцу подключать
+<AutoPricesCategory> Auto        // подсказка в файле: в какую категорию
+<AutoPricesUseCaliber> yes        // учитывать мощность патрона (chamberableFrom -> caliber)
+<AutoPricesUseCapacity> yes       // учитывать вместимость (магазины count, контейнеры itemsCargoSize, стаки varQuantityMax)
+<AutoPricesUseArmor> yes          // учитывать броню (GlobalArmor: защита = 1 - damage)
+<AutoPricesUseWeight> no          // учитывать вес предмета (по умолчанию выключено)
+<AutoPricesCaliberScale> 1.20     // множитель = 0.50 + caliber * scale
+<AutoPricesCapacityScale> 0.04     // множитель = 0.50 + capacity * scale
+<AutoPricesArmorScale> 2.50       // множитель = 1 + защита * scale
+<AutoPricesWeightScale> 0.00003   // множитель = 1 + вес(г) * scale
+<AutoPricesUseWarmth> yes         // одежда: тепло (heatIsolation)
+<AutoPricesUseCamo> yes           // одежда: маскировка (visibilityModifier)
+<AutoPricesUseItemSize> yes       // одежда: габарит (itemSize)
+<AutoPricesWarmthScale> 0.60      // множитель = 1 + тепло * scale
+<AutoPricesCamoScale> 0.40        // множитель = 1 + (1.5 - visibility) * scale
+<AutoPricesSizeScale> 0.03        // множитель = 1 + (w*h) * scale
+<AutoPricesRuinedPrice> 0         // цена утилизации уничтоженного (0 = хлам бесплатно, но заберут)
+<AutoPricesRottenPrice> 1         // ROTTEN-еда: сколько коинов даёт торговец
+<AutoPricesFoodStageBurn> 0.20    // BURNED множитель
+<AutoPricesFoodStageRaw> 0.50     // RAW множитель
+<AutoPricesLiquidWater> 0.30      // жидкости по типу: вода
+<AutoPricesLiquidRiver> 0.20      // речная вода
+<AutoPricesLiquidDisinfect> 3.00  // дезинфектант
+<AutoPricesLiquidFuel> 1.50       // топливо
+<AutoPricesTypesFile>            // пусто = <папка миссии>/db/types.xml
+<FileEnd>

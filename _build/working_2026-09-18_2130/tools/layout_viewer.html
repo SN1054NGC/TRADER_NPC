@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DayZ Layout Viewer / Builder</title>
+<style>
+:root{
+ --bg:#12121a; --pan:#1c1c27; --pan2:#262634; --line:#3a3a4d;
+ --txt:#e3e5ec; --mut:#9496aa; --acc:#5aa7ff; --ok:#73e6a0; --warn:#ffb0b8;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--txt);font:12px/1.45 'Segoe UI',system-ui,sans-serif;overflow:hidden}
+header{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:7px 12px;border-bottom:1px solid var(--line);background:var(--pan)}
+header b{font-size:13px;color:var(--acc)}
+header label{color:var(--mut)}
+main{display:grid;grid-template-columns:290px 1fr 330px;height:calc(100vh - 44px)}
+aside{overflow:auto;padding:8px 10px;background:var(--pan)}
+#left{border-right:1px solid var(--line)}
+#right{border-left:1px solid var(--line)}
+section#stagewrap{overflow:auto;padding:14px;background:
+ repeating-conic-gradient(#16161f 0% 25%, #1b1b24 0% 50%) 50% / 24px 24px}
+h3{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin:12px 0 6px}
+input,select,textarea,button{background:#15151f;color:var(--txt);border:1px solid var(--line);border-radius:5px;padding:3px 6px;font-size:11px;font-family:inherit}
+input[type=number]{width:100%}
+input[type=color]{padding:0;height:20px}
+button{cursor:pointer}
+button:hover{border-color:var(--acc)}
+.row{display:grid;grid-template-columns:62px 1fr;align-items:center;gap:6px;margin:3px 0}
+.row label{color:var(--mut);font-size:10px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px}
+.chk{display:flex;align-items:center;gap:5px;margin:2px 0;color:var(--mut)}
+.chk input{width:auto}
+#screen{position:relative;transform-origin:0 0;background:#0b0b10;box-shadow:0 16px 60px #000a;outline:1px solid var(--line)}
+.w{position:absolute;box-sizing:border-box}
+.tree{font-size:11px;white-space:nowrap}
+.tree div{cursor:pointer;padding:1px 4px;border-radius:3px}
+.tree div:hover{background:#2a2a3e}
+.tree div.sel{background:#1d3a61;outline:1px solid var(--acc)}
+.tag{color:var(--mut);font-size:10px}
+pre{white-space:pre-wrap;font:11px/1.4 ui-monospace,Consolas,monospace;background:#0a0a10;border:1px solid var(--line);border-radius:5px;padding:6px;max-height:230px;overflow:auto;color:#d5dcff}
+.hint{color:var(--mut);font-size:10px;margin:4px 0}
+.pill{display:inline-block;background:var(--pan2);border:1px solid var(--line);border-radius:999px;padding:0 7px;font-size:10px;color:var(--mut);margin-right:4px}
+.pill.acc{color:var(--acc);border-color:#2c4a75}
+#status{color:var(--mut);font-size:10px;margin-left:auto}
+.drop{outline:2px dashed var(--acc);outline-offset:-6px}
+</style>
+</head>
+<body>
+<header>
+ <b>DayZ Layout Viewer</b>
+ <button id="btnOpen">Открыть .layout</button>
+ <input id="file" type="file" accept=".layout,.txt" style="display:none">
+ <label>встроенный:</label>
+ <select id="builtin"></select>
+ <label>экран:</label>
+ <select id="res">
+  <option value="1280x720">1280x720</option>
+  <option value="1600x900">1600x900</option>
+  <option value="1920x1080" selected>1920x1080</option>
+  <option value="2560x1440">2560x1440</option>
+  <option value="3840x2160">3840x2160</option>
+ </select>
+ <label>масштаб</label>
+ <input id="zoom" type="range" min="10" max="150" value="45" style="width:110px">
+ <span id="zoomv" class="pill">45%</span>
+ <button id="btnFit">Вписать</button>
+ <label class="chk"><input id="cbGrid" type="checkbox"> сетка</label>
+ <label class="chk"><input id="cbOutline" type="checkbox" checked> рамки</label>
+ <label class="chk"><input id="cbNames" type="checkbox"> имена</label>
+ <label class="chk"><input id="cbHidden" type="checkbox"> показать visible 0</label>
+ <label class="chk"><input id="cbLoc" type="checkbox" checked> локализация</label>
+ <label class="chk"><input id="cbDrag" type="checkbox" checked> таскать мышью</label>
+ <span id="status">загрузите .layout</span>
+</header>
+<main>
+ <aside id="left">
+  <h3>Дерево виджетов</h3>
+  <div class="hint">клик — выбрать, стрелки — сдвиг (Shift = x10)</div>
+  <div id="tree" class="tree"></div>
+ </aside>
+ <section id="stagewrap"><div id="screen"></div></section>
+ <aside id="right">
+  <h3>Выбранный виджет</h3>
+  <div id="selinfo" class="hint">ничего не выбрано</div>
+  <div id="props"></div>
+  <h3>Изменения (патч)</h3>
+  <div class="hint">меняется только значение свойства в его строке; комментарии и формат файла сохраняются</div>
+  <div class="g2" style="margin-bottom:4px">
+   <button id="btnPatch">Показать патч</button>
+   <button id="btnRevert">Отменить всё</button>
+  </div>
+  <pre id="patch">—</pre>
+  <div class="g2">
+   <button id="btnCopy">Скопировать файл</button>
+   <button id="btnDl">Скачать .layout</button>
+  </div>
+ </aside>
+</main>
+<script>
+"use strict";
+// ============================ localization ============================
+var LOC = {
+ "#tm_sell":"Продать","#tm_buy":"Купить","#tm_cancel":"Закрыть","#tm_item":"Предмет",
+ "#tm_price_buy":"Цена покупки","#tm_price_sell":"Цена продажи","#tm_ruble":"Рубль",
+ "#tm_no_trader_nearby":"Поблизости нет ни одного торговца..",
+ "#tm_trader_pays":"Торговец платит:","#tm_amount":"Количество",
+ "#tm_ruined_not_sellable":"Разрушено - нельзя продать!",
+ "#tm_cant_be_sold":"Извините, но это нельзя продать!",
+ "#tm_you_cant_sell":"Извините, но Вы не можете это продать!",
+ "#tm_was_sold":"был продан!","#tm_sold_accessory_bonus":"Бонус за вложенные предметы и патроны",
+ "#tm_not_that_fast":"Не так быстро, братан!","#tm_seconds":"секунд",
+ "#tm_leaving_the_safezone_in":"Вы покинете Безопасную зону через",
+ "#inv_inspect_about":"около","#inv_inspect_kg":"кг","#inv_inspect_under_1":"меньше 1 кг",
+ "#inv_inspect_under_05":"меньше 0.5 кг","#inv_inspect_under_025":"меньше 0.25 кг",
+ "#inv_inspect_pristine":"Превосходное","#inv_inspect_worn":"Поношенное",
+ "#inv_inspect_damaged":"Повреждённое","#inv_inspect_badly":"Сильно повреждённое",
+ "#inv_inspect_ruined":"Разрушенное"
+};
+var BUILTIN = {
+ "TraderItemInspectSell.layout": "FrameWidgetClass rootFrame {\n clipchildren 1\n size 1 1\n priority 2\n {\n  FrameWidgetClass WindowWidget {\n   position 0 0\n   size 1 1\n   halign center_ref\n   valign center_ref\n   priority 1\n   {\n    FrameWidgetClass BackPanelWidget {\n     position 0 0\n     size 1.6 0.92\n     halign center_ref\n     valign center_ref\n     fixaspect inside\n     priority 1\n     {\n      FrameWidgetClass NameBarWidget {\n       visible 1\n       position 0 0.045\n       size 0.95 0.055\n       halign center_ref\n       priority 1\n       color 0 0 0 0.9\n       {\n        TextWidgetClass ItemNameWidget {\n         position 0 0\n         size 1 1\n         halign center_ref\n         valign center_ref\n         style Normal\n         text \"ITEM\"\n         font \"gui/fonts/sdf_MetronBook24\"\n         \"text halign\" center\n         \"text valign\" center\n        }\n       }\n      }\n      PanelWidgetClass InventoryInfoPanelWidget {\n       visible 1\n       position 0.025 0.12\n       size 0.56 0.80\n       halign left_ref\n       priority 1\n       color 0 0 0 0.55\n       {\n        MultilineTextWidgetClass ItemDescWidget {\n         clipchildren 0\n         position 0.03 0.02\n         size 0.5 0.25\n         halign left_ref\n         priority 1\n         style None\n         text \"\"\n         font \"gui/fonts/sdf_MetronLight24\"\n         wrap 1\n        }\n        TextWidgetClass SellPriceWidget { visible 1 position 0.03 0.285 size 0.52 0.03 priority 3 style Normal text \"\" font \"gui/fonts/sdf_MetronBook24\" }\n        TextWidgetClass ItemQuantityWidget { visible 1 position 0.05 0.325 size 0.4 0.04 priority 1 style Normal text \"\" font \"gui/fonts/sdf_MetronLight24\" }\n        TextWidgetClass ItemWeightWidget   { visible 1 position 0.05 0.36 size 0.4 0.04 priority 1 style Normal text \"\" font \"gui/fonts/sdf_MetronLight24\" }\n        TextWidgetClass ItemDamageWidget   { visible 1 position 0.05 0.42 size 0.4 0.04 priority 1 style Normal text \"\" font \"gui/fonts/sdf_MetronLight24\" }\n        TextWidgetClass ItemWetnessWidget  { visible 1 position 0.05 0.48 size 0.4 0.04 priority 1 style Normal text \"\" font \"gui/fonts/sdf_MetronLight24\" }\n        TextWidgetClass ItemTemperatureWidget { visible 1 position 0.05 0.54 size 0.4 0.04 priority 1 style Normal text \"\" font \"gui/fonts/sdf_MetronLight24\" }\n        TextWidgetClass ItemCleannessWidget { visible 1 position 0.05 0.60 size 0.4 0.04 priority 1 style Normal text \"\" font \"gui/fonts/sdf_MetronLight24\" }\n        TextWidgetClass ItemFoodStageWidget { visible 1 position 0.05 0.66 size 0.4 0.04 priority 1 style Normal text \"\" font \"gui/fonts/sdf_MetronLight24\" }\n        ButtonWidgetClass SellButton {\n         visible 1\n         position 0.02 0.71\n         size 0.44 0.08\n         halign left_ref\n         priority 2\n         userID 90001\n         style Default\n         text \"SELL ITEM\"\n         \"text halign\" center\n         \"text valign\" center\n        }\n       }\n      }\n      FrameWidgetClass ItemFrameWidgetPanel {\n       visible 1\n       position 0.60 0.12\n       size 0.40 0.80\n       halign left_ref\n       priority 1\n       {\n        ItemPreviewWidgetClass ItemFrameWidget {\n         position 0 0\n         size 1 1\n         halign center_ref\n         valign center_ref\n         hexactpos 1\n         vexactpos 1\n        }\n       }\n      }\n     }\n    }\n   }\n  }\n }\n}",
+ "TraderMenu.layout": "// ============================================================\n// FILE: TraderMenu.layout  (trader BUY/SELL window, v2 - vanilla look)\n//\n// v2 fixed the layout defects found by the geometry audit:\n//   * Background used size 1300 990 together with hexactsize 0, i.e. a FRACTION\n//     of the parent - the panel ended up 1 690 000 px wide. Now size 1 1.\n//   * the money value started at x 1110 with a width of 300 inside a 1300 px\n//     window, so 110 px of it were off-screen. The money block is right-aligned\n//     inside the window now.\n//   * the item preview was 470x257 px, so the wheel-zoom guard in TraderMenu.c\n//     (if (w > 0.5 && w < 3)) could never match. It is a fraction-sized widget\n//     inside a square panel now, exactly like the vanilla inspect window.\n//   * all widgets declare exp/eyp/exs/eys explicitly, so no value is left to\n//     the layout engine default.\n//\n// Styles are the vanilla ones from gui/looknfeel/dayzwidgets.styles:\n//   DayZDefaultPanel / DayZDefaultPanelTop / rover_sim_black /\n//   rover_sim_blackbox / ColorablePanel, buttons MenuDefault, listbox\n//   Default, combobox Default, checkbox Default, slider Default, editbox Default.\n// scaled 1 - the whole window scales with the resolution, as vanilla menus do.\n//\n// Icons: icon_plus (buy), iconArrowUp (sell), circle (quality), right_mouse\n// (right-click hint). The search icon is the mod's own magnifier texture\n// sps_client_bot/images/search.edds.\n//\n// New widgets for the functionality added in the same pass:\n//   text_discount      - current survival rating discount\n//   ItemQuality        - condition in words\n//   SellBonusWidget    - price breakdown (condition + accessories + rounds)\n//   SellAmountText     - sell X of Y\n//   SellQuantitySlider - amount slider, for selling part of a stack\n//   SellHint / SellHintIcon - right mouse button = sell\n//\n// Fonts follow the vanilla distribution: Light24 @18 for the list and the\n// details, Book24 @20/22/24/28 for buttons, money and the title.\n// ============================================================\nFrameWidgetClass TraderMenu {\n visible 0\n color 0 0 0 0\n position 0 0\n size 1300 990\n halign center_ref\n valign center_ref\n hexactpos 1\n vexactpos 1\n hexactsize 1\n vexactsize 1\n scaled 1\n {\n  PanelWidgetClass Background {\n   visible 1\n   color 0 0 0 0.85\n   position 0 0\n   size 1 1\n   halign left_ref\n   valign top_ref\n   hexactpos 0\n   vexactpos 0\n   hexactsize 0\n   vexactsize 0\n   priority 0\n   style DayZDefaultPanel\n  }\n  PanelWidgetClass title_wrapper {\n   visible 1\n   color 0 0 0 0.55\n   position 0 0\n   size 1 52\n   halign left_ref\n   valign top_ref\n   hexactpos 1\n   vexactpos 1\n   hexactsize 0\n   vexactsize 1\n   priority 1\n   style DayZDefaultPanelTop\n   {\n   TextWidgetClass title_text {\n    visible 1\n    clipchildren 0\n    ignorepointer 1\n    position 0 0\n    size 1 1\n    halign center_ref\n    valign center_ref\n    hexactpos 0\n    vexactpos 0\n    hexactsize 0\n    vexactsize 0\n    priority 2\n    style Bold\n    font \"gui/fonts/sdf_MetronBook72\"\n    \"text color\" 0.890 0.898 0.925 1\n    \"exact text\" 1\n    \"exact text size\" 32\n    \"bold text\" 1\n    \"text halign\" center\n    \"text valign\" center\n    text \"#tm_trader\"\n   }\n   CheckBoxWidgetClass SellablesCheckBox {\n    visible 1\n    ignorepointer 0\n    position 0.62 0.22\n    size 0.34 0.50\n    halign left_ref\n    valign top_ref\n    hexactpos 0\n    vexactpos 0\n    hexactsize 0\n    vexactsize 0\n    priority 2\n    style Default\n    font \"gui/fonts/Metron22\"\n    text \"#tm_sellables_only\"\n   }\n   }\n  }\n  XComboBoxWidgetClass xcombobox_categorys {\n   visible 1\n   ignorepointer 0\n   position 8 58\n   size 516 40\n   halign left_ref\n   valign top_ref\n   hexactpos 1\n   vexactpos 1\n   hexactsize 1\n   vexactsize 1\n   priority 2\n   style Default\n   font \"gui/fonts/sdf_MetronLight24\"\n  }\n  PanelWidgetClass SearchPanelWidget {\n   visible 1\n   ignorepointer 0\n   color 0 0 0 0.55\n   position 576 58\n   size 300 40\n   halign left_ref\n   valign top_ref\n   hexactpos 1\n   vexactpos 1\n   hexactsize 1\n   vexactsize 1\n   priority 2\n   style ColorablePanel\n   {\n   EditBoxWidgetClass SearchBox {\n    visible 1\n    ignorepointer 0\n    position 0 0\n    size 0.96 0.80\n    halign center_ref\n    valign center_ref\n    hexactpos 0\n    vexactpos 0\n    hexactsize 0\n    vexactsize 0\n    priority 2\n    style Default\n    font \"gui/fonts/sdf_MetronLight24\"\n    \"exact text\" 1\n   }\n   }\n  }\n  ImageWidgetClass SearchIcon {\n   visible 1\n   ignorepointer 1\n   color 1 1 1 0.85\n   position 532 62\n   size 32 32\n   halign left_ref\n   valign top_ref\n   hexactpos 1\n   vexactpos 1\n   hexactsize 1\n   vexactsize 1\n   priority 2\n   imageTexture \"sps_client_bot/images/search.edds\"\n   mode blend\n   \"src alpha\" 1\n   stretch 1\n  }\n  PanelWidgetClass MoneyPanel {\n   visible 1\n   ignorepointer 1\n   color 0 0 0 0.5\n   position 884 58\n   size 408 40\n   halign left_ref\n   valign top_ref\n   hexactpos 1\n   vexactpos 1\n   hexactsize 1\n   vexactsize 1\n   priority 2\n   style rover_sim_blackbox\n   {\n   TextWidgetClass text_saldo {\n    visible 1\n    clipchildren 0\n    ignorepointer 1\n    position 10 0\n    size 90 40\n    halign left_ref\n    valign top_ref\n    hexactpos 1\n    vexactpos 1\n    hexactsize 1\n    vexactsize 1\n    priority 3\n    style Normal\n    text \"#tm_money\"\n    font \"gui/fonts/sdf_MetronLight24\"\n    \"text color\" 0.580 0.588 0.667 1\n    \"exact text\" 1\n    \"exact text size\" 18\n    \"bold text\" 0\n    \"text halign\" left\n    \"text valign\" center\n   }\n   TextWidgetClass text_discount {\n    visible 1\n    clipchildren 0\n    ignorepointer 1\n    position 10 0\n    size 200 40\n    halign right_ref\n    valign top_ref\n    hexactpos 1\n    vexactpos 1\n    hexactsize 1\n    vexactsize 1\n    priority 3\n    style Normal\n    text \"\"\n    font \"gui/fonts/sdf_MetronLight24\"\n    \"text color\" 0.451 0.902 0.627 1\n    \"exact text\" 1\n    \"exact text size\" 18\n    \"bold text\" 0\n    \"text halign\" right\n    \"text valign\" center\n   }\n   TextWidgetClass text_saldoValue {\n    visible 1\n    clipchildren 0\n    ignorepointer 1\n    position 216 0\n    size 180 40\n    halign right_ref\n    valign top_ref\n    hexactpos 1\n    vexactpos 1\n    hexactsize 1\n    vexactsize 1\n    priority 3\n    style Bold\n    text \"\"\n    font \"gui/fonts/sdf_MetronBook24\"\n    \"text color\" 0.890 0.898 0.925 1\n    \"exact text\" 1\n    \"exact text size\" 22\n    \"bold text\" 1\n    \"text halign\" right\n    \"text valign\" center\n   }\n   }\n  }\n  TextWidgetClass colTitleItem {\n   visible 1\n   ignorepointer 1\n   position 12 102\n   size 788 20\n   halign left_ref\n   valign top_ref\n   hexactpos 1\n   vexactpos 1\n   hexactsize 1\n   vexactsize 1\n   priority 2\n   style Normal\n   text \"#tm_item\"\n   font \"gui/fonts/sdf_MetronLight24\"\n   \"text color\" 0.580 0.588 0.667 1\n   \"exact text\" 1\n   \"exact text size\" 18\n   \"text halign\" left\n   \"text valign\" center\n  }\n  TextWidgetClass colTitleBuy {\n   visible 1\n   ignorepointer 1\n   position 808 102\n   size 159 20\n   halign left_ref\n   valign top_ref\n   hexactpos 1\n   vexactpos 1\n   hexactsize 1\n   vexactsize 1\n   priority 2\n   style Normal\n   text \"#tm_price_buy\"\n   font \"gui/fonts/sdf_MetronLight24\"\n   \"text color\" 0.580 0.588 0.667 1\n   \"exact text\" 1\n   \"exact text size\" 18\n   \"text halign\" left\n   \"text valign\" center\n  }\n  TextWidgetClass colTitleSell {\n   visible 1\n   ignorepointer 1\n   position 975 102\n   size 159 20\n   halign left_ref\n   valign top_ref\n   hexactpos 1\n   vexactpos 1\n   hexactsize 1\n   vexactsize 1\n   priority 2\n   style Normal\n   text \"#tm_price_sell\"\n   font \"gui/fonts/sdf_MetronLight24\"\n   \"text color\" 0.580 0.588 0.667 1\n   \"exact text\" 1\n   \"exact text size\" 18\n   \"text halign\" left\n   \"text valign\" center\n  }\n  TextWidgetClass colTitleOwned {\n   visible 1\n   ignorepointer 1\n   position 1142 102\n   size 146 20\n   halign left_ref\n   valign top_ref\n   hexactpos 1\n   vexactpos 1\n   hexactsize 1\n   vexactsize 1\n   priority 2\n   style Normal\n   text \"#tm_owned\"\n   font \"gui/fonts/sdf_MetronLight24\"\n   \"text color\" 0.580 0.588 0.667 1\n   \"exact text\" 1\n   \"exact text size\" 18\n   \"text halign\" left\n   \"text valign\" center\n  }\n  TextListboxWidgetClass txtlist_items {\n   visible 1\n   clipchildren 0\n   color 1 1 1 0.5843\n   position 8 126\n   size 1284 448\n   halign left_ref\n   valign top_ref\n   hexactpos 1\n   vexactpos 1\n   hexactsize 1\n   vexactsize 1\n   priority 2\n   style Default\n   font \"gui/fonts/Metron22\"\n   colums \"#tm_item;62;#tm_price_buy;13;#tm_price_sell;13;#tm_owned;12\"\n   lines 17\n   \"title visible\" 0\n   \"highlight row\" 1\n  }\n  PanelWidgetClass DetailsPanel {\n   visible 1\n   ignorepointer 1\n   color 0 0 0 0.35\n   position 8 582\n   size 1284 300\n   halign left_ref\n   valign top_ref\n   hexactpos 1\n   vexactpos 1\n   hexactsize 1\n   vexactsize 1\n   priority 2\n   style rover_sim_black\n   {\n   TextWidgetClass ItemWeight {\n    visible 1\n    clipchildren 0\n    ignorepointer 1\n    position 16 10\n    size 320 30\n    halign left_ref\n    valign top_ref\n    hexactpos 1\n    vexactpos 1\n    hexactsize 1\n    vexactsize 1\n    priority 3\n    style Normal\n    text \"\"\n    font \"gui/fonts/sdf_MetronLight24\"\n    \"text color\" 0.890 0.898 0.925 1\n    \"exact text\" 1\n    \"exact text size\" 18\n    \"bold text\" 0\n    \"text halign\" left\n    \"text valign\" center\n   }\n   TextWidgetClass ItemQuantity {\n    visible 1\n    clipchildren 0\n    ignorepointer 1\n    position 344 10\n    size 300 30\n    halign left_ref\n    valign top_ref\n    hexactpos 1\n    vexactpos 1\n    hexactsize 1\n    vexactsize 1\n    priority 3\n    style Normal\n    text \"\"\n    font \"gui/fonts/sdf_MetronLight24\"\n    \"text color\" 0.890 0.898 0.925 1\n    \"exact text\" 1\n    \"exact text size\" 18\n    \"bold text\" 0\n    \"text halign\" left\n    \"text valign\" center\n   }\n   TextWidgetClass ItemQuality {\n    visible 1\n    clipchildren 0\n    ignorepointer 1\n    position 652 10\n    size 300 30\n    halign left_ref\n    valign top_ref\n    hexactpos 1\n    vexactpos 1\n    hexactsize 1\n    vexactsize 1\n    priority 3\n    style Normal\n    text \"\"\n    font \"gui/fonts/sdf_MetronLight24\"\n    \"text color\" 0.451 0.902 0.627 1\n    \"exact text\" 1\n    \"exact text size\" 18\n    \"bold text\" 0\n    \"text halign\" left\n    \"text valign\" center\n   }\n   MultilineTextWidgetClass ItemDescWidget {\n    visible 1\n    clipchildren 1\n    ignorepointer 1\n    position 16 46\n    size 920 150\n    halign left_ref\n    valign top_ref\n    hexactpos 1\n    vexactpos 1\n    hexactsize 1\n    vexactsize 1\n    priority 3\n    style DayZNormal\n    text \"\"\n    font \"gui/fonts/sdf_MetronLight24\"\n    color 0.890 0.898 0.925 1\n    \"exact text\" 1\n    \"exact text size\" 18\n    \"text halign\" left\n    \"text valign\" top\n    wrap 1\n    \"condense whitespace\" 1\n   }\n   TextWidgetClass SellBonusWidget {\n    visible 1\n    clipchildren 1\n    ignorepointer 1\n    position 16 202\n    size 920 88\n    halign left_ref\n    valign top_ref\n    hexactpos 1\n    vexactpos 1\n    hexactsize 1\n    vexactsize 1\n    priority 3\n    style Normal\n    text \"\"\n    font \"gui/fonts/sdf_MetronLight24\"\n    \"text color\" 0.451 0.902 0.627 1\n    \"exact text\" 1\n    \"exact text size\" 18\n    \"bold text\" 0\n    \"text halign\" left\n    \"text valign\" top\n   }\n   ItemPreviewWidgetClass ItemFrameWidgetPanel {\n    visible 1\n    clipchildren 0\n    ignorepointer 0\n    color 0 0 0 0.35\n    position 948 10\n    size 320 280\n    halign left_ref\n    valign top_ref\n    hexactpos 1\n    vexactpos 1\n    hexactsize 1\n    vexactsize 1\n    priority 2\n    {\n    ItemPreviewWidgetClass ItemFrameWidget {\n     visible 1\n     position 0 -8.313\n     size 1 1.025\n     halign center_ref\n     valign center_ref\n     hexactpos 1\n     vexactpos 1\n     hexactsize 0\n     vexactsize 0\n     priority 1\n     \"force flip enable\" 1\n    }\n    }\n   }\n   }\n  }\n  PanelWidgetClass SellBar {\n   visible 1\n   ignorepointer 0\n   color 0 0 0 0.35\n   position 8 888\n   size 1284 44\n   halign left_ref\n   valign top_ref\n   hexactpos 1\n   vexactpos 1\n   hexactsize 1\n   vexactsize 1\n   priority 2\n   style rover_sim_black\n   {\n   TextWidgetClass SellAmountText {\n    visible 1\n    clipchildren 0\n    ignorepointer 1\n    position 12 0\n    size 300 44\n    halign left_ref\n    valign top_ref\n    hexactpos 1\n    vexactpos 1\n    hexactsize 1\n    vexactsize 1\n    priority 3\n    style Normal\n    text \"\"\n    font \"gui/fonts/sdf_MetronLight24\"\n    \"text color\" 0.890 0.898 0.925 1\n    \"exact text\" 1\n    \"exact text size\" 18\n    \"bold text\" 0\n    \"text halign\" left\n    \"text valign\" center\n   }\n   SliderWidgetClass SellQuantitySlider {\n    visible 0\n    clipchildren 0\n    ignorepointer 0\n    color 1 1 1 0.549\n    position 320 12\n    size 620 20\n    halign left_ref\n    valign top_ref\n    hexactpos 1\n    vexactpos 1\n    hexactsize 1\n    vexactsize 1\n    priority 3\n    style Default\n    \"no focus\" 0\n    maximum 1\n    step 1\n    current 1\n    \"fill in\" 1\n    \"listen to input\" 1\n   }\n   ImageWidgetClass SellHintIcon {\n    visible 1\n    ignorepointer 1\n    color 1 1 1 1\n    fixaspect fixwidth\n    mode blend\n    \"src alpha\" 1\n    \"clamp mode\" clamp\n    filter 1\n    image0 \"set:dayz_gui image:right_mouse\"\n    position 266 13\n    size 18 18\n    halign right_ref\n    valign top_ref\n    hexactpos 1\n    vexactpos 1\n    hexactsize 1\n    vexactsize 1\n    priority 3\n   }\n   TextWidgetClass SellHint {\n    visible 1\n    clipchildren 0\n    ignorepointer 1\n    position 12 0\n    size 246 44\n    halign right_ref\n    valign top_ref\n    hexactpos 1\n    vexactpos 1\n    hexactsize 1\n    vexactsize 1\n    priority 3\n    style Normal\n    text \"#tm_sell_hint\"\n    font \"gui/fonts/sdf_MetronLight24\"\n    \"text color\" 0.580 0.588 0.667 1\n    \"exact text\" 1\n    \"exact text size\" 18\n    \"bold text\" 0\n    \"text halign\" right\n    \"text valign\" center\n   }\n   }\n  }\n  ButtonWidgetClass btn_cancel {\n   visible 1\n   ignorepointer 0\n   color 1 1 1 1\n   position 8 8\n   size 180 44\n   halign left_ref\n   valign bottom_ref\n   hexactpos 1\n   vexactpos 1\n   hexactsize 1\n   vexactsize 1\n   priority 5\n   style MenuDefault\n   \"no focus\" 1\n   font \"gui/fonts/sdf_MetronBook24\"\n   text \"#tm_cancel\"\n  }\n  ButtonWidgetClass btn_buy {\n   visible 1\n   ignorepointer 0\n   color 1 1 1 1\n   position 216 8\n   size 200 44\n   halign right_ref\n   valign bottom_ref\n   hexactpos 1\n   vexactpos 1\n   hexactsize 1\n   vexactsize 1\n   priority 5\n   style MenuDefault\n   \"no focus\" 1\n   font \"gui/fonts/sdf_MetronBook24\"\n   \"bold text\" 1\n   text \"#tm_buy\"\n   {\n   ImageWidgetClass BuyIcon {\n    visible 1\n    ignorepointer 1\n    color 1 1 1 1\n    fixaspect fixwidth\n    mode blend\n    \"src alpha\" 1\n    \"clamp mode\" clamp\n    filter 1\n    image0 \"set:dayz_gui image:icon_plus\"\n    position 14 0\n    size 18 18\n    halign left_ref\n    valign center_ref\n    hexactpos 1\n    vexactpos 1\n    hexactsize 1\n    vexactsize 1\n    priority 2\n   }\n   }\n  }\n  ButtonWidgetClass btn_sell {\n   visible 1\n   ignorepointer 0\n   color 1 1 1 1\n   position 8 8\n   size 200 44\n   halign right_ref\n   valign bottom_ref\n   hexactpos 1\n   vexactpos 1\n   hexactsize 1\n   vexactsize 1\n   priority 5\n   style MenuDefault\n   \"no focus\" 1\n   font \"gui/fonts/sdf_MetronBook24\"\n   \"bold text\" 1\n   text \"#tm_sell\"\n   {\n   ImageWidgetClass SellIcon {\n    visible 1\n    ignorepointer 1\n    color 1 1 1 1\n    fixaspect fixwidth\n    mode blend\n    \"src alpha\" 1\n    \"clamp mode\" clamp\n    filter 1\n    image0 \"set:dayz_gui image:iconArrowUp\"\n    position 14 0\n    size 18 18\n    halign left_ref\n    valign center_ref\n    hexactpos 1\n    vexactpos 1\n    hexactsize 1\n    vexactsize 1\n    priority 2\n   }\n   }\n  }\n }\n}\n",
+ "TraderNotification.layout": "FrameWidgetClass TraderNotification {\n visible 1\n disabled 0\n clipchildren 0\n inheritalpha 0\n ignorepointer 1\n keepsafezone 0\n color 0 0 0 1\n size 1 70\n halign right_ref\n hexactpos 0\n vexactpos 1\n hexactsize 0\n vexactsize 1\n {\n  PanelWidgetClass Background {\n   visible 1\n   ignorepointer 1\n   color 0 0 0 0.65\n   position 0 0\n   size 1 1\n   hexactpos 0\n   vexactpos 0\n   hexactsize 0\n   vexactsize 0\n   style rover_sim_colorable\n   {\n    RichTextWidgetClass text_message {\n     disabled 0\n     clipchildren 1\n     inheritalpha 0\n     ignorepointer 1\n     keepsafezone 0\n     position 0 0\n     size 1 1\n     halign center_ref\n     valign center_ref\n     hexactpos 0\n     vexactpos 0\n     hexactsize 0\n     vexactsize 0\n     style DayZNormal\n     text \"You cannot buy this item. Item doesn't existYou cannot buy this item. Item doesn't existYou cannot buy this item. Item doesn't exist\"\n     font \"gui/fonts/sdf_MetronLight72\"\n     \"exact text\" 1\n     \"exact text size\" 15\n     \"size to text h\" 1\n     \"size to text v\" 1\n     \"text halign\" center\n     \"text valign\" center\n     wrap 1\n     \"strip newlines\" 0\n    }\n   }\n  }\n }\n}",
+ "TraderNotificationsContainer.layout": "FrameWidgetClass Container {\n ignorepointer 1\n position 0 0.15\n size 300 600\n halign right_ref\n hexactpos 0\n vexactpos 0\n hexactsize 1\n vexactsize 1\n {\n  WrapSpacerWidgetClass Wrapper {\n   ignorepointer 1\n   position 0 0\n   size 1 1\n   hexactpos 0\n   vexactpos 0\n   hexactsize 0\n   vexactsize 0\n   \"Size To Content V\" 1\n   content_halign center\n  }\n }\n}",
+ "TraderRating.layout": "// ============================================================\n// FILE: TraderRating.layout  (survival-rating badge, v3 - vanilla look)\n//  * PanelWidgetClass + style DayZDefaultPanel (the in-game panel style),\n//    GridSpacerWidgetClass with style Empty for the 4 stacked rows,\n//    ProgressBarWidgetClass with style Default (driven by SetCurrent from the script).\n//  * icons: icon_favourite_on(20x20) - the rating star, right_mouse(38x38) - the\n//    sell hint (right button), both from the dayz_gui image set.\n//  * anchor fix: bottom_ref offset is measured INWARD, so the badge uses +0.03\n//    (v2 used -0.03 and the badge hung 32 px below the screen edge).\n// Widget names used by the scripts: RatingRoot, RatingValue, RatingInfo, RatingBar.\n// ============================================================\nFrameWidgetClass RatingRoot {\n visible 1\n clipchildren 1\n ignorepointer 1\n position 0.015 0.03\n size 0.215 0.105\n halign left_ref\n valign bottom_ref\n hexactpos 0\n vexactpos 0\n hexactsize 0\n vexactsize 0\n priority 90\n {\n  PanelWidgetClass RatingPanel {\n   visible 1\n   ignorepointer 1\n   color 0 0 0 0.85\n   position 0 0\n   size 1 1\n   halign left_ref\n   valign top_ref\n   hexactpos 0\n   vexactpos 0\n   hexactsize 0\n   vexactsize 0\n   priority 1\n   style DayZDefaultPanel\n  }\n  GridSpacerWidgetClass RatingRows {\n   ignorepointer 1\n   color 0 0 0 0\n   position 0.055 0.09\n   size 0.90 0.82\n   halign left_ref\n   valign top_ref\n   hexactpos 0\n   vexactpos 0\n   hexactsize 0\n   vexactsize 0\n   priority 2\n   style Empty\n   \"no focus\" 1\n   Padding 1\n   Margin 0\n   Columns 1\n   Rows 4\n   content_halign left\n   {\n   FrameWidgetClass RatingRowTop {\n    ignorepointer 1\n    position 0 0\n    size 1 1\n    halign left_ref\n    valign top_ref\n    hexactpos 0\n    vexactpos 0\n    hexactsize 0\n    vexactsize 0\n    priority 1\n    {\n    ImageWidgetClass RatingStar {\n     visible 1\n     ignorepointer 1\n     color 1 1 1 1\n     hexactpos 0\n     vexactpos 0\n     hexactsize 1\n     vexactsize 1\n     fixaspect fixwidth\n     mode blend\n     src alpha 1\n     clamp mode clamp\n     filter 1\n     image0 \"set:dayz_gui image:icon_favourite_on\"\n     position 0 0\n     size 18 18\n     priority 2\n    }\n    TextWidgetClass RatingTitle {\n     visible 1\n     clipchildren 0\n     ignorepointer 1\n     position 24 0\n     size 0.52 1\n     halign left_ref\n     valign top_ref\n     hexactpos 1\n     vexactpos 1\n     hexactsize 0\n     vexactsize 0\n     priority 2\n     style Normal\n     text \"#tm_rating_title\"\n     font \"gui/fonts/sdf_MetronLight24\"\n     \"text color\" 0.580 0.588 0.667 1\n     \"exact text\" 1\n     \"exact text size\" 18\n     \"text halign\" left\n     \"text valign\" center\n    }\n    TextWidgetClass RatingValue {\n     visible 1\n     clipchildren 0\n     ignorepointer 1\n     position 0 0\n     size 0.42 1\n     valign top_ref\n     hexactpos 0\n     vexactpos 0\n     hexactsize 0\n     vexactsize 0\n     halign right_ref\n     priority 3\n     style Bold\n     text \"-0%\"\n     font \"gui/fonts/sdf_MetronBook24\"\n     \"text color\" 0.451 0.902 0.627 1\n     \"exact text\" 1\n     \"exact text size\" 24\n     \"bold text\" 1\n     \"text halign\" right\n     \"text valign\" center\n    }\n    }\n   }\n   FrameWidgetClass RatingRowMid {\n    ignorepointer 1\n    position 0 0\n    size 1 1\n    halign left_ref\n    valign top_ref\n    hexactpos 0\n    vexactpos 0\n    hexactsize 0\n    vexactsize 0\n    priority 1\n    {\n    TextWidgetClass RatingInfo {\n     visible 1\n     clipchildren 0\n     ignorepointer 1\n     position 0 0\n     size 1 1\n     halign left_ref\n     valign top_ref\n     hexactpos 0\n     vexactpos 0\n     hexactsize 0\n     vexactsize 0\n     priority 2\n     style Normal\n     text \"\"\n     font \"gui/fonts/sdf_MetronLight24\"\n     \"text color\" 0.890 0.898 0.925 1\n     \"exact text\" 1\n     \"exact text size\" 18\n     \"text halign\" left\n     \"text valign\" center\n    }\n    }\n   }\n   FrameWidgetClass RatingRowBar {\n    ignorepointer 1\n    position 0 0\n    size 1 1\n    halign left_ref\n    valign top_ref\n    hexactpos 0\n    vexactpos 0\n    hexactsize 0\n    vexactsize 0\n    priority 1\n    {\n    ProgressBarWidgetClass RatingBar {\n     visible 1\n     ignorepointer 1\n     color 1 1 1 1\n     position 0 0\n     size 1 0.45\n     hexactpos 0\n     vexactpos 0\n     hexactsize 0\n     vexactsize 0\n     halign center_ref\n     valign center_ref\n     priority 2\n     style Default\n     \"no focus\" 1\n     maximum 100\n     Progress 0\n     vertical 0\n     flipped 0\n    }\n    }\n   }\n   FrameWidgetClass RatingRowHint {\n    ignorepointer 1\n    position 0 0\n    size 1 1\n    halign left_ref\n    valign top_ref\n    hexactpos 0\n    vexactpos 0\n    hexactsize 0\n    vexactsize 0\n    priority 1\n    {\n    ImageWidgetClass RatingHintIcon {\n     visible 1\n     ignorepointer 1\n     color 1 1 1 1\n     hexactpos 0\n     vexactpos 0\n     hexactsize 1\n     vexactsize 1\n     fixaspect fixwidth\n     mode blend\n     src alpha 1\n     clamp mode clamp\n     filter 1\n     image0 \"set:dayz_gui image:right_mouse\"\n     position 0 0\n     size 18 18\n     priority 2\n    }\n    TextWidgetClass RatingHint {\n     visible 1\n     clipchildren 0\n     ignorepointer 1\n     position 24 0\n     size 0.92 1\n     halign left_ref\n     valign top_ref\n     hexactpos 1\n     vexactpos 1\n     hexactsize 0\n     vexactsize 0\n     priority 2\n     style Normal\n     text \"#tm_sell_hint\"\n     font \"gui/fonts/sdf_MetronLight24\"\n     \"text color\" 0.580 0.588 0.667 1\n     \"exact text\" 1\n     \"exact text size\" 18\n     \"text halign\" left\n     \"text valign\" center\n    }\n    }\n   }\n   }\n  }\n }\n}\n",
+ "TraderSellPopup.layout": "// ============================================================\n// FILE: TraderSellPopup.layout  (compact sell window, v5 - vanilla look)\n//\n// v5 changes (one pass with the buy window):\n//  * vanilla widget styles only, verified against gui/looknfeel/dayzwidgets.styles:\n//      PanelWidget  -> DayZDefaultPanel (the same style the vanilla inspect window\n//                      and the ESC menu use), rover_sim_black for inner strips\n//      ButtonWidget -> MenuDefault / EmptyHighlight\n//      SliderWidget -> Default, ProgressBarWidget -> Default, TextListboxWidget -> Default\n//      TextWidget   -> Normal / Bold  (+ explicit sdf_MetronBook24 / sdf_MetronLight24 fonts)\n//    NOTE: FrameWidget and ImageWidget have NO styles in dayzwidgets.styles, so a\n//    \"style\" on them does nothing - panels must be PanelWidgetClass.\n//  * real in-game icons from the dayz_gui image set (sizes taken from the atlas):\n//      quality dot  circle(36x36)   close  icon_x(29x29)\n//      status rows: liquid, iconTemperature2, iconDrops, iconHungry1, icon_needle,\n//                   icon_bullet, iconBacteria  (38x38 / 29x29 in the atlas)\n//      no-trader    icon_out_of_reach(67x65)    sell button  iconArrowUp(22x14)\n//  * anchor bug fix: right_ref / bottom_ref offsets are measured INWARD (verified on\n//      517 vanilla cases, 90% vs 59%). v4 used negative offsets = outward, which\n//      clipped the close button (7 px), the sell button (6 px) and pushed the amount\n//      text 26 px outside the window.\n//  * fonts per vanilla distribution: Light24 @18 (body/status), Book24 @24 (item name),\n//      Book24 @22 (price, sell button).\n// ============================================================\nFrameWidgetClass rootFrame {\n clipchildren 1\n ignorepointer 0\n color 1 1 1 1\n position 0 0\n size 1 1\n hexactpos 0\n vexactpos 0\n hexactsize 0\n vexactsize 0\n priority 2\n {\n  FrameWidgetClass WindowWidget {\n   ignorepointer 0\n   position 0 0\n   size 0.46 0.52\n   halign center_ref\n   valign center_ref\n   hexactpos 0\n   vexactpos 0\n   hexactsize 0\n   vexactsize 0\n   priority 1\n   {\n    PanelWidgetClass BackPanelWidget {\n     visible 1\n     clipchildren 1\n     position 0 0\n     size 1 1\n     halign center_ref\n     valign center_ref\n     hexactpos 0\n     vexactpos 0\n     hexactsize 0\n     vexactsize 0\n     priority 1\n     color 0 0 0 0.92\n     style DayZDefaultPanel\n     {\n      PanelWidgetClass HeaderBar {\n       visible 1\n       clipchildren 0\n       ignorepointer 1\n       color 0 0 0 0.55\n       position 0.005 0.017\n       size 0.990 0.104\n       halign left_ref\n       valign top_ref\n       hexactpos 0\n       vexactpos 0\n       hexactsize 0\n       vexactsize 0\n       priority 3\n       style rover_sim_black\n       {\n        ImageWidgetClass ItemDamageWidgetBackground {\n         visible 1\n         clipchildren 0\n         ignorepointer 1\n         inheritalpha 0\n         color 0.451 0.902 0.627 1\n         position 0.026 0.30\n         size 20 20\n         halign left_ref\n         valign top_ref\n         hexactpos 0\n         vexactpos 0\n         hexactsize 1\n         vexactsize 1\n         priority 1\n         fixaspect fixwidth\n         image0 \"set:dayz_gui image:circle\"\n         mode additive\n         \"src alpha\" 1\n         \"clamp mode\" clamp\n         filter 1\n        }\n        TextWidgetClass ItemNameWidget {\n         visible 1\n         clipchildren 0\n         ignorepointer 1\n         position 0.086 0.06\n         size 0.780 0.48\n         halign left_ref\n         valign top_ref\n         hexactpos 0\n         vexactpos 0\n         hexactsize 0\n         vexactsize 0\n         priority 4\n         style Bold\n         text \" \"\n         font \"gui/fonts/sdf_MetronBook24\"\n         \"text color\" 0.890 0.898 0.925 1\n         \"exact text\" 1\n         \"exact text size\" 24\n         \"bold text\" 1\n         \"size to text h\" 0\n         \"size to text v\" 0\n         \"text halign\" left\n         \"text valign\" center\n        }\n        TextWidgetClass ItemDamageWidget {\n         visible 1\n         clipchildren 0\n         ignorepointer 1\n         position 0.086 0.55\n         size 0.700 0.38\n         halign left_ref\n         valign top_ref\n         hexactpos 0\n         vexactpos 0\n         hexactsize 0\n         vexactsize 0\n         priority 4\n         style Normal\n         text \"\"\n         font \"gui/fonts/sdf_MetronLight24\"\n         \"text color\" 0.580 0.588 0.667 1\n         \"exact text\" 1\n         \"exact text size\" 18\n         \"size to text h\" 0\n         \"size to text v\" 0\n         \"text halign\" left\n         \"text valign\" center\n        }\n        ButtonWidgetClass BackBtn1 {\n         visible 1\n         clipchildren 1\n         ignorepointer 0\n         position 0.008 0.10\n         size 0.058 0.80\n         halign right_ref\n         valign top_ref\n         hexactpos 0\n         vexactpos 0\n         hexactsize 0\n         vexactsize 0\n         priority 5\n         userID 2\n         style MenuDefault\n         \"no focus\" 1\n         text \"\"\n         {\n          ImageWidgetClass IconClose {\n           visible 1\n           ignorepointer 1\n           position 0 0\n           size 1 1\n           halign center_ref\n           valign center_ref\n           hexactpos 0\n           vexactpos 0\n           hexactsize 0\n           vexactsize 0\n           priority 1\n           image0 \"set:dayz_gui image:icon_x\"\n           mode blend\n           \"src alpha\" 1\n           \"clamp mode\" clamp\n           filter 1\n          }\n         }\n        }\n       }\n      }\n      PanelWidgetClass PreviewCard {\n       visible 1\n       clipchildren 1\n       ignorepointer 0\n       color 0 0 0 0.35\n       position 0.022 0.140\n       size 0.330 0.405\n       halign left_ref\n       valign top_ref\n       hexactpos 0\n       vexactpos 0\n       hexactsize 0\n       vexactsize 0\n       priority 3\n       style rover_sim_black\n       {\n        ItemPreviewWidgetClass ItemFrameWidgetPanel {\n         visible 1\n         clipchildren 0\n         ignorepointer 0\n         position 0.04 0.05\n         size 0.92 0.90\n         halign left_ref\n         valign top_ref\n         hexactpos 0\n         vexactpos 0\n         hexactsize 0\n         vexactsize 0\n         priority 2\n         {\n          ItemPreviewWidgetClass ItemFrameWidget {\n           visible 1\n           position 0 -8.313\n           size 1 1.025\n           halign center_ref\n           valign center_ref\n           hexactpos 1\n           vexactpos 1\n           hexactsize 0\n           vexactsize 0\n           priority 1\n           \"force flip enable\" 1\n          }\n         }\n        }\n       }\n      }\n      PanelWidgetClass InventoryInfoPanelWidget {\n       visible 1\n       clipchildren 1\n       ignorepointer 1\n       color 0 0 0 0.35\n       position 0.365 0.140\n       size 0.613 0.405\n       halign left_ref\n       valign top_ref\n       hexactpos 0\n       vexactpos 0\n       hexactsize 0\n       vexactsize 0\n       priority 3\n       style rover_sim_black\n       {\n        MultilineTextWidgetClass ItemDescWidget {\n         clipchildren 1\n         ignorepointer 1\n         position 0.045 0.035\n         size 0.910 0.330\n         halign left_ref\n         valign top_ref\n         hexactpos 0\n         vexactpos 0\n         hexactsize 0\n         vexactsize 0\n         priority 2\n         style DayZNormal\n         text \"\"\n         font \"gui/fonts/sdf_MetronLight24\"\n         color 0.890 0.898 0.925 1\n         \"exact text\" 1\n         \"exact text size\" 18\n         \"size to text h\" 0\n         \"size to text v\" 0\n         \"text halign\" left\n         \"text valign\" top\n         wrap 1\n         \"condense whitespace\" 1\n        }\n        GridSpacerWidgetClass StatusSpacer {\n         ignorepointer 1\n         color 0 0 0 0\n         position 0.045 0.385\n         size 0.910 0.575\n         halign left_ref\n         valign top_ref\n         hexactpos 0\n         vexactpos 0\n         hexactsize 0\n         vexactsize 0\n         priority 2\n         style Empty\n         \"no focus\" 1\n         Padding 1\n         Margin 0\n         Columns 1\n         Rows 7\n         content_halign left\n         {\n           FrameWidgetClass StatusRowLiquid {\n            ignorepointer 1\n            position 0 0\n            size 1 1\n            halign left_ref\n            valign top_ref\n            hexactpos 0\n            vexactpos 0\n            hexactsize 0\n            vexactsize 0\n            priority 1\n            {\n            ImageWidgetClass ItemLiquidTypeIcon {\n             visible 1\n             ignorepointer 1\n             color 1 1 1 1\n             hexactpos 0\n             vexactpos 0\n             hexactsize 1\n             vexactsize 1\n             fixaspect fixwidth\n             mode blend\n             \"src alpha\" 1\n             \"clamp mode\" clamp\n             filter 1\n             position 0.0 0.0\n             size 16 16\n             image0 \"set:dayz_gui image:liquid\"\n             priority 2\n            }\n            ImageWidgetClass ItemLiquidTypeWidgetBackground {\n             visible 0\n             ignorepointer 1\n             color 0 0 0 0.5\n             position 27 0\n             size 0.9 1\n             halign left_ref\n             valign top_ref\n             hexactpos 1\n             vexactpos 1\n             vexactsize 0\n             hexactsize 0\n             priority 1\n             image0 \"set:dayz_gui image:ColorableBar\"\n             mode blend\n             \"src alpha\" 1\n             \"stretch mode\" stretch_w_h\n            }\n            TextWidgetClass ItemLiquidTypeWidget {\n             visible 1\n             clipchildren 0\n             ignorepointer 1\n             position 29 0\n             size 0.88 1\n             halign left_ref\n             valign top_ref\n             hexactpos 1\n             vexactpos 1\n             hexactsize 0\n             vexactsize 0\n             priority 3\n             style Normal\n             text \"\"\n             font \"gui/fonts/sdf_MetronLight24\"\n             \"text color\" 0.890 0.898 0.925 1\n             \"exact text\" 1\n             \"exact text size\" 18\n             \"size to text h\" 0\n             \"size to text v\" 0\n             \"text halign\" left\n             \"text valign\" center\n            }\n            }\n           }\n           FrameWidgetClass StatusRowTemperature {\n            ignorepointer 1\n            position 0 0\n            size 1 1\n            halign left_ref\n            valign top_ref\n            hexactpos 0\n            vexactpos 0\n            hexactsize 0\n            vexactsize 0\n            priority 1\n            {\n            ImageWidgetClass ItemTemperatureIcon {\n             visible 1\n             ignorepointer 1\n             color 1 1 1 1\n             hexactpos 0\n             vexactpos 0\n             hexactsize 1\n             vexactsize 1\n             fixaspect fixwidth\n             mode blend\n             \"src alpha\" 1\n             \"clamp mode\" clamp\n             filter 1\n             position 0.0 0.0\n             size 16 16\n             image0 \"set:dayz_gui image:iconTemperature2\"\n             priority 2\n            }\n            ImageWidgetClass ItemTemperatureWidgetBackground {\n             visible 0\n             ignorepointer 1\n             color 0 0 0 0.5\n             position 27 0\n             size 0.9 1\n             halign left_ref\n             valign top_ref\n             hexactpos 1\n             vexactpos 1\n             vexactsize 0\n             hexactsize 0\n             priority 1\n             image0 \"set:dayz_gui image:ColorableBar\"\n             mode blend\n             \"src alpha\" 1\n             \"stretch mode\" stretch_w_h\n            }\n            TextWidgetClass ItemTemperatureWidget {\n             visible 1\n             clipchildren 0\n             ignorepointer 1\n             position 29 0\n             size 0.88 1\n             halign left_ref\n             valign top_ref\n             hexactpos 1\n             vexactpos 1\n             hexactsize 0\n             vexactsize 0\n             priority 3\n             style Normal\n             text \"\"\n             font \"gui/fonts/sdf_MetronLight24\"\n             \"text color\" 0.890 0.898 0.925 1\n             \"exact text\" 1\n             \"exact text size\" 18\n             \"size to text h\" 0\n             \"size to text v\" 0\n             \"text halign\" left\n             \"text valign\" center\n            }\n            }\n           }\n           FrameWidgetClass StatusRowWetness {\n            ignorepointer 1\n            position 0 0\n            size 1 1\n            halign left_ref\n            valign top_ref\n            hexactpos 0\n            vexactpos 0\n            hexactsize 0\n            vexactsize 0\n            priority 1\n            {\n            ImageWidgetClass ItemWetnessIcon {\n             visible 1\n             ignorepointer 1\n             color 1 1 1 1\n             hexactpos 0\n             vexactpos 0\n             hexactsize 1\n             vexactsize 1\n             fixaspect fixwidth\n             mode blend\n             \"src alpha\" 1\n             \"clamp mode\" clamp\n             filter 1\n             position 0.0 0.0\n             size 16 16\n             image0 \"set:dayz_gui image:iconDrops\"\n             priority 2\n            }\n            ImageWidgetClass ItemWetnessWidgetBackground {\n             visible 0\n             ignorepointer 1\n             color 0 0 0 0.5\n             position 27 0\n             size 0.9 1\n             halign left_ref\n             valign top_ref\n             hexactpos 1\n             vexactpos 1\n             vexactsize 0\n             hexactsize 0\n             priority 1\n             image0 \"set:dayz_gui image:ColorableBar\"\n             mode blend\n             \"src alpha\" 1\n             \"stretch mode\" stretch_w_h\n            }\n            TextWidgetClass ItemWetnessWidget {\n             visible 1\n             clipchildren 0\n             ignorepointer 1\n             position 29 0\n             size 0.88 1\n             halign left_ref\n             valign top_ref\n             hexactpos 1\n             vexactpos 1\n             hexactsize 0\n             vexactsize 0\n             priority 3\n             style Normal\n             text \"\"\n             font \"gui/fonts/sdf_MetronLight24\"\n             \"text color\" 0.890 0.898 0.925 1\n             \"exact text\" 1\n             \"exact text size\" 18\n             \"size to text h\" 0\n             \"size to text v\" 0\n             \"text halign\" left\n             \"text valign\" center\n            }\n            }\n           }\n           FrameWidgetClass StatusRowFood {\n            ignorepointer 1\n            position 0 0\n            size 1 1\n            halign left_ref\n            valign top_ref\n            hexactpos 0\n            vexactpos 0\n            hexactsize 0\n            vexactsize 0\n            priority 1\n            {\n            ImageWidgetClass ItemFoodStageIcon {\n             visible 1\n             ignorepointer 1\n             color 1 1 1 1\n             hexactpos 0\n             vexactpos 0\n             hexactsize 1\n             vexactsize 1\n             fixaspect fixwidth\n             mode blend\n             \"src alpha\" 1\n             \"clamp mode\" clamp\n             filter 1\n             position 0.0 0.0\n             size 16 16\n             image0 \"set:dayz_gui image:iconHungry1\"\n             priority 2\n            }\n            ImageWidgetClass ItemFoodStageWidgetBackground {\n             visible 0\n             ignorepointer 1\n             color 0 0 0 0.5\n             position 27 0\n             size 0.9 1\n             halign left_ref\n             valign top_ref\n             hexactpos 1\n             vexactpos 1\n             vexactsize 0\n             hexactsize 0\n             priority 1\n             image0 \"set:dayz_gui image:ColorableBar\"\n             mode blend\n             \"src alpha\" 1\n             \"stretch mode\" stretch_w_h\n            }\n            TextWidgetClass ItemFoodStageWidget {\n             visible 1\n             clipchildren 0\n             ignorepointer 1\n             position 29 0\n             size 0.88 1\n             halign left_ref\n             valign top_ref\n             hexactpos 1\n             vexactpos 1\n             hexactsize 0\n             vexactsize 0\n             priority 3\n             style Normal\n             text \"\"\n             font \"gui/fonts/sdf_MetronLight24\"\n             \"text color\" 0.890 0.898 0.925 1\n             \"exact text\" 1\n             \"exact text size\" 18\n             \"size to text h\" 0\n             \"size to text v\" 0\n             \"text halign\" left\n             \"text valign\" center\n            }\n            }\n           }\n           FrameWidgetClass StatusRowWeight {\n            ignorepointer 1\n            position 0 0\n            size 1 1\n            halign left_ref\n            valign top_ref\n            hexactpos 0\n            vexactpos 0\n            hexactsize 0\n            vexactsize 0\n            priority 1\n            {\n            ImageWidgetClass ItemWeightIcon {\n             visible 1\n             ignorepointer 1\n             color 1 1 1 1\n             hexactpos 0\n             vexactpos 0\n             hexactsize 1\n             vexactsize 1\n             fixaspect fixwidth\n             mode blend\n             \"src alpha\" 1\n             \"clamp mode\" clamp\n             filter 1\n             position 0.0 0.0\n             size 16 16\n             image0 \"set:dayz_gui image:icon_needle\"\n             priority 2\n            }\n            ImageWidgetClass ItemWeightWidgetBackground {\n             visible 0\n             ignorepointer 1\n             color 0 0 0 0.5\n             position 27 0\n             size 0.9 1\n             halign left_ref\n             valign top_ref\n             hexactpos 1\n             vexactpos 1\n             vexactsize 0\n             hexactsize 0\n             priority 1\n             image0 \"set:dayz_gui image:ColorableBar\"\n             mode blend\n             \"src alpha\" 1\n             \"stretch mode\" stretch_w_h\n            }\n            TextWidgetClass ItemWeightWidget {\n             visible 1\n             clipchildren 0\n             ignorepointer 1\n             position 29 0\n             size 0.88 1\n             halign left_ref\n             valign top_ref\n             hexactpos 1\n             vexactpos 1\n             hexactsize 0\n             vexactsize 0\n             priority 3\n             style Normal\n             text \"\"\n             font \"gui/fonts/sdf_MetronLight24\"\n             \"text color\" 0.890 0.898 0.925 1\n             \"exact text\" 1\n             \"exact text size\" 18\n             \"size to text h\" 0\n             \"size to text v\" 0\n             \"text halign\" left\n             \"text valign\" center\n            }\n            }\n           }\n           FrameWidgetClass StatusRowQuantity {\n            ignorepointer 1\n            position 0 0\n            size 1 1\n            halign left_ref\n            valign top_ref\n            hexactpos 0\n            vexactpos 0\n            hexactsize 0\n            vexactsize 0\n            priority 1\n            {\n            ImageWidgetClass ItemQuantityIcon {\n             visible 1\n             ignorepointer 1\n             color 1 1 1 1\n             hexactpos 0\n             vexactpos 0\n             hexactsize 1\n             vexactsize 1\n             fixaspect fixwidth\n             mode blend\n             \"src alpha\" 1\n             \"clamp mode\" clamp\n             filter 1\n             position 0.0 0.0\n             size 16 16\n             image0 \"set:dayz_gui image:icon_bullet\"\n             priority 2\n            }\n            ImageWidgetClass ItemQuantityWidgetBackground {\n             visible 0\n             ignorepointer 1\n             color 0 0 0 0.5\n             position 22 0\n             size 0.9 1\n             halign left_ref\n             valign top_ref\n             hexactpos 1\n             vexactpos 1\n             vexactsize 0\n             hexactsize 0\n             priority 1\n             image0 \"set:dayz_gui image:ColorableBar\"\n             mode blend\n             \"src alpha\" 1\n             \"stretch mode\" stretch_w_h\n            }\n            TextWidgetClass ItemQuantityWidget {\n             visible 1\n             clipchildren 0\n             ignorepointer 1\n             position 24 0\n             size 0.88 1\n             halign left_ref\n             valign top_ref\n             hexactpos 1\n             vexactpos 1\n             hexactsize 0\n             vexactsize 0\n             priority 3\n             style Normal\n             text \"\"\n             font \"gui/fonts/sdf_MetronLight24\"\n             \"text color\" 0.890 0.898 0.925 1\n             \"exact text\" 1\n             \"exact text size\" 18\n             \"size to text h\" 0\n             \"size to text v\" 0\n             \"text halign\" left\n             \"text valign\" center\n            }\n            }\n           }\n           FrameWidgetClass StatusRowCleanness {\n            ignorepointer 1\n            position 0 0\n            size 1 1\n            halign left_ref\n            valign top_ref\n            hexactpos 0\n            vexactpos 0\n            hexactsize 0\n            vexactsize 0\n            priority 1\n            {\n            ImageWidgetClass ItemCleannessIcon {\n             visible 1\n             ignorepointer 1\n             color 1 1 1 1\n             hexactpos 0\n             vexactpos 0\n             hexactsize 1\n             vexactsize 1\n             fixaspect fixwidth\n             mode blend\n             \"src alpha\" 1\n             \"clamp mode\" clamp\n             filter 1\n             position 0.0 0.0\n             size 16 16\n             image0 \"set:dayz_gui image:iconBacteria\"\n             priority 2\n            }\n            ImageWidgetClass ItemCleannessWidgetBackground {\n             visible 0\n             ignorepointer 1\n             color 0 0 0 0.5\n             position 27 0\n             size 0.9 1\n             halign left_ref\n             valign top_ref\n             hexactpos 1\n             vexactpos 1\n             vexactsize 0\n             hexactsize 0\n             priority 1\n             image0 \"set:dayz_gui image:ColorableBar\"\n             mode blend\n             \"src alpha\" 1\n             \"stretch mode\" stretch_w_h\n            }\n            TextWidgetClass ItemCleannessWidget {\n             visible 1\n             clipchildren 0\n             ignorepointer 1\n             position 29 0\n             size 0.88 1\n             halign left_ref\n             valign top_ref\n             hexactpos 1\n             vexactpos 1\n             hexactsize 0\n             vexactsize 0\n             priority 3\n             style Normal\n             text \"\"\n             font \"gui/fonts/sdf_MetronLight24\"\n             \"text color\" 0.890 0.898 0.925 1\n             \"exact text\" 1\n             \"exact text size\" 18\n             \"size to text h\" 0\n             \"size to text v\" 0\n             \"text halign\" left\n             \"text valign\" center\n            }\n            }\n           }\n         }\n        }\n       }\n      }\n      PanelWidgetClass SellRow {\n       visible 0\n       clipchildren 1\n       ignorepointer 0\n       color 0 0 0 0.55\n       position 0.005 0.565\n       size 0.990 0.418\n       halign left_ref\n       valign top_ref\n       hexactpos 0\n       vexactpos 0\n       hexactsize 0\n       vexactsize 0\n       priority 40\n       style rover_sim_black\n       {\n        TextWidgetClass SellPriceWidget {\n         visible 1\n         clipchildren 0\n         ignorepointer 1\n         position 0.030 0.02\n         size 0.520 0.24\n         halign left_ref\n         valign top_ref\n         hexactpos 0\n         vexactpos 0\n         hexactsize 0\n         vexactsize 0\n         priority 3\n         style Bold\n         text \"\"\n         font \"gui/fonts/sdf_MetronBook24\"\n         \"text color\" 0.451 0.902 0.627 1\n         \"exact text\" 1\n         \"exact text size\" 22\n         \"bold text\" 1\n         \"size to text h\" 0\n         \"size to text v\" 0\n         \"text halign\" left\n         \"text valign\" center\n        }\n        TextWidgetClass SellAmountWidget {\n         visible 0\n         clipchildren 0\n         ignorepointer 1\n         position 0.030 0.02\n         size 0.400 0.24\n         halign right_ref\n         valign top_ref\n         hexactpos 0\n         vexactpos 0\n         hexactsize 0\n         vexactsize 0\n         priority 3\n         style Normal\n         text \"\"\n         font \"gui/fonts/sdf_MetronLight24\"\n         \"text color\" 0.580 0.588 0.667 1\n         \"exact text\" 1\n         \"exact text size\" 18\n         \"size to text h\" 0\n         \"size to text v\" 0\n         \"text halign\" right\n         \"text valign\" center\n        }\n        SliderWidgetClass SellSlider {\n         visible 0\n         clipchildren 0\n         ignorepointer 0\n         color 1 1 1 0.549\n         position 0.030 0.30\n         size 0.940 0.13\n         halign left_ref\n         valign top_ref\n         hexactpos 0\n         vexactpos 0\n         hexactsize 0\n         vexactsize 0\n         priority 3\n         style Default\n         \"no focus\" 0\n         maximum 1\n         step 1\n         current 1\n         \"fill in\" 1\n         \"listen to input\" 1\n        }\n        ButtonWidgetClass SellButton {\n         visible 0\n         clipchildren 1\n         ignorepointer 0\n         color 1 1 1 1\n         position 0 0.025\n         size 0.940 0.30\n         halign center_ref\n         valign bottom_ref\n         hexactpos 0\n         vexactpos 0\n         hexactsize 0\n         vexactsize 0\n         priority 4\n         userID 90012\n         style MenuDefault\n         \"no focus\" 1\n         text \"#tm_sell\"\n         font \"gui/fonts/sdf_MetronBook24\"\n         \"bold text\" 1\n         {\n          ImageWidgetClass SellButtonIcon {\n           visible 1\n           ignorepointer 1\n           color 1 1 1 1\n           position 0.030 0\n           size 18 18\n           halign left_ref\n           valign center_ref\n           hexactpos 0\n           vexactpos 0\n           hexactsize 1\n           vexactsize 1\n           priority 2\n           fixaspect fixwidth\n           image0 \"set:dayz_gui image:iconArrowUp\"\n           mode blend\n           \"src alpha\" 1\n           \"clamp mode\" clamp\n           filter 1\n          }\n         }\n        }\n       }\n      }\n      TextWidgetClass NoPriceWidget {\n       visible 0\n       clipchildren 0\n       ignorepointer 1\n       position 0.005 0.565\n       size 0.990 0.418\n       halign left_ref\n       valign top_ref\n       hexactpos 0\n       vexactpos 0\n       hexactsize 0\n       vexactsize 0\n       priority 41\n       style Bold\n       text \"#tm_no_trader_nearby\"\n       font \"gui/fonts/sdf_MetronLight24\"\n       \"text color\" 1 0.690 0.722 1\n       \"exact text\" 1\n       \"exact text size\" 20\n       \"bold text\" 1\n       \"size to text h\" 0\n       \"size to text v\" 0\n       \"text halign\" center\n       \"text valign\" center\n       {\n        ImageWidgetClass NoPriceIcon {\n         visible 1\n         ignorepointer 1\n         color 1 1 1 0.85\n         position 0.03 0.42\n         size 24 24\n         halign left_ref\n         valign top_ref\n         hexactpos 0\n         vexactpos 0\n         hexactsize 1\n         vexactsize 1\n         priority 1\n         fixaspect fixwidth\n         image0 \"set:dayz_gui image:icon_out_of_reach\"\n         mode blend\n         \"src alpha\" 1\n         \"clamp mode\" clamp\n         filter 1\n        }\n       }\n      }\n     }\n    }\n   }\n  }\n  ImageWidgetClass vignette {\n   visible 1\n   ignorepointer 1\n   color 0 0 0 0.784\n   position 0 0\n   size 1.6 0.9\n   halign center_ref\n   hexactpos 1\n   vexactpos 1\n   hexactsize 0\n   vexactsize 0\n   fixaspect outside\n   imageTexture \"{E6B3EF816E067499}Gui/textures/inventory_bgvignette.edds\"\n   mode blend\n   \"src alpha\" 1\n   \"clamp mode\" clamp\n   \"stretch mode\" stretch_w_h\n   filter 0\n   nocache 1\n  }\n }\n}\n"
+};
+
+// ============================ parser ============================
+// ==PARSER_START==
+function stripComment(raw){
+ var q=false;
+ for(var i=0;i<raw.length;i++){
+  var c=raw.charAt(i);
+  if(c==='"') q=!q;
+  else if(!q && c==='/' && raw.charAt(i+1)==='/') return raw.slice(0,i);
+ }
+ return raw;
+}
+function tokenizeLine(raw){
+ var out=[],i=0,n=raw.length;
+ while(i<n){
+  var c=raw.charAt(i);
+  if(c===' '||c==='\t'){i++;continue;}
+  if(c==='"'){
+   var j=raw.indexOf('"',i+1);
+   if(j<0)j=n;
+   out.push({q:true,v:raw.slice(i+1,j)});
+   i=j+1;continue;
+  }
+  var j2=i;
+  while(j2<n){
+   var d=raw.charAt(j2);
+   if(d===' '||d==='\t'||d==='"')break;
+   j2++;
+  }
+  out.push({q:false,v:raw.slice(i,j2)});
+  i=j2;
+ }
+ return out;
+}
+function parseLayout(text){
+ var lines=text.split(/\r?\n/);
+ var roots=[],stack=[],all=[];
+ for(var li=0;li<lines.length;li++){
+  var raw=stripComment(lines[li]);
+  var t=raw.trim();
+  if(t==='')continue;
+  if(t==='{'){ stack.push(stack[stack.length-1]||null); continue; }
+  if(t==='}'){ var cl=stack.pop(); continue; }
+  if(t.charAt(t.length-1)==='{'){
+   var head=t.slice(0,t.length-1).trim();
+   var tk=tokenizeLine(head);
+   var node={cls:'Block',name:(tk[0]?tk[0].v:'?'),props:{},propMeta:{},propOrder:[],children:[],openLine:li,indent:(raw.match(/^[ \t]*/)||[''])[0]};
+   if(tk.length>=2 && /WidgetClass$/.test(tk[0].v)){ node.cls=tk[0].v; node.name=tk[1].v; }
+   var par=(stack.length?stack[stack.length-1]:null);
+   if(par)par.children.push(node); else roots.push(node);
+   stack.push(node);
+   all.push(node);
+   continue;
+  }
+  if(!stack.length)continue;
+  var owner=stack[stack.length-1];
+  if(!owner)continue;
+  var toks=tokenizeLine(t);
+  if(!toks.length)continue;
+  var key=toks[0].v;
+  var val=toks.slice(1).map(function(x){return x.v;}).join(' ');
+  owner.props[key]=val;
+  owner.propMeta[key]={line:li,rawKey:(toks[0].q?('"'+key+'"'):key),quoted:(toks.length>1?toks[1].q:false)};
+  owner.propOrder.push(key);
+ }
+ return {roots:roots,lines:lines,all:all};
+}
+function pnum(node,key,idx,def){
+ var v=node.props[key];
+ if(v===undefined)return def;
+ var parts=String(v).split(' ');
+ var s=parts[idx===undefined?0:idx];
+ var f=parseFloat(s);
+ return isNaN(f)?def:f;
+}
+function pint(node,key,def){
+ var f=parseFloat(node.props[key]);
+ return isNaN(f)?def:f;
+}
+function isOne(node,key){ return node.props[key]==='1'; }
+var RATIO=16/9;
+// rect inside a parent box {w,h}; returns {left,top,width,height}
+function rectOf(node,pw,ph){
+ var p=node.props;
+ var x=pnum(node,'position',0,0), y=pnum(node,'position',1,0);
+ var w=pnum(node,'size',0,0), h=pnum(node,'size',1,0);
+ var exX=isOne(node,'hexactpos'), exY=isOne(node,'vexactpos');
+ var exW=isOne(node,'hexactsize'), exH=isOne(node,'vexactsize');
+ var px=exX?x:x*pw, py=exY?y:y*ph;
+ var wid=exW?w:w*pw, hei=exH?h:h*ph;
+ var fa=p.fixaspect||'';
+ if(fa==='fixwidth'){ hei=wid/RATIO; }
+ else if(fa==='inside'||fa==='outside'){
+  var h2=wid/RATIO;
+  if(fa==='inside'){ if(h2>hei){ h2=hei; wid=hei*RATIO; } }
+  else { if(h2<hei){ h2=hei; wid=hei*RATIO; } }
+  hei=h2;
+ }
+ // halign/valign define the REFERENCE point on the parent; position is an
+ // offset from it (left_ref/top_ref = parent origin, center_ref = parent centre,
+ // right_ref/bottom_ref = parent far edge). This is what keeps DayZ geometry
+ // undistorted for widgets such as "position 0 0 + center_ref" (= centred).
+ // right_ref/bottom_ref: position is measured INWARD from that edge (verified on 517
+ // vanilla cases: 90% stay inside the parent this way vs 59% for the outward reading).
+ var left=px, top=py;
+ var ha=p.halign||'';
+ if(ha==='center_ref')left=pw/2+px-wid/2;
+ else if(ha==='right_ref')left=pw-px-wid;
+ var va=p.valign||'';
+ if(va==='center_ref')top=ph/2+py-hei/2;
+ else if(va==='bottom_ref')top=ph-py-hei;
+ return {left:left,top:top,width:wid,height:hei};
+}
+// GridSpacer / WrapSpacer cell layout: children are placed into equal cells
+// (Columns x Rows, Padding between cells, Margin at the edges) and then use
+// their own position/size as fractions of their CELL - this is how vanilla
+// option lists and camera_tools stack rows.
+function spacerCells(node,pw,ph){
+ var p=node.props;
+ var cols=parseInt(p.Columns); if(isNaN(cols)||cols<1) cols=0;
+ var rows=parseInt(p.Rows); if(isNaN(rows)||rows<1) rows=0;
+ var n=node.children.length;
+ if(n<1) return [];
+ if(cols<1 && rows<1){ if(/Wrap/i.test(node.cls)){ cols=n; rows=1; } else { cols=1; rows=n; } }
+ else if(cols<1){ cols=Math.ceil(n/rows); if(cols<1) cols=1; }
+ else if(rows<1){ rows=Math.ceil(n/cols); if(rows<1) rows=1; }
+ var pad=parseFloat(p.Padding); if(isNaN(pad)) pad=0;
+ var mar=parseFloat(p.Margin); if(isNaN(mar)) mar=0;
+ var availW=pw-2*mar, availH=ph-2*mar;
+ var cw=(availW-pad*(cols-1))/cols, ch=(availH-pad*(rows-1))/rows;
+ var out=[];
+ for(var i=0;i<n;i++){ var c=i%cols, rr=Math.floor(i/cols);
+  out.push({left:mar+c*(cw+pad),top:mar+rr*(ch+pad),width:cw,height:ch}); }
+ return out;
+}
+function kindOf(cls){
+ if(/TextWidgetClass$/.test(cls))return 'text';
+ if(/RichTextWidgetClass$/.test(cls))return 'richtext';
+ if(/MultilineTextWidgetClass$/.test(cls))return 'multitext';
+ if(/MultilineEditBoxWidgetClass$/.test(cls))return 'textarea';
+ if(/EditBoxWidgetClass$/.test(cls))return 'input';
+ if(/ButtonWidgetClass$/.test(cls))return 'button';
+ if(/CheckBoxWidgetClass$/.test(cls))return 'check';
+ if(/SliderWidgetClass$/.test(cls))return 'slider';
+ if(/ProgressBarWidgetClass$/.test(cls))return 'progress';
+ if(/XComboBoxWidgetClass$/.test(cls))return 'combo';
+ if(/TextListboxWidgetClass$/.test(cls))return 'list';
+ if(/ItemPreviewWidgetClass$/.test(cls))return 'preview';
+ if(/ImageWidgetClass$/.test(cls))return 'image';
+ if(/ScrollWidgetClass$/.test(cls))return 'scroll';
+ if(/SpacerWidgetClass$/.test(cls))return 'spacer';
+ if(/WindowWidgetClass$/.test(cls))return 'container';
+ if(/FrameWidgetClass$/.test(cls))return 'container';
+ if(/PanelWidgetClass$/.test(cls))return 'container';
+ if(/CanvasWidgetClass$/.test(cls))return 'container';
+ return 'container';
+}
+function parseColor(s){
+ if(!s)return null;
+ var p=String(s).split(' ');
+ if(p.length<3)return null;
+ var r=Math.round(parseFloat(p[0])*255), g=Math.round(parseFloat(p[1])*255), b=Math.round(parseFloat(p[2])*255);
+ var a=(p.length>3?parseFloat(p[3]):1);
+ if(isNaN(r)||isNaN(g)||isNaN(b))return null;
+ if(isNaN(a))a=1;
+ return {r:r,g:g,b:b,a:(a===0?1:a)};
+}
+function rgba(c){ return 'rgba('+c.r+','+c.g+','+c.b+','+c.a+')'; }
+function fontPx(node){
+ var e=parseFloat(node.props['exact text size']);
+ if(!isNaN(e))return e;
+ var f=String(node.props.font||'');
+ var m=f.match(/(\d+)/);
+ return m?parseInt(m[1],10):14;
+}
+function localize(s){
+ if(s===undefined||s===null)return '';
+ var out=String(s);
+ if(!state.loc)return out;
+ out=out.replace(/#[A-Za-z0-9_]+/g,function(k){ return (LOC[k]!==undefined?LOC[k]:k); });
+ return out;
+}
+// ==PARSER_END==
+
+// ============================ state ============================
+var state={ roots:[], lines:[], all:[], src:'', srcName:'', loc:true, drag:true,
+ grid:false, outline:true, names:false, hidden:false, zoom:0.45,
+ sel:null, dirty:{}, byName:{} };
+
+var elScreen=document.getElementById('screen');
+var elTree=document.getElementById('tree');
+var elProps=document.getElementById('props');
+var elSel=document.getElementById('selinfo');
+var elPatch=document.getElementById('patch');
+var elStatus=document.getElementById('status');
+
+function setStatus(s){ elStatus.textContent=s; }
+
+function screenSize(){
+ var v=document.getElementById('res').value.split('x');
+ return {w:parseInt(v[0],10),h:parseInt(v[1],10)};
+}
+function loadText(text,name){
+ var res=parseLayout(text);
+ state.roots=res.roots; state.lines=res.lines; state.all=res.all; state.src=text; state.srcName=name||'';
+ state.sel=null; state.dirty={}; state.byName={};
+ for(var i=0;i<state.all.length;i++){ (state.byName[state.all[i].name]=state.byName[state.all[i].name]||[]).push(state.all[i]); }
+ buildTree(); render(); buildProps(); setStatus(name+' — '+state.roots.length+' корень(ей), '+state.all.length+' виджетов');
+}
+function buildTree(){
+ elTree.innerHTML='';
+ function walk(n,d){
+  var el=document.createElement('div');
+  el.style.paddingLeft=(4+d*11)+'px';
+  el.textContent=n.name+'  '+(n.cls==='Block'?'':n.cls.replace('WidgetClass',''));
+  el.className='tag';
+  el.onclick=function(ev){ ev.stopPropagation(); select(n); };
+  elTree.appendChild(el);
+  for(var i=0;i<n.children.length;i++)walk(n.children[i],d+1);
+ }
+ for(var i=0;i<state.roots.length;i++)walk(state.roots[i],0);
+}
+
+// ============================ rendering ============================
+function render(){
+ var sz=screenSize();
+ elScreen.style.width=sz.w+'px'; elScreen.style.height=sz.h+'px';
+ elScreen.style.transform='scale('+state.zoom+')';
+ elScreen.style.backgroundImage = state.grid ?
+  'linear-gradient(#ffffff11 1px,transparent 1px),linear-gradient(90deg,#ffffff11 1px,transparent 1px)' : 'none';
+ elScreen.style.backgroundSize = state.grid ? '40px 40px' : 'auto';
+ elScreen.innerHTML='';
+ for(var i=0;i<state.roots.length;i++) drawNode(state.roots[i],elScreen,sz.w,sz.h);
+}
+function drawNode(node,parentEl,pw,ph,cell){
+ var p=node.props;
+ var r=rectOf(node,pw,ph);
+ if(cell){ r.left=r.left+cell.left; r.top=r.top+cell.top; }
+ var kind=kindOf(node.cls);
+ var el=document.createElement('div');
+ el.className='w';
+ el.style.left=r.left+'px'; el.style.top=r.top+'px';
+ el.style.width=Math.max(0,r.width)+'px'; el.style.height=Math.max(0,r.height)+'px';
+ el.style.zIndex=String(pint(node,'priority',1));
+ if(isOne(node,'clipchildren'))el.style.overflow='hidden';
+ if(isOne(node,'ignorepointer'))el.style.pointerEvents='none';
+ if(node.props.visible==='0' && !state.hidden)el.style.display='none';
+ if(isOne(node,'inheritalpha'))el.style.opacity='1';
+ if(state.outline)el.style.outline='1px dashed '+(state.sel===node?'#5aa7ff':'#5aa7ff33');
+ el.style.pointerEvents = state.drag ? 'auto' : 'none';
+ if(state.drag){ el.style.cursor='move'; }
+ el.title=node.name+' ['+node.cls+']  '+Math.round(r.left)+','+Math.round(r.top)+' '+Math.round(r.width)+'x'+Math.round(r.height);
+
+ var col=parseColor(p.color);
+ var styleName=String(p.style||'');
+ var textOverlay=null;   // text is painted AFTER the children so it stays visible
+                         // (DayZ draws widget text above its child widgets)
+
+ // per-kind decoration
+ if(kind==='container'){
+  if(styleName==='DayZDefaultPanel'){
+   el.style.background='rgba(28,28,39,0.92)';
+   el.style.border='1px solid #3a3a4d';
+   el.style.borderRadius='6px';
+  } else if(styleName==='editor_quad'){ el.style.background='rgba(10,10,16,0.75)'; el.style.border='1px solid #3a3a4d'; }
+  else if(styleName==='rover_sim_black'||styleName==='rover_sim_colorable'){ el.style.background='rgba(0,0,0,0.25)'; }
+  if(col)el.style.background=rgba(col);
+ } else if(kind==='image'){
+  var img=String(p.image0||p.imageTexture||'');
+  if(col)el.style.background=rgba(col);
+  if(/circle/.test(img)){ el.style.borderRadius='50%'; }
+  else if(/inv_header_3/.test(img)){ if(!col)el.style.background='linear-gradient(180deg,#2a2a38,#1a1a24)'; }
+  else if(/icon_x/.test(img)){
+   el.style.display='flex';el.style.alignItems='center';el.style.justifyContent='center';
+   el.style.color='#ffb0b8';el.style.fontSize=Math.max(10,Math.min(r.width,r.height)*0.7)+'px';
+   el.textContent='✕';
+  }
+  else if(/DayZLogo/.test(img)){ el.style.background='#1d3a61';el.style.color='#9db8ff';
+   el.style.display='flex';el.style.alignItems='center';el.style.justifyContent='center';el.textContent='DayZ'; }
+  else if(img!==''){
+   el.style.background='repeating-linear-gradient(45deg,#ffffff10 0 6px,#ffffff04 6px 12px)';
+  }
+ } else if(kind==='preview'){
+  el.style.background='repeating-linear-gradient(45deg,#ffffff12 0 8px,#ffffff04 8px 16px)';
+  el.style.display='flex';el.style.alignItems='center';el.style.justifyContent='center';
+  el.style.color='#8fb0ff90';el.style.fontSize=Math.max(10,Math.min(r.width,r.height)*0.28)+'px';
+  el.textContent='3D';
+ } else if(kind==='text'||kind==='richtext'||kind==='multitext'||kind==='button'||kind==='check'||kind==='combo'||kind==='input'||kind==='textarea'){
+  var tcol=parseColor(p['text color'])||{r:227,g:229,b:236,a:1};
+  el.style.color=rgba(tcol);
+  el.style.fontSize=fontPx(node)+'px';
+  if(/Bold/i.test(styleName)||/Bold/i.test(String(p.font||'')))el.style.fontWeight='700';
+  var ha=String(p['text halign']||'left');
+  var va=String(p['text valign']||'center');
+  el.style.display='flex';
+  el.style.justifyContent=(ha==='center'?'center':(ha==='right'?'flex-end':'flex-start'));
+  el.style.alignItems=(va==='top'?'flex-start':(va==='bottom'?'flex-end':'center'));
+  el.style.whiteSpace = isOne(node,'wrap') ? 'pre-wrap' : 'nowrap';
+  if(isOne(node,'condense whitespace'))el.style.whiteSpace='normal';
+  el.style.textAlign=ha;
+  el.style.overflow='hidden';
+  var txt=localize(p.text);
+  if(kind==='button'){
+   el.style.background='linear-gradient(180deg,#2c2c3c,#1c1c27)';
+   el.style.border='1px solid #3a3a4d';
+   el.style.borderRadius='4px';
+   el.style.textShadow='0 1px 0 #000';
+  }
+  if(kind==='check'){ el.innerHTML='<span style="display:inline-block;width:12px;height:12px;border:1px solid #9496aa;margin-right:6px;vertical-align:middle;background:'+(p.checked==='1'?'#5aa7ff':'transparent')+'"></span>'; el.textContent=''; el.insertAdjacentText('beforeend',txt); }
+  else if(kind==='combo'){ var items=String(p.items||'').split(';'); el.textContent=''; el.insertAdjacentText('beforeend','▾ '+(items[0]||'')); }
+  else if(kind==='input'||kind==='textarea'){ el.style.background='#0a0a10';el.style.border='1px solid #3a3a4d';el.style.borderRadius='4px'; el.textContent=''; el.insertAdjacentText('beforeend',txt||'EditBox'); }
+  else if(kind==='list'){
+   var cols=String(p.colums||'').split(';'); var hdr=[];
+   for(var ci=0;ci<cols.length;ci+=2){ hdr.push(cols[ci]+(cols[ci+1]?(' ('+cols[ci+1]+'%)'):'')); }
+   el.style.background='#0a0a10'; el.style.border='1px solid #3a3a4d'; el.style.borderRadius='4px';
+   el.style.display='block'; el.style.padding='6px 8px'; el.style.color='#9496aa'; el.style.fontSize=fontPx(node)+'px';
+   el.textContent=hdr.join('   |   ');
+  }
+  else {
+   var ov=document.createElement('div');
+   ov.textContent=txt;
+   ov.style.cssText='position:absolute;left:0;top:0;right:0;bottom:0;display:flex;overflow:hidden;pointer-events:none;z-index:90;'
+    +'align-items:'+((va==='top')?'flex-start':(va==='bottom')?'flex-end':'center')+';'
+    +'justify-content:'+((ha==='center')?'center':(ha==='right')?'flex-end':'flex-start')+';'
+    +'white-space:'+(isOne(node,'wrap')?'pre-wrap':'nowrap')+';'
+    +'font-size:'+fontPx(node)+'px;color:'+rgba(tcol)+';text-align:'+ha
+    +((/Bold/i.test(styleName)||/Bold/i.test(String(p.font||'')))?';font-weight:700':'');
+   textOverlay=ov;
+  }
+ } else if(kind==='slider'){
+  var maxv=parseFloat(p.maximum); if(isNaN(maxv))maxv=1;
+  var curv=parseFloat(p.current); if(isNaN(curv))curv=maxv;
+  var pct=Math.max(0,Math.min(1,curv/maxv))*100;
+  el.style.background='#3a3a4d'; el.style.borderRadius='6px';
+  el.style.overflow='hidden';
+  el.innerHTML='<div style="height:100%;width:'+pct.toFixed(1)+'%;background:'+(p.color?rgba(col):'#5aa7ff')+'"></div>'
+   +'<div style="position:absolute;left:calc('+pct.toFixed(1)+'% - 2px);top:0;width:4px;height:100%;background:#e3e5ec;border-radius:2px"></div>';
+ } else if(kind==='progress'){
+  var mx=parseFloat(p.maximum); if(isNaN(mx))mx=1;
+  var cv=parseFloat(p.Progress); if(isNaN(cv))cv=0;
+  var pc=Math.max(0,Math.min(1,cv/mx))*100;
+  el.style.background='#0a0a10'; el.style.border='1px solid #3a3a4d';
+  el.innerHTML='<div style="height:100%;width:'+pc.toFixed(1)+'%;background:#5aa7ff"></div>';
+ } else {
+  if(col)el.style.background=rgba(col);
+ }
+
+ if(state.names && node.cls!=='Block'){
+  var lab=document.createElement('div');
+  lab.textContent=node.name;
+  lab.style.cssText='position:absolute;left:1px;top:1px;font:9px ui-monospace,Consolas,monospace;color:#fff;background:#000b;padding:0 3px;border-radius:2px;pointer-events:none;z-index:99;white-space:nowrap';
+  el.appendChild(lab);
+ }
+
+ if(state.drag && !cell){
+  el.addEventListener('mousedown',function(ev){ startDrag(ev,node,el,r,pw,ph); });
+ }
+ el.addEventListener('click',function(ev){ ev.stopPropagation(); select(node); });
+
+ parentEl.appendChild(el);
+ if(kind==='spacer'){
+  var cells=spacerCells(node,r.width,r.height);
+  for(var i=0;i<node.children.length;i++){
+   var cc=cells[i];
+   if(cc){ drawNode(node.children[i],el,cc.width,cc.height,cc); }
+   else { drawNode(node.children[i],el,r.width,r.height); }
+  }
+ } else {
+  for(var i=0;i<node.children.length;i++)drawNode(node.children[i],el,r.width,r.height);
+ }
+ if(textOverlay)el.appendChild(textOverlay);
+}
+
+// ============================ drag ============================
+function startDrag(ev,node,el,r,pw,ph){
+ if(ev.button!==0)return;
+ ev.preventDefault(); ev.stopPropagation();
+ select(node);
+ var sx=ev.clientX, sy=ev.clientY;
+ var x0=pnum(node,'position',0,0), y0=pnum(node,'position',1,0);
+ var ha=String(node.props.halign||''), va=String(node.props.valign||'');
+ document.body.style.userSelect='none';
+ function move(e){
+  var dx=(e.clientX-sx)/state.zoom, dy=(e.clientY-sy)/state.zoom;
+  var nl=r.left+dx, nt=r.top+dy;
+  var nx=nl, ny=nt;
+  if(ha==='center_ref')nx=nl-pw/2+r.width/2; else if(ha==='right_ref')nx=pw-r.width-nl;
+  if(va==='center_ref')ny=nt-ph/2+r.height/2; else if(va==='bottom_ref')ny=ph-r.height-nt;
+  var vx=isOne(node,'hexactpos')?nx:(nx/pw), vy=isOne(node,'vexactpos')?ny:(ny/ph);
+  setProp(node,'position',fmt(vx)+' '+fmt(vy),true);
+  render(); buildProps();
+ }
+ function up(){ document.removeEventListener('mousemove',move); document.removeEventListener('mouseup',up); document.body.style.userSelect=''; }
+ document.addEventListener('mousemove',move); document.addEventListener('mouseup',up);
+}
+function fmt(v){
+ var s=(Math.abs(v)>=1)?v.toFixed(3):v.toFixed(4);
+ s=s.replace(/0+$/,'').replace(/\.$/,'');
+ return s;
+}
+
+// ============================ editing ============================
+function setProp(node,key,value,markDirty){
+ node.props[key]=value;
+ if(markDirty!==false) state.dirty[node.name+'|'+key]={node:node,key:key};
+}
+function select(node){ state.sel=node; buildProps(); render(); markTree(); }
+function markTree(){
+ var divs=elTree.children;
+ for(var i=0;i<divs.length;i++)divs[i].classList.remove('sel');
+}
+function buildProps(){
+ var n=state.sel;
+ elProps.innerHTML='';
+ if(!n){ elSel.textContent='ничего не выбрано'; return; }
+ var r=rectOf(n,screenSize().w,screenSize().h);
+ elSel.innerHTML='<b>'+n.name+'</b> <span class="tag">'+n.cls+'</span><br>'+
+  '<span class="tag">rect: '+Math.round(r.left)+','+Math.round(r.top)+' '+Math.round(r.width)+'x'+Math.round(r.height)+
+  ' | строка '+(n.openLine+1)+'</span>';
+
+ var box=document.createElement('div');
+
+ function numRow(label,getter,setter,step){
+  var row=document.createElement('div'); row.className='row';
+  var l=document.createElement('label'); l.textContent=label;
+  var i=document.createElement('input'); i.type='number'; i.step=step||'0.001'; i.value=getter();
+  i.oninput=function(){ setter(parseFloat(this.value)); render(); };
+  row.appendChild(l); row.appendChild(i); box.appendChild(row);
+  return i;
+ }
+ function chkRow(label,key){
+  var d=document.createElement('label'); d.className='chk';
+  var i=document.createElement('input'); i.type='checkbox'; i.checked=isOne(n,key);
+  i.onchange=function(){ setProp(n,key,this.checked?'1':'0'); render(); };
+  d.appendChild(i); d.appendChild(document.createTextNode(label)); box.appendChild(d);
+ }
+ function selRow(label,key,opts){
+  var row=document.createElement('div'); row.className='row';
+  var l=document.createElement('label'); l.textContent=label;
+  var s=document.createElement('select');
+  var o0=document.createElement('option'); o0.value=''; o0.textContent='—'; s.appendChild(o0);
+  for(var i=0;i<opts.length;i++){ var o=document.createElement('option'); o.value=opts[i]; o.textContent=opts[i]; s.appendChild(o); }
+  s.value=String(n.props[key]||'');
+  s.onchange=function(){ setProp(n,key,this.value); render(); };
+  row.appendChild(l); row.appendChild(s); box.appendChild(row);
+ }
+
+ var posPair=document.createElement('div'); posPair.className='g2';
+ var sizePair=document.createElement('div'); sizePair.className='g2';
+ box.appendChild(document.createTextNode('позиция / размер'));
+ var p1=document.createElement('div'); var p2=document.createElement('div');
+ numRow('X', function(){return pnum(n,'position',0,0);}, function(v){ setProp(n,'position',fmt(v)+' '+fmt(pnum(n,'position',1,0))); }, '0.001');
+ numRow('Y', function(){return pnum(n,'position',1,0);}, function(v){ setProp(n,'position',fmt(pnum(n,'position',0,0))+' '+fmt(v)); }, '0.001');
+ numRow('Ш', function(){return pnum(n,'size',0,0);}, function(v){ setProp(n,'size',fmt(v)+' '+fmt(pnum(n,'size',1,0))); }, '0.001');
+ numRow('В', function(){return pnum(n,'size',1,0);}, function(v){ setProp(n,'size',fmt(pnum(n,'size',0,0))+' '+fmt(v)); }, '0.001');
+ chkRow('hexactpos','hexactpos'); chkRow('vexactpos','vexactpos');
+ chkRow('hexactsize','hexactsize'); chkRow('vexactsize','vexactsize');
+ selRow('halign','halign',['left_ref','center_ref','right_ref']);
+ selRow('valign','valign',['top_ref','center_ref','bottom_ref']);
+ chkRow('visible','visible'); chkRow('ignorepointer','ignorepointer'); chkRow('clipchildren','clipchildren');
+ numRow('priority', function(){return pint(n,'priority',1);}, function(v){ setProp(n,'priority',String(Math.round(v))); }, '1');
+
+ var col=parseColor(n.props.color)||{r:0,g:0,b:0,a:0};
+ var cr=document.createElement('div'); cr.className='g4';
+ ['r','g','b','a'].forEach(function(ch){
+  var i=document.createElement('input'); i.type='number'; i.min=0; i.max=(ch==='a'?1:255); i.step=(ch==='a'?'0.01':'1');
+  i.value=(ch==='a')?col.a:col[ch];
+  i.oninput=function(){ var c={r:col.r,g:col.g,b:col.b,a:col.a}; c[ch]=parseFloat(this.value); setProp(n,'color',fmt(c.r/255)+' '+fmt(c.g/255)+' '+fmt(c.b/255)+' '+fmt(c.a)); render(); };
+  cr.appendChild(i);
+ });
+ box.appendChild(document.createTextNode('color r g b a'));
+ box.appendChild(cr);
+
+ if(kindOf(n.cls)==='text'||kindOf(n.cls)==='richtext'||kindOf(n.cls)==='multitext'||kindOf(n.cls)==='button'||kindOf(n.cls)==='combo'||kindOf(n.cls)==='list'){
+  var row=document.createElement('div'); row.className='row';
+  var l=document.createElement('label'); l.textContent='text';
+  var i=document.createElement('input'); i.type='text'; i.value=String(n.props.text||'');
+  i.oninput=function(){ setProp(n,'text',this.value); render(); };
+  row.appendChild(l); row.appendChild(i); box.appendChild(row);
+  numRow('text px', function(){return fontPx(n);}, function(v){ setProp(n,'exact text size',String(Math.round(v))); }, '1');
+  selRow('t-halign','text halign',['left','center','right']);
+  selRow('t-valign','text valign',['top','center','bottom']);
+  var d=document.createElement('label'); d.className='chk';
+  var w=document.createElement('input'); w.type='checkbox'; w.checked=isOne(n,'wrap');
+  w.onchange=function(){ setProp(n,'wrap',this.checked?'1':'0'); render(); };
+  d.appendChild(w); d.appendChild(document.createTextNode('wrap')); box.appendChild(d);
+ }
+ if(kindOf(n.cls)==='progress'){
+  numRow('maximum', function(){return parseFloat(n.props.maximum||100);}, function(v){ setProp(n,'maximum',fmt(v)); }, '1');
+  numRow('Progress', function(){return parseFloat(n.props.Progress||0);}, function(v){ setProp(n,'Progress',fmt(v)); }, '1');
+  var dv=document.createElement('label'); dv.className='chk';
+  var iv=document.createElement('input'); iv.type='checkbox'; iv.checked=isOne(n,'vertical');
+  iv.onchange=function(){ setProp(n,'vertical',this.checked?'1':'0'); render(); };
+  dv.appendChild(iv); dv.appendChild(document.createTextNode('vertical')); box.appendChild(dv);
+ }
+ if(kindOf(n.cls)==='slider'){
+  numRow('maximum', function(){return parseFloat(n.props.maximum||1);}, function(v){ setProp(n,'maximum',fmt(v)); }, '1');
+  numRow('current', function(){return parseFloat(n.props.current||0);}, function(v){ setProp(n,'current',fmt(v)); }, '1');
+  numRow('step', function(){return parseFloat(n.props.step||1);}, function(v){ setProp(n,'step',fmt(v)); }, '0.05');
+ }
+
+ box.appendChild(document.createTextNode('все свойства виджета'));
+ var pre=document.createElement('pre');
+ var s='';
+ for(var k in n.props){ s += k+' = '+n.props[k]+'\n'; }
+ pre.textContent=s; box.appendChild(pre);
+
+ elProps.appendChild(box);
+}
+
+// ============================ patch / export ============================
+function buildPatched(){
+ var lines=state.lines.slice();
+ var inserts={};
+ for(var dk in state.dirty){
+  var d=state.dirty[dk]; var node=d.node, key=d.key;
+  var meta=node.propMeta[key];
+  var val=String(node.props[key]);
+  var needQuote=/\s/.test(val) && !/^-?[0-9.]/.test(val);
+  var txt=needQuote?('"'+val+'"'):val;
+  if(meta && meta.line!==undefined){
+   lines[meta.line]=meta.indent+(meta.rawKey||key)+' '+txt;
+  } else {
+   var ins=inserts[node.openLine]=inserts[node.openLine]||[];
+   ins.push(node.indent+' '+key+' '+txt);
+  }
+ }
+ var out=[];
+ for(var i=0;i<lines.length;i++){
+  out.push(lines[i]);
+  if(inserts[i]) out=out.concat(inserts[i]);
+ }
+ return out.join('\n');
+}
+function showPatch(){
+ var changed=[];
+ for(var dk in state.dirty){
+  var d=state.dirty[dk];
+  changed.push('// '+d.node.name+'\n'+d.key+' '+d.node.props[d.key]);
+ }
+ elPatch.textContent = changed.length ? changed.join('\n') : '— нет изменений —';
+}
+document.getElementById('btnPatch').onclick=showPatch;
+document.getElementById('btnRevert').onclick=function(){ loadText(state.src,state.srcName); };
+document.getElementById('btnCopy').onclick=function(){
+ var t=buildPatched();
+ navigator.clipboard.writeText(t).then(function(){ setStatus('файл скопирован в буфер ('+t.length+' симв.)'); },
+  function(){ setStatus('не удалось скопировать — используйте Скачать .layout'); });
+};
+document.getElementById('btnDl').onclick=function(){
+ var t=buildPatched();
+ var a=document.createElement('a');
+ a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));
+ a.download=state.srcName||'layout.layout';
+ a.click();
+};
+
+// ============================ toolbar ============================
+var selBuiltin=document.getElementById('builtin');
+Object.keys(BUILTIN).forEach(function(k){ var o=document.createElement('option'); o.value=k; o.textContent=k; selBuiltin.appendChild(o); });
+selBuiltin.onchange=function(){ loadText(BUILTIN[this.value],this.value); };
+document.getElementById('btnOpen').onclick=function(){ document.getElementById('file').click(); };
+document.getElementById('file').onchange=function(){
+ var f=this.files[0]; if(!f)return;
+ var rd=new FileReader();
+ rd.onload=function(){ loadText(String(rd.result),f.name); };
+ rd.readAsText(f,'utf-8');
+};
+document.getElementById('res').onchange=function(){ render(); buildProps(); };
+document.getElementById('zoom').oninput=function(){ state.zoom=parseInt(this.value,10)/100; document.getElementById('zoomv').textContent=this.value+'%'; render(); };
+document.getElementById('btnFit').onclick=function(){
+ var sz=screenSize(); var wrap=document.getElementById('stagewrap');
+ var z=Math.min((wrap.clientWidth-40)/sz.w,(wrap.clientHeight-40)/sz.h);
+ state.zoom=Math.max(0.05,z); document.getElementById('zoom').value=Math.round(state.zoom*100);
+ document.getElementById('zoomv').textContent=Math.round(state.zoom*100)+'%'; render();
+};
+document.getElementById('cbGrid').onchange=function(){ state.grid=this.checked; render(); };
+document.getElementById('cbOutline').onchange=function(){ state.outline=this.checked; render(); };
+document.getElementById('cbNames').onchange=function(){ state.names=this.checked; render(); };
+document.getElementById('cbHidden').onchange=function(){ state.hidden=this.checked; render(); };
+document.getElementById('cbLoc').onchange=function(){ state.loc=this.checked; render(); };
+document.getElementById('cbDrag').onchange=function(){ state.drag=this.checked; render(); };
+elScreen.onclick=function(){ select(null); };
+
+document.addEventListener('keydown',function(e){
+ if(!state.sel)return;
+ var step=e.shiftKey?10:1;
+ var dx=0,dy=0;
+ if(e.key==='ArrowLeft')dx=-step; else if(e.key==='ArrowRight')dx=step;
+ else if(e.key==='ArrowUp')dy=-step; else if(e.key==='ArrowDown')dy=step;
+ else return;
+ e.preventDefault();
+ var n=state.sel, sz=screenSize();
+ var sx=isOne(n,'hexactpos')?1:sz.w/100, sy=isOne(n,'vexactpos')?1:sz.h/100;
+ var x=pnum(n,'position',0,0)+dx*sx, y=pnum(n,'position',1,0)+dy*sy;
+ setProp(n,'position',fmt(x)+' '+fmt(y)); render(); buildProps();
+});
+document.addEventListener('dragover',function(e){ e.preventDefault(); document.body.classList.add('drop'); });
+document.addEventListener('dragleave',function(){ document.body.classList.remove('drop'); });
+document.addEventListener('drop',function(e){
+ e.preventDefault(); document.body.classList.remove('drop');
+ var f=e.dataTransfer.files[0]; if(!f)return;
+ var rd=new FileReader(); rd.onload=function(){ loadText(String(rd.result),f.name); }; rd.readAsText(f,'utf-8');
+});
+
+// ============================ boot ============================
+(function(){
+ var first=Object.keys(BUILTIN)[0];
+ if(first){ selBuiltin.value=first; loadText(BUILTIN[first],first); document.getElementById('btnFit').click(); }
+ else setStatus('выберите .layout');
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1941 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                             //
+//      Need Help? The Trader Mod has its own Channel on the DayZ Modders Discord Server!      //
+//                                                                                             //
+//      Only Singleline Comments work. Don't use Multiline Comments!                           //
+//      /* THIS COMMENT WILL CRASH THE SERVER! */                                              //
+//      // THIS COMMENT WORKS!                                                                 //
+//                                                                                             //
+//      // ALL PRICES ARE IN RUBLES (RUB)                                                      //
+//      // ROW FORMAT: Classname, Quantity, BuyPrice[, SellPrice]                              //
+//      //   SellPrice можно НЕ писать - тогда он = BuyPrice * SellCoef (по умолчанию 10%)     //
+//      //   либо написать "*" - то же самое                                                   //
+//      //   Quantity: * = максимум стака/пачки, M = магазин, W = оружие, S = свежая еда,      //
+//      //             число = точное количество (тир-строка для стака)                        //
+//      //   Цена -1 = торговец НЕ покупает/НЕ продаёт это направление                          //
+//      // <SellCoef> 0.15   - необязательно, задаётся у трейдера или у категории (по умолч. 0.10) //
+//      // АВТО-ЦЕНЫ: <AutoPrices> в TraderVariables.txt (генерация TraderConfig_auto.txt)      //
+//      // INCLUDES: Vanilla + Sakhal + Livonia + SPS + SCARA + TERJE Medical                 //
+//                                                                                             //
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+// =========================================================================
+// НАЗВАНИЕ ВАЛЮТЫ И МОНЕТЫ
+// =========================================================================
+<CurrencyName> #tm_ruble                                                  // Название валюты (в правом верхнем углу)
+	<Currency> SPS_Money5000,     1                                    // Купюра 5000 рублей (SPS мод)
+	//<Currency> SPSMoneyRuble1,     1                                 // Монета 1 рубль (SPS)
+    	//<Currency> MoneyRuble5,     5                                 // Монета 5 рублей
+    	//<Currency> MoneyRuble10,    10                                // Монета 10 рублей
+    	//<Currency> MoneyRuble25,    25                                // Монета 25 рублей
+    	//<Currency> MoneyRuble50,    50                                // Монета 50 рублей
+    	//<Currency> MoneyRuble100,   100                               // Монета 100 рублей
+
+
+// =========================================================================
+// TRADER 0: ТОРГОВЕЦ РАСХОДНЫМИ ТОВАРАМИ (Еда, Напитки, Медицина, Лекарства, Обмен валют)
+// =========================================================================
+//Маркер 0
+<Trader> Consume Trader                                                  // Торговец ID 0
+
+    // =====================================================================
+    // ОВОЩИ И ФРУКТЫ (Скоропортящиеся, Дешёвые)
+    // =====================================================================
+    <Category> Vegetables
+        CaninaBerry,            *,      150,    15
+        SambucusBerry,          *,      150,    15
+        Plum,                   *,      180,    18
+        Kiwi,                   *,      180,    18
+        Apple,                  *,      150,    15
+        Pear,                   *,      180,    18
+        Orange,                 *,      180,    18
+        Banana,                 *,      180,    18
+        Tomato,                 *,      220,    22
+        Potato,                 *,      250,    25
+        GreenBellPepper,        *,      250,    25
+        Zucchini,               *,      300,    30
+        Pumpkin,                *,      400,    40
+        AgaricusMushroom,       *,      200,    20
+        AmanitaMushroom,        *,      200,    20
+        LactariusMushroom,      *,      200,    20
+        MacrolepiotaMushroom,   *,      200,    20
+        PsilocybeMushroom,      *,      200,    20
+        AuriculariaMushroom,    *,      200,    20
+        BoletusMushroom,        *,      200,    20
+        PleurotusMushroom,      *,      200,    20
+        lux_WatermelonSlice,    *,      250,    25
+
+    // =====================================================================
+    // УПАКОВАННЫЕ И КОНСЕРВИРОВАННЫЕ ПРОДУКТЫ
+    // =====================================================================
+    <Category> Packaged Food
+        PowderedMilk,           *,      300,    30
+        BoxCerealCrunchin,      *,      400,    40
+        Chips,                  *,      400,    40
+        Crackers,               *,      400,    40
+        SaltySticks,            *,      400,    40
+        Zagorky,                *,      400,    40
+        ZagorkyChocolate,       *,      500,    50
+        ZagorkyPeanuts,         *,      500,    50
+        Rice,                   *,      600,    60
+        Marmalade,              *,      600,    60
+        Honey,                  *,      600,    60
+        PeachesCan,             *,      1000,   100
+        SardinesCan,            *,      1000,   100
+        DogFoodCan,             *,      1000,   100
+        TunaCan,                *,      1000,   100
+        BrisketSpread,          *,      1200,   120
+        Pate,                   *,      1200,   120
+        Lunchmeat,              *,      1200,   120
+        CatFoodCan,             *,      1200,   120
+        Pajka,                  *,      1200,   120
+        SpaghettiCan,           *,      1500,   150
+        BakedBeansCan,          *,      1500,   150
+        PorkCan,                *,      1500,   150
+        TacticalBaconCan,       *,      1800,   180
+        UnknownFoodCan,         *,      1800,   180
+        CrabCan,                *,      2000,   200
+
+    // =====================================================================
+    // ПРАЗДНИЧНЫЕ ПРЕДМЕТЫ
+    // =====================================================================
+    <Category> Party
+        Candycane_Green,        *,      5,      0
+        Candycane_Red,          *,      5,      0
+        Candycane_RedGreen,     *,      5,      0
+        Candycane_Yellow,       *,      5,      0
+
+    // =====================================================================
+    // МЯСО
+    // =====================================================================
+    <Category> Meat
+
+        ChickenBreastMeat,      S,      300,    30
+        GoatSteakMeat,          S,      400,    40
+        SheepSteakMeat,         S,      400,    40
+        PigSteakMeat,           S,      500,    50
+        BoarSteakMeat,          S,      500,    50
+        WolfSteakMeat,          S,      500,    50
+        DeerSteakMeat,          S,      600,    60
+        CowSteakMeat,           S,      600,    60
+        Sardines,               S,      800,    80
+        Carp,                   S,      1000,   100
+        Mackerel,               S,      1000,   100
+        SteelheadTrout,         S,      1200,   120
+        Shrimp,                 S,      600,    60
+
+    // =====================================================================
+    // ЧАСТИ ЖИВОТНЫХ (Обычные)
+    // =====================================================================
+    <Category> Animal Parts
+        Bone,                   *,      200,    20
+        Lard,                   *,      200,    20
+        Guts,                   *,      200,    20
+        SmallGuts,              *,      200,    20
+        ChickenFeather,         *,      200,    20
+
+    // =====================================================================
+    // ЧАСТИ КРОКОДИЛА
+    // =====================================================================
+    <Category> Animal Parts Croco
+        CrocodileSteakMeat,     S,      800,    80
+        CrocodileVest_Dark,     *,      5000,   500
+        CrocodileVest_Green,    *,      5000,   500
+        CrocodileVest_Brown,    *,      5000,   500
+        CrocodileVest_Grey,     *,      5000,   500
+        CrocodileVest_Albine,   *,      8000,   800
+        Gambler_Hat_Black,              *,      2500,   250
+        Gambler_Hat_BlackStraps_Dark,   *,      2000,   200
+        Gambler_Hat_BlackStraps_Green,  *,      2000,   200
+        Gambler_Hat_BlackStraps_Brown,  *,      2000,   200
+        Gambler_Hat_BlackStraps_Grey,   *,      2000,   200
+        Gambler_Hat_BlackStraps_Albine, *,      3500,   350
+        CrocodileDundeeKnife,   *,      3500,   350
+        CrocodileSkin_Dark,         *,      2000,   200
+        CrocodileSkin_Green,        *,      2000,   200
+        CrocodileSkin_Brown,        *,      2000,   200
+        CrocodileSkin_Grey,         *,      2000,   200
+        CrocodileSkin_Albine,       *,      3000,   300
+        CrocodileSkinHands_Dark,    *,      1500,   150
+        CrocodileSkinHands_Green,   *,      1500,   150
+        CrocodileSkinHands_Brown,   *,      1500,   150
+        CrocodileSkinHands_Grey,    *,      1500,   150
+        CrocodileSkinHands_Albine,  *,      2500,   250
+        CrocodileSkinParts_Dark,    *,      800,    80
+        CrocodileSkinParts_Green,   *,      800,    80
+        CrocodileSkinParts_Brown,   *,      800,    80
+        CrocodileSkinParts_Grey,    *,      800,    80
+        CrocodileSkinParts_Albine,  *,      1200,   120
+        CrocodileTeeth,             *,      1000,   100
+        CrocodileLeatherStrapTeeth_Dark,    *,      1800,   180
+        CrocodileLeatherStrapTeeth_Green,   *,      1800,   180
+        CrocodileLeatherStrapTeeth_Brown,   *,      1800,   180
+        CrocodileLeatherStrapTeeth_Grey,    *,      1800,   180
+        CrocodileLeatherStrapTeeth_Albine,  *,      2800,   280
+        CrocodileLeatherStrap_Dark,         *,      1200,   120
+        CrocodileLeatherStrap_Green,        *,      1200,   120
+        CrocodileLeatherStrap_Brown,        *,      1200,   120
+        CrocodileLeatherStrap_Grey,         *,      1200,   120
+        CrocodileLeatherStrap_Albine,       *,      2000,   200
+
+    // =====================================================================
+    // ЧАСТИ ПАУКА
+    // =====================================================================
+    <Category> Animal Parts Spider
+        fangknife,              *,      3000,   300
+	fangDressing,              *,      3000,   300
+        legspear,               W,      4000,   400
+	spiderMeat,             S,      3000,   300
+	spiderMeatB,             S,      3000,   300
+	spiderEgg,             S,      3000,   300
+    // =====================================================================
+    // ЧАСТИ ПАНТЕРЫ
+    // =====================================================================
+    <Category> Animal Parts Panter
+        PanterSteakMeat,        S,      1200,   120
+        PanterPelt,             *,      3000,   300
+
+    // =====================================================================
+    // ЧАСТИ ЖУКА-НОСОРОГА
+    // =====================================================================
+    <Category> Animal Parts Rhino
+        RhinoSteakMeat,         S,      1500,   150
+        RhinoHead,              *,      5000,   500
+
+    // =====================================================================
+    // ЧАСТИ ТИГРА
+    // =====================================================================
+    <Category> Animal Parts Tiger
+        TigerSteakMeat,         S,      1500,   150
+        TigerPelt,              *,      4000,   400
+
+    // =====================================================================
+    // ЧАСТИ МОНСТРОВ (BRDK Zombie Mod)
+    // =====================================================================
+    <Category> Animal Parts ZMB
+        BRDK_Tuskano_dead,      S,      800,    80
+        BRDK_ForestMonster_heart, *,    8000,   800
+        BRDK_Infernal_pelt,         *,  6000,   600
+        BRDK_Doberpelt,             *,  4000,   400
+        BRDK_Doberguts,             *,  1500,   150
+        BRDK_Doberlard,             *,  1000,   100
+        BRDK_Spiker1_head,          *,  3000,   300
+        BRDK_Spiker1_hand,          *,  2000,   200
+        BRDK_Spiker1_leg,           *,  2000,   200
+        BRDK_Spiker2_head,          *,  3000,   300
+        BRDK_Spiker2_hand,          *,  2000,   200
+        BRDK_Spiker2_leg,           *,  2000,   200
+        BRDK_Spiker3_head,          *,  3000,   300
+        BRDK_Spiker3_hand,          *,  2000,   200
+        BRDK_Spiker3_leg,           *,  2000,   200
+        BRDK_OpenHead1_head,        *,  2500,   250
+        BRDK_OpenHead1_hand,        *,  1500,   150
+        BRDK_OpenHead1_leg,         *,  1500,   150
+        BRDK_OpenHead2_head,        *,  2500,   250
+        BRDK_OpenHead2_hand,        *,  1500,   150
+        BRDK_OpenHead2_leg,         *,  1500,   150
+        BRDK_OpenHead3_head,        *,  2500,   250
+        BRDK_OpenHead3_hand,        *,  1500,   150
+        BRDK_OpenHead3_leg,         *,  1500,   150
+        BRDK_MumyGiant_head,        *,  4000,   400
+        BRDK_MumyGiant_hand,        *,  2500,   250
+        BRDK_Infernal_head,         *,  5000,   500
+        BRDK_InfectedMutant_head,   *,  3500,   350
+        BRDK_InfectedMutant_hand,   *,  2000,   200
+        BRDK_InfectedMutant_Leg,    *,  2000,   200
+        BRDK_Deeper_hand,           *,  2000,   200
+        BRDK_Deeper_leg,            *,  2000,   200
+        BRDK_Deeper_little_hand,    *,  1500,   150
+        BRDK_Deeper_little_leg,     *,  1500,   150
+
+    // =====================================================================
+    // НАПИТКИ
+    // =====================================================================
+    <Category> Drinks
+        SodaCan_Cola,           *,      200,    20
+        SodaCan_Kvass,          *,      200,    20
+        SodaCan_Pipsi,          *,      200,    20
+        SodaCan_Spite,          *,      200,    20
+        SodaCan_Fronta,         *,      200,    20
+        WaterBottle,            *,      800,    80
+        Canteen,                *,      1200,   120
+Canteen_DPM, *, 1200, 120
+Canteen_Flecktarn, *, 1200, 120
+Canteen_BDU, *, 1200, 120
+Canteen_Desert, *, 1200, 120
+Canteen_Woodland, *, 1200, 120
+Canteen_GorkaA, *, 1200, 120
+Canteen_GorkaS, *, 1200, 120
+Canteen_GorkaW, *, 1200, 120
+Canteen_TTsKO, *, 1200, 120
+Canteen_Black, *, 1200, 120
+Canteen_Olive, *, 1200, 120
+        FilteringBottle,        *,      3200,   1200
+        GlassBottle,            *,      200,    20
+
+    // =====================================================================
+    // МЕДИЦИНСКИЕ ПРИНАДЛЕЖНОСТИ (Ванильные)
+    // =====================================================================
+    <Category> Medical Supplies
+        BandageDressing,        *,      800,    80
+        BloodTestKit,           *,      500,    50
+        Thermometer,            *,      500,    50
+        DisinfectantSpray,      *,      1000,   100
+        IodineTincture,         *,      1000,   100
+        Heatpack,               *,      600,    60
+        StartKitIV,             *,      800,    80
+        SalineBag,              *,      1200,   120
+        BloodBagEmpty,          *,      800,    80
+        FirstAidKit,            *,      2500,   250
+
+    // =====================================================================
+    // ЛЕКАРСТВА (Ванильные + SPS + TERJE)
+    // =====================================================================
+    <Category> Medications
+        // === ВАНИЛЬНЫЕ ЛЕКАРСТВА ===
+        CharcoalTablets,        *,      600,    60
+        DisinfectantAlcohol,    *,      800,    80
+        VitaminBottle,          *,      800,    80
+        TetracyclineAntibiotics,*,     2200,   220
+        PainkillerTablets,      *,      1000,   100
+        Epinephrine,            *,      1200,   120
+        Morphine,               *,      1500,   150
+        AntiChemInjector,       *,      2500,   250
+
+        // === SPS 7200 (ЗАКОММЕНТИРОВАНЫ) ===
+       // SPS_7200_Drop,          *,      5000,   500
+       // SPS_7200_HealthBoost,   *,      6000,   600
+       // SPS_7200_HealthRestore, *,      8000,   800
+       // SPS_7200_Nootrop,       *,      4000,   400
+       // SPS_7200_UpEatWater,    *,      3500,   350
+       // RageVirusCure,          *,      10000,  1000
+
+        // === TERJE МАЗИ ===
+        TerjeSalveFinalgon,     *,      600,    60
+        TerjeSalveCapsicum,     *,      600,    60
+        TerjeSalveViprosal,     *,      800,    80
+
+        // === TERJE ТАБЛЕТКИ (Обязательные) ===
+        TerjePillsMagnesiumSulfate, *,  1000,   100
+        TerjePillsAdepress,     *,      1200,   120
+
+        // === TERJE АМПУЛЫ (Обязательные) ===
+        TerjeAmpouleAlcohol,    *,      500,    50
+        TerjeAmpouleAmoxivan,   *,      2500,   250
+        TerjeAmpouleNovacaine,  *,      2000,   200
+        TerjeAmpouleNeirox,     *,      1800,   180
+        TerjeAmpouleErythropoetin, *,   3000,   300
+        TerjeAmpouleAdrenalin,  *,      2000,   200
+        TerjeAmpouleMetralindole, *,    2200,   220
+        TerjeAmpouleVaxicam,    *,      4000,   400
+        TerjeAmpouleZerivax,    *,      4000,   400
+        TerjeAmpouleRabivax,    *,      4500,   450
+        TerjeAmpouleRabinoline, *,      2500,   250
+        TerjeAmpouleNeirocetal, *,      2800,   280
+
+        // === TERJE ИНЪЕКТОРЫ (Обязательные) ===
+        TerjeInjectorZivirol,   *,      3000,   300
+        TerjeInjectorAmoxiclav, *,      3500,   350
+        TerjeInjectorNeirox,    *,      2500,   250
+        TerjeInjectorErythropoietin, *, 4000,   400
+        TerjeInjectorNovichek,  *,      6000,   600
+        TerjeInjectorPropital,  *,      4000,   400
+
+        // === TERJE ТАБЛЕТКИ (Дополнительные) ===
+        TerjePillsCharcoalTablets,      *,      600,    60
+        TerjePillsPainkillerTablets,    *,      1000,   100
+        TerjePillsTetracyclineAntibiotics, *,   2200,   220
+        TerjePillsAnalgin,              *,      800,    80
+        TerjePillsNimesulid,            *,      1200,   120
+        TerjePillsParacetamol,          *,      800,    80
+        TerjePillsIbuprofen,            *,      800,    80
+        TerjePillsNurofen,              *,      1000,   100
+        TerjePillsAmoxiclav,            *,      2500,   250
+        TerjePillsPiperacylin,          *,      2800,   280
+        TerjePillsAmibaktam,            *,      3000,   300
+        TerjePillsPolisorb,             *,      1500,   150
+        TerjePillsMesalazin,            *,      1800,   180
+        TerjePillsFtalazol,             *,      1600,   160
+        TerjePillsNoopept,              *,      2000,   200
+        TerjePillsVikasol,              *,      1200,   120
+        TerjePillsIrovit,               *,      1400,   140
+        TerjePillsAgteminol,            *,      1600,   160
+        TerjePillsVenlafaxine,          *,      2000,   200
+        TerjePillsRombiopental,         *,      3000,   300
+
+        // === TERJE АМПУЛЫ (Дополнительные) ===
+        TerjeAmpouleKetarol,            *,      3000,   300
+        TerjeAmpouleFlemoclav,          *,      3500,   350
+        TerjeAmpouleImipenem,           *,      4000,   400
+        TerjeAmpouleMorphine,           *,      5000,   500
+        TerjeAmpouleGexobarbital,       *,      4500,   450
+        TerjeAmpouleKetamin,            *,      3500,   350
+        TerjeAmpouleHeptral,            *,      4000,   400
+        TerjeAmpouleMetoclopramid,      *,      2500,   250
+        TerjeAmpouleActaparoxetine,     *,      5000,   500
+        TerjeAmpouleAmitriptyline,      *,      4500,   450
+        TerjeAmpouleRifampicyne,        *,      6000,   600
+        TerjeAmpouleZivirol,            *,      8000,   800
+
+        // === TERJE ИНЪЕКТОРЫ (Дополнительные) ===
+        TerjeInjectorPromidol,          *,      6000,   600
+        TerjeInjectorTopoizomeraza,     *,      8000,   800
+        TerjeInjectorErytromixelin,     *,      7000,   700
+        TerjeInjectorStomaproxidal,     *,      6500,   650
+        TerjeInjectorRabinucoline,      *,      10000,  1000
+        TerjeInjectorAmfitalicyne,      *,      9000,   900
+        TerjeInjectorReanimatal,        *,      12000,  1200
+
+    // =====================================================================
+    // КНИГИ НАВЫКОВ TERJE (ОЧЕНЬ ДОРОГИЕ)
+    // =====================================================================
+    <Category> Skill Books
+        TerjeBookImmunity1,         *,      25000,  2500
+        TerjeBookImmunity2,         *,      50000,  5000
+        TerjeBookImmunity3,         *,      100000, 10000
+        TerjeBookImmunity4,         *,      250000, 25000
+        TerjeBookImmunity5,         *,      500000, 50000
+        TerjeBookMedicine1,         *,      25000,  2500
+        TerjeBookMedicine2,         *,      50000,  5000
+        TerjeBookMedicine3,         *,      100000, 10000
+        TerjeBookMedicine4,         *,      250000, 25000
+        TerjeBookMedicine5,         *,      500000, 50000
+
+    // =====================================================================
+    // АПТЕЧКИ TERJE
+    // =====================================================================
+    <Category> First Aid Kits
+        TerjeFirstAidKitAdvance_Black,  *,   6000,   600
+        TerjeFirstAidKitAdvance_Brown,  *,   6000,   600
+        TerjeFirstAidKitAdvance_Green,  *,   6000,   600
+        TerjeFirstAidKitAdvance_Camo,   *,   6000,   600
+        TerjeFirstAidKitIndividual_Black,*, 3000,   300
+        TerjeFirstAidKitIndividual_Brown,*, 3000,   300
+        TerjeFirstAidKitIndividual_Green,*, 3000,   300
+        TerjeFirstAidKitIndividual_Camo, *, 3000,   300
+        TerjeFirstAidKitMedium,         *,   2000,   200
+        TerjeFirstAidKitLarge,          *,   4000,   400
+
+    // =====================================================================
+    // ЭКСПРЕСС-ТЕСТЫ TERJE
+    // =====================================================================
+    <Category> Express Tests
+        TerjeExpressTestAgents,         *,      15000,  1500
+        TerjeExpressTestVirusZPack,     *,      12000,  1200
+        TerjeExpressTestSepsisPack,     *,      12000,  1200
+        TerjeExpressTestRabiesPack,     *,      12000,  1200
+
+    // =====================================================================
+    // МЕДИЦИНСКИЕ ИНСТРУМЕНТЫ TERJE
+    // =====================================================================
+    <Category> Medical Tools
+        TerjeSyringeNew,            *,      500,    50
+        TerjeSyringeEmpty,          *,      300,    30
+        TerjeBandageHemostatic,     *,      1200,   120
+        TerjeSurgicalKit,           *,      3500,   350
+        TerjeSurgicalTool_White,    *,      2000,   200
+        TerjeSurgicalTool_Ceramic,  *,      2500,   250
+        Defibrillator,              *,      5000,   500
+
+    // =====================================================================
+    // ИНСТРУМЕНТЫ TERJE (Специальные)
+    // =====================================================================
+    <Category> Terje Tools
+        TerjeStethoscope,               *,      8000,   800
+        TerjeSleepingBag_Blue,          *,      35000,  3500
+        TerjeSleepingBag_Woodland,      *,      45000,  4500
+        TerjeHeadgearPsiHelm,           *,      100000, 10000
+        TerjeImprovisedSyringeEmpty,    *,      500,    50
+        TerjePlaster,                   *,      800,    80
+
+    // =====================================================================
+    // ЭНЕРГЕТИЧЕСКИЕ НАПИТКИ TERJE
+    // =====================================================================
+    <Category> Energy Drinks
+        TerjeDrinkMadBull,              *,      2000,   200
+        TerjeDrinkGang,                 *,      2000,   200
+        TerjeDrinkYaguar,               *,      2000,   200
+        TerjeDrinkPrayboy,              *,      2000,   200
+        TerjeDrink6Energy,              *,      2000,   200
+
+    // =====================================================================
+    // ОТРАВЛЕННЫЕ ПРЕДМЕТЫ TERJE
+    // =====================================================================
+    <Category> Poisoned Items
+        TerjePillsPotassiumCyanide,     *,      3000,   300
+        TerjePillsArsenic,              *,      3500,   350
+        TerjePillsIversan,              *,      4000,   400
+        TerjeAmpoulePotassiumCyanide,   *,      5000,   500
+        TerjeAmpouleArsenic,            *,      5500,   550
+        TerjeAmpouleBeladonna,          *,      6000,   600
+        TerjeAmpouleStrychnine,         *,      7000,   700
+        TerjeAmpouleKonyin,             *,      6500,   650
+
+    // =====================================================================
+    // РАДИАЦИОННЫЕ ПРЕПАРАТЫ TERJE (Только с модом TerjeRadiation)
+    // =====================================================================
+    <Category> Radiation Supplies
+        TerjePillsB190,                 *,      8000,   800
+        TerjePillsPotassiumIodide,      *,      5000,   500
+        TerjePillsHexacyanoferrate,     *,      6000,   600
+        TerjePillsMexamine,             *,      7000,   700
+        TerjeAmpoulePentacin,           *,      10000,  1000
+        TerjeAmpouleCarboxyme,          *,      12000,  1200
+
+
+// =========================================================================
+// TRADER 1: MISC TRADER (Tools, Hardware, Tents, Flags, Seeds, Keys)
+// =========================================================================
+//Marker 1
+<Trader> Misc Trader                                                   // Trader ID 1
+
+    // ----- TOOLS (SMALL) -----------------------------------------------
+    <Category> Tools (small)
+        Screwdriver,            *,      400,    40                       // Screwdriver / Отвёртка
+        Wrench,                 *,      400,    40                       // Wrench / Гаечный ключ
+        SewingKit,              *,      500,    50                       // Sewing kit / Швейный набор
+        Pliers,                 *,      500,    50                       // Pliers / Плоскогубцы
+        LeatherSewingKit,       *,      600,    60                       // Leather sewing kit / Набор для кожи
+        Whetstone,              *,      600,    60                       // Whetstone / Точило
+        Hammer,                 *,      700,    70                       // Hammer / Молоток
+        Hacksaw,                *,      700,    70                       // Hacksaw / Ножовка
+        HandSaw,                *,      700,    70                       // Hand saw / Пила
+        WeaponCleaningKit,      *,      800,    80                       // Weapon cleaning kit / Набор для чистки
+        KitchenKnife,           *,      800,    80                       // Kitchen knife / Кухонный нож
+        SteakKnife,             *,      900,    90                       // Steak knife / Нож для стейка
+        HuntingKnife,           *,      900,    90                       // Hunting knife / Охотничий нож
+        FangeKnife,             *,      900,    90                       // Fange knife / Нож «Фанге»
+        CanOpener,              *,      1000,   100                      // Can opener / Открывалка
+        Compass,                *,      1000,   100                      // Compass / Компас
+        OrienteeringCompass,    *,      1000,   100                      // Orienteering compass / Спортивный компас
+        Hatchet,                *,      1000,   100                      // Hatchet / Топорик
+        CombatKnife,            *,      1200,   120                      // Combat knife / Боевой нож
+        KukriKnife,             *,      1200,   120                      // Kukri / Кукри
+        Machete,                *,      1400,   140                      // Machete / Мачете
+        Cleaver,                *,      1400,   140                      // Cleaver / Секач
+        CrudeMachete,           *,      1400,   140                      // Crude machete / Самодельное мачете
+        OrientalMachete,        *,      1400,   140                      // Oriental machete / Восточное мачете
+        Sickle,                 *,      1400,   140                      // Sickle / Серп
+        ChernarusMap,           *,      1500,   150                      // Chernarus map / Карта Чернаруси
+        Lockpick,               *,      2000,   200                      // Lockpick / Отмычка
+        Binoculars,             *,      3000,   300                      // Binoculars / Бинокль
+        FishingRod,             *,      5000,   500                      // Fishing rod / Удочка
+        GPSReceiver,            *,      10000,  1000                     // GPS / GPS-навигатор
+        PunchedCard,            *,      15000,  -1                      // Punch card (no sell) / Перфокарта
+
+        // SCARA Knives (Custom)
+        Scara_Karambit,         *,      2500,   250                      // SCARA Karambit
+        Scara_Butterfly,        *,      2000,   200                      // SCARA Butterfly
+        Scara_Huntsman,         *,      1800,   180                      // SCARA Huntsman
+        Scara_Classic,          *,      1500,   150                      // SCARA Classic
+        Scara_M9Bayonet,        *,      2200,   220                      // SCARA M9 Bayonet
+        Scara_Paracord,         *,      2500,   250                      // SCARA Paracord
+        Scara_Skeleton,         *,      1800,   180                      // SCARA Skeleton
+        Scara_Stiletto,         *,      2000,   200                      // SCARA Stiletto
+        Scara_Survival,         *,      2500,   250                      // SCARA Survival
+        Scara_Talon,            *,      2200,   220                      // SCARA Talon
+        Scara_Nomad,            *,      2500,   250                      // SCARA Nomad
+        Scara_Bowie,            *,      2000,   200                      // SCARA Bowie
+        Scara_Falchion,         *,      2000,   200                      // SCARA Falchion
+        Scara_Gut,              *,      1800,   180                      // SCARA Gut
+
+    // ----- TOOLS (BIG) ------------------------------------------------
+    <Category> Tools (big)
+        LugWrench,              *,      400,    40                       // Lug wrench / Баллонный ключ
+        Crowbar,                *,      600,    60                       // Crowbar / Ломик
+        Shovel,                 *,      700,    70                       // Shovel / Лопата
+        FieldShovel,            *,      700,    70                       // Field shovel / Сапёрная лопатка
+        FarmingHoe,             *,      700,    70                       // Hoe / Мотыга
+        Pitchfork,              *,      700,    70                       // Pitchfork / Вилы
+        Broom,                  *,      700,    70                       // Broom / Метла
+        Broom_Birch,            *,      700,    70                       // Birch broom / Берёзовая метла
+        Pickaxe,                *,      1000,   100                      // Pickaxe / Кирка
+        SledgeHammer,           *,      1200,   120                      // Sledgehammer / Кувалда
+        PipeWrench,             W,      1500,   150                      // Pipe wrench / Разводной ключ
+        WoodAxe,                *,      2000,   200                      // Wood axe / Лесорубный топор
+        FirefighterAxe,         *,      3000,   300                      // Firefighter axe / Пожарный топор
+
+
+    // ----- ELECTRONICS ------------------------------------------------
+    <Category> Electronics
+        Battery9V,              *,      800,    80                       // 9V battery / Батарейка 9V
+        PersonalRadio,          *,      1000,   100                      // Personal radio / Рация
+        Megaphone,              *,      3000,   300                      // Megaphone / Мегафон
+        ElectronicRepairKit,    *,      3500,   350                      // Electronic repair kit / Ремнабор электроники
+        CableReel,              *,      4000,   400                      // Cable reel / Катушка с кабелем
+        BatteryCharger,         *,      4000,   400                      // Battery charger / Зарядное устройство
+        BaseRadio,              *,      5000,   500                      // Base radio / Базовая рация
+        Rangefinder,            *,      10000,  1000                     // Rangefinder / Дальномер
+        NVGoggles,              *,      15000,  1500                     // NVG / Прибор ночного видения
+        lux_CardEncoder,        *,      5000,   500                      // Card Encoder
+        lux_EncryptionFloppy,   *,      4000,   400                      // Encryption Floppy
+
+    // ----- FIRE & LIGHTS ----------------------------------------------
+    <Category> Fire & Lights
+        Chemlight_Blue,         *,      200,    20                       // Blue chemlight / Синяя ХЛ
+        Chemlight_Green,        *,      200,    20                       // Green chemlight / Зелёная ХЛ
+        Chemlight_Red,          *,      200,    20                       // Red chemlight / Красная ХЛ
+        Chemlight_White,        *,      200,    20                       // White chemlight / Белая ХЛ
+        Chemlight_Yellow,       *,      200,    20                       // Yellow chemlight / Жёлтая ХЛ
+        Roadflare,              *,      400,    40                       // Road flare / Факел
+        Matchbox,               *,      600,    60                       // Matches / Спички
+        PetrolLighter,          *,      600,    60                       // Lighter / Зажигалка
+        Flashlight,             *,      1500,   150                      // Flashlight / Фонарик
+        PortableGasLamp,        *,      2500,   250                      // Gas lamp / Газовая лампа
+        PortableGasStove,       *,      3000,   300                      // Gas stove / Газовая плита
+        Blowtorch,              *,      4000,   400                      // Blowtorch / Паяльная лампа
+        Headtorch_Black,        *,      4000,   400                      // Black headtorch / Налобный (чёрный)
+        Headtorch_Grey,         *,      4000,   400                      // Grey headtorch / Налобный (серый)
+        Spotlight,              *,      15000,  1500                     // Spotlight / Прожектор
+
+    // ----- COOKING & HUNTING ------------------------------------------
+    <Category> Cooking & Hunting Supplies
+        PurificationTablets,    *,      500,    50                       // Water purification tabs / Таблетки для воды
+        KitchenTimer,           *,      2500,   250                      // Kitchen timer / Кухонный таймер
+        Pot,                    *,      2500,   250                      // Cooking pot / Кастрюля
+        Cauldron,               *,      2500,   250                      // Cauldron / Котёл
+        FryingPan,              *,      2500,   250                      // Frying pan / Сковорода
+        MeatTenderizer,         *,      2500,   250                      // Meat tenderizer / Молоток для мяса
+        Tripod,                 *,      3500,   350                      // Tripod / Тренога
+        BearTrap,               *,      5000,   500                      // Bear trap / Медвежий капкан
+
+
+    // ----- HARDWARE & CONSTRUCTION ------------------------------------
+    <Category> Hardware Supplies
+        Paper,                  *,      100,    10                       // Paper / Бумага
+        Pen_Blue,               *,      200,    20                       // Blue pen / Синяя ручка
+        Rope,                   *,      400,    40                       // Rope / Верёвка
+        TannedLeather,          *,      400,    40                       // Tanned leather / Выделанная кожа
+        AntiPestsSpray,         *,      800,    80                       // Pest spray / Средство от насекомых
+        MetalWire,              *,      1500,   150                      // Metal wire / Проволока
+        EpoxyPutty,             *,      1500,   150                      // Epoxy putty / Эпоксидка
+        DuctTape,               *,      2000,   200                      // Duct tape / Скотч
+        XmasLights,             *,      2500,   250                      // Christmas lights / Гирлянда
+        AlarmClock_Blue,        *,      2500,   250                      // Blue alarm clock / Будильник (син.)
+        AlarmClock_Green,       *,      2500,   250                      // Green alarm clock / Будильник (зел.)
+        AlarmClock_Red,         *,      2500,   250                      // Red alarm clock / Будильник (красн.)
+        HandcuffKeys,           *,      3500,   350                      // Handcuff keys / Ключ от наручников
+        Handcuffs,              *,      5000,   500                      // Handcuffs / Наручники
+        Netting,                1,      5000,   500                      // Netting / Сеть
+        BurlapSack,             *,      5000,   500                      // Burlap sack / Мешковина
+        Fabric,                 *,      5000,   500                      // Fabric / Ткань
+        WoodenPlank,            10,     6000,   600                      // Wooden planks (x10) / Доски (10 шт)
+        MetalPlate,             *,      10000,  1000                     // Metal plate / Металлический лист
+        SmallProtectorCase,     *,      7000,   700                      // Small protector case / Малый сейф
+        AmmoBox,                *,      8000,   800                      // Ammo box / Боеприпасы (ящик)
+        SmallGasCanister,       *,      8000,   800                      // Small gas canister / Баллон (мал.)
+        MediumGasCanister,      *,      10000,  1000                     // Medium gas canister / Баллон (сред.)
+        LargeGasCanister,       *,      15000,  1500                     // Large gas canister / Баллон (бол.)
+        CanisterGasoline,       *,      20000,  2000                     // Gasoline canister / Канистра бензина
+        NailBox,                *,      16000,  1600                     // Nails box / Гвозди
+        BarbedWire,             *,      20000,  2000                     // Barbed wire / Колючая проволока
+        Camonet,                *,      25000,  2500                     // Camouflage net / Маскировочная сеть
+        HescoBox,               *,      30000,  3000                     // Hesco box / Мешок с песком
+        CombinationLock,        *,      30000,  3000                     // 3-digit lock / 3-значный замок
+        CombinationLock4,       *,      35000,  3500                     // 4-digit lock / 4-значный замок
+        BarrelHoles_Blue,       *,      30000,  3000                     // Blue barrel (holes) / Бочка син. (дыр.)
+        BarrelHoles_Green,      *,      30000,  3000                     // Green barrel (holes) / Бочка зел. (дыр.)
+        BarrelHoles_Red,        *,      30000,  3000                     // Red barrel (holes) / Бочка красн. (дыр.)
+        BarrelHoles_Yellow,     *,      30000,  3000                     // Yellow barrel (holes) / Бочка жёлт. (дыр.)
+        Barrel_Blue,            *,      40000,  4000                     // Blue barrel / Бочка синяя
+        Barrel_Green,           *,      40000,  4000                     // Green barrel / Бочка зелёная
+        Barrel_Red,             *,      40000,  4000                     // Red barrel / Бочка красная
+        Barrel_Yellow,          *,      40000,  4000                     // Yellow barrel / Бочка жёлтая
+        SeaChest,               *,      80000,  8000                     // Sea chest / Морской сундук
+        AnniversaryBox,         *,      10000,  1000                     // Anniversary box / Юбилейный ящик
+        PowerGenerator,         *,      50000,  5000                     // Generator / Генератор
+        MediumTent,             *,      100000, 10000                    // Medium tent / Средняя палатка
+        CarTent,                *,      150000, 15000                    // Car tent / Автомобильная палатка
+        LargeTent,              *,      200000, 20000                    // Large tent / Большая палатка
+        MediumTent_Green,       *,      100000, 10000                    // Green medium tent / Палатка зелёная
+        MediumTent_Orange,      *,      100000, 10000                    // Orange medium tent / Палатка оранж.
+        PartyTent,              *,      100000, 10000                    // Party tent / Праздничная палатка
+        PartyTent_Blue,         *,      100000, 10000                    // Blue party tent / Палатка син.
+        PartyTent_Brown,        *,      100000, 10000                    // Brown party tent / Палатка кор.
+        PartyTent_Lunapark,     *,      100000, 10000                    // Lunapark tent / Палатка Лунапарк
+
+        ScientificBriefcase,    *,      20000,  2000                     // Scientific Briefcase
+
+
+    // ----- FLAGS (Status items, fixed price) --------------------------
+    <Category> Flags
+        Flag_APA,               *,      5000,   500                      // APA flag
+        Flag_Altis,             *,      5000,   500
+        Flag_BabyDeer,          *,      5000,   500
+        Flag_Bear,              *,      5000,   500
+        Flag_Bohemia,           *,      5000,   500
+        Flag_BrainZ,            *,      5000,   500
+        Flag_CDF,               *,      5000,   500
+        Flag_CHEL,              *,      5000,   500
+        Flag_CMC,               *,      5000,   500
+        Flag_Cannibals,         *,      5000,   500
+        Flag_Chedaki,           *,      5000,   500
+        Flag_Chernarus,         *,      5000,   500
+        Flag_DayZ,              *,      5000,   500
+        Flag_HunterZ,           *,      5000,   500
+        Flag_Livonia,           *,      5000,   500
+        Flag_LivoniaArmy,       *,      5000,   500
+        Flag_LivoniaPolice,     *,      5000,   500
+        Flag_NAPA,              *,      5000,   500
+        Flag_NSahrani,          *,      5000,   500
+        Flag_Pirates,           *,      5000,   500
+        Flag_Rooster,           *,      5000,   500
+        Flag_SSahrani,          *,      5000,   500
+        Flag_TEC,               *,      5000,   500
+        Flag_UEC,               *,      5000,   500
+        Flag_White,             *,      5000,   500
+        Flag_Wolf,              *,      5000,   500
+        Flag_Zenit,             *,      5000,   500
+        Flag_RSTA,              *,      5000,   500
+        Flag_Refuge,            *,      5000,   500
+        Flag_Snake,             *,      5000,   500
+        Flag_Crook,             *,      5000,   500
+        Flag_Rex,               *,      5000,   500
+        Flag_Zagorky,           *,      5000,   500
+
+    // ----- SEEDS & LIME ------------------------------------------------
+    <Category> Seeds & Lime
+        TomatoSeedsPack,        *,      600,    60                       // Tomato seeds / Семена томатов
+        PepperSeedsPack,        *,      600,    60                       // Pepper seeds / Семена перца
+        ZucchiniSeedsPack,      *,      800,    80                       // Zucchini seeds / Семена кабачков
+        PumpkinSeedsPack,       *,      1000,   100                      // Pumpkin seeds / Семена тыквы
+        GardenLime,             *,      2000,   200                      // Garden lime / Садовая известь
+
+    // ----- PLUSH TOYS (Fluffy pets) ------------------------------------
+    <Category> Fluffy Pets <3
+        Bear_Beige,             *,      500,    50                       // Beige teddy bear
+        Bear_Dark,              *,      500,    50                       // Dark teddy bear
+        Bear_Pink,              *,      500,    50                       // Pink teddy bear
+        Bear_White,             *,      500,    50                       // White teddy bear
+
+    // ----- KEYS (Sell Only) --------------------------------------------
+    <Category> Keys (Sell Only)
+        ScientificBriefcaseKeys,*,      -1,     5000                    // Scientific Briefcase Keys
+
+
+// =========================================================================
+// TRADER 2: WEAPON TRADER (Guns, Melee, Grenades, Launchers)
+// =========================================================================
+//Marker 2
+<Trader> Weapon Trader                                                 // Trader ID 2
+
+    // ----- MELEE WEAPONS ----------------------------------------------
+    <Category> Melee
+        BrassKnuckles_Shiny,    W,      1000,   100                      // Brass knuckles / Кастет
+        StunBaton,              W,      1500,   150                      // Stun baton / Электрошокер
+        Pipe,                   W,      2000,   200                      // Iron pipe / Труба
+        CattleProd,             W,      2500,   250                      // Cattle prod / Электрошокер (для скота)
+        BaseballBat,            W,      3000,   300                      // Baseball bat / Бейсбольная бита
+        NailedBaseballBat,      W,      4000,   400                      // Nailed bat / Бита с гвоздями
+        Mace,                   W,      4000,   400                      // Mace / Булава
+        Sword,                  W,      4000,   400                      // Sword / Меч
+
+        IceAxe,                 W,      4000,   400                      // Ice axe (Sakhal) / Ледовый топор
+        lux_JadeDagger,         W,      3000,   300                      // Jade Dagger
+
+    // ----- PISTOLS (Sidearms) -----------------------------------------
+    <Category> Sidearms
+        Flaregun,               W,      1500,   150                      // Flare gun / Сигнальный пистолет
+        MakarovIJ70,            W,      2000,   200                      // Makarov IJ-70 / Макаров
+        P1,                     W,      2000,   200                      // P1 pistol / Пистолет P1
+        Ruger1022,              W,      2000,   200                      // Ruger 10/22 / Карабин Ruger
+        CZ75,                   W,      2500,   250                      // CZ-75 / Пистолет CZ-75
+        FNX45,                  W,      3000,   300                      // FNX-45 / Пистолет FNX-45
+        Glock19,                W,      3000,   300                      // Glock 19 / Глок 19
+        MKII,                   W,      3000,   300                      // MK II / Пистолет MK II
+        Colt1911,               W,      3500,   350                      // Colt 1911 / Кольт 1911
+        Engraved1911,           W,      3500,   350                      // Engraved 1911 / Гравированный Кольт
+        Derringer_Black,        W,      3500,   350                      // Black Derringer / Дерринджер (чёрн.)
+        Derringer_Grey,         W,      3500,   350                      // Grey Derringer / Дерринджер (сер.)
+        Derringer_Pink,         W,      3500,   350                      // Pink Derringer / Дерринджер (роз.)
+        Deagle,                 W,      5000,   500                      // Desert Eagle / Десерт Игл
+        Deagle_Gold,            W,      7000,   700                      // Gold Deagle / Золотой Десерт Игл
+        Magnum,                 W,      6000,   600                      // Magnum / Магнум
+        Longhorn,               W,      6000,   600                      // Longhorn / Длиннорог
+
+    // ----- RIFLES (Hunting & Military) --------------------------------
+    <Category> Rifles
+        Izh18,                  W,      4000,   400                      // Izh-18 rifle / Иж-18
+        Mosin9130,              W,      8000,   800                      // Mosin 9130 / Мосинка
+        CZ527,                  W,      8000,   800                      // CZ-527 / Винтовка CZ-527
+        Winchester70,           W,      8000,   800                      // Winchester 70 / Винчестер 70
+        Repeater,               W,      8000,   800                      // Repeater / Левер-экшн
+        SKS,                    W,      9000,   900                      // SKS / СКС
+        SSG82,                  W,      9000,   900                      // SSG-82 / ССГ-82
+        Scout,                  W,      12000,  1200                     // Scout / Скаут
+        Scout_Chernarus,        W,      12000,  1200                     // Scout (Chernarus) / Скаут (Чернарусь)
+        Scout_Livonia,          W,      12000,  1200                     // Scout (Livonia) / Скаут (Ливония)
+        CZ550,                  W,      12000,  1200                     // CZ-550 / Чешская винтовка
+        M14,                    W,      12000,  1200                     // M14 / М14
+
+    // ----- SHOTGUNS ---------------------------------------------------
+    <Category> Shotguns
+        Izh18Shotgun,           W,      4000,   400                      // Izh-18 shotgun / Иж-18 (дроб.)
+        Mp133Shotgun,           W,      4000,   400                      // MP-133 / Дробовик MP-133
+        Izh43Shotgun,           W,      6000,   600                      // Izh-43 / Иж-43
+        Saiga,                  W,      10000,  1000                     // Saiga / Сайга
+        R12,                    W,      12000,   1200                      // R12 shotgun
+        OPG_1014,                    W,      10000,   1000                      // R12 shotgun
+
+    // ----- SUBMACHINE GUNS --------------------------------------------
+    <Category> Submachine Guns
+        PM73Rak,                   W,      5000,   500                      // CZ-61 Skorpion / Скорпион        
+        CZ61,                   W,      5000,   500                      // CZ-61 Skorpion / Скорпион
+        UMP45,                  W,      7000,   700                      // UMP-45 / УМП-45
+        MP5K,                   W,      5000,   500                      // MP5K / МР5К
+        PP19,                   W,      7000,   700                      // PP-19 Bizon / Бизон
+        AKS74U,                 W,      7000,   700                      // AKS-74U / АКС-74У
+        AKS74U_Black,           W,      7000,   700                      // AKS-74U Black
+        AKS74U_Green,           W,      7000,   700                      // AKS-74U Green
+        OPG_MP5SD,                    W,      10000,  1200    
+    // ----- ASSAULT RIFLES ---------------------------------------------
+    <Category> Assault Rifles
+        FAL,                    W,      12000,  1200                     // FN FAL / ФН ФАЛ
+        AKM,                    W,      10000,  1000                     // AKM / АКМ
+        AK101,                  W,      10000,  1000                     // AK-101 / АК-101
+        AK101_Black,            W,      10000,  1000                     // AK-101 Black
+        AK101_Green,            W,      10000,  1000                     // AK-101 Green
+        AK74,                   W,      9000,   900                      // AK-74 / АК-74
+        AK74_Black,             W,      9000,   900                      // AK-74 Black
+        AK74_Green,             W,      9000,   900                      // AK-74 Green
+        M4A1,                   W,      10000,  1000                     // M4A1 / М4А1
+
+        Aug,                    W,      10000,  1000                     // Steyr AUG / Штайр АУГ
+        AugShort,               W,      10000,  1000                     // AUG (short) / АУГ (короткий)
+        M16A2,                  W,      8000,   800                      // M16-A2 / М16-А2
+        FAMAS,                  W,      8000,   800                      // FAMAS / ФАМАС
+        Vikhr,                  W,      12000,  1200                     // Vikhr / Вихрь
+
+
+    // ----- SNIPER RIFLES ----------------------------------------------
+    <Category> Sniper Rifles
+        VSS,                    W,      12000,  1200                     // VSS Vintorez / ВСС Винторез
+        ASVAL,                  W,      12000,  1200                     // AS VAL / АС ВАЛ
+        B95,                    W,      14000,  1400                     // B-95 / Б-95
+        SVD,                    W,      15000,  1500                     // SVD Dragunov / СВД Драгунова
+        SVD_Wooden,             W,      20000,  2000                     // SVD Dragunov / СВД Драгунова
+        SV98,                   W,      15000,  1500                     // SV-98 / СВ-98
+        SCARH,             W,      30000,  3000                     // SVD Dragunov / СВД Драгунова
+        SCARH_Black,             W,      30000,  3000                     // SVD Dragunov / СВД Драгунова
+        OPG_SVU,             W,      20000,  2000                     // SVD Dragunov / СВД Драгунова
+        
+
+    // ----- CROSSBOWS --------------------------------------------------
+    <Category> Crossbows
+        Crossbow_Autumn,        W,      5000,   500                      // Autumn crossbow / Осенний арбалет
+        Crossbow_Black,         W,      5000,   500                      // Black crossbow / Чёрный арбалет
+        Crossbow_Summer,        W,      5000,   500                      // Summer crossbow / Летний арбалет
+        Crossbow_Wood,          W,      5000,   500                      // Wood crossbow / Деревянный арбалет
+        Ammo_HuntingBolt,       5,      500,    50                       // Hunting bolts (x5) / Болты (5 шт)
+        Ammo_CupidsBolt,        5,      1000,   100                      // Cupid's bolts (x5) / Болты Купидона (5 шт)
+
+    // ----- LAUNCHERS & AMMO -------------------------------------------
+    <Category> Launchers and Ammo
+        M79,                    W,      20000,  2000                     // M79 grenade launcher / M79
+        Ammo_40mm_Chemgas,      1,      5000,   500                      // 40mm Chemgas / Химический 40мм
+        Ammo_40mm_Explosive,    1,      5000,   500                      // 40mm Explosive / Осколочный 40мм
+        Ammo_40mm_Smoke_Black,  1,      5000,   500                      // 40mm Smoke (Black) / Дымовой (чёрн.)
+        Ammo_40mm_Smoke_Green,  1,      5000,   500                      // 40mm Smoke (Green) / Дымовой (зел.)
+        Ammo_40mm_Smoke_Red,    1,      5000,   500                      // 40mm Smoke (Red) / Дымовой (красн.)
+        Ammo_40mm_Smoke_White,  1,      5000,   500                      // 40mm Smoke (White) / Дымовой (бел.)
+        FireworksLauncher,      1,      10000,  1000                     // Fireworks launcher / Фейерверк
+        Anniversary_FireworksLauncher, 1,   10000,  1000                 // Anniversary fireworks / Юбилейный фейерверк
+
+    // ----- EXPLOSIVES & DETONATORS ------------------------------------
+    <Category> Explosives and Detonators
+        Plastic_Explosive,      1,      10000,  1000                     // Plastic explosive / Пластит
+        ClaymoreMine,           1,      10000,  1000                     // Claymore mine / Клеймор
+        RemoteDetonator,        1,      10000,  1000                     // Remote detonator / Детонатор
+	LandMineTrap,        1,      10000,  1000                     // Remote detonator / Детонатор
+
+        RGD5Grenade,            1,      5000,   500                      // RGD-5 / РГД-5
+        M67Grenade,             1,      5000,   500                      // M67 / М67
+        M18SmokeGrenade_Red,    1,      2500,   250                      // Smoke red / Дымовая (красн.)
+        M18SmokeGrenade_Green,  1,      2500,   250                      // Smoke green / Дымовая (зел.)
+        M18SmokeGrenade_Yellow, 1,      2500,   250                      // Smoke yellow / Дымовая (жёлт.)
+        M18SmokeGrenade_Purple, 1,      2500,   250                      // Smoke purple / Дымовая (фиол.)
+        M18SmokeGrenade_White,  1,      2500,   250                      // Smoke white / Дымовая (бел.)
+        RDG2SmokeGrenade_Black, 1,      2500,   250                      // RDG-2 black / РДГ-2 (чёрн.)
+        RDG2SmokeGrenade_White, 1,      2500,   250                      // RDG-2 white / РДГ-2 (бел.)
+        FlashGrenade,           1,      4000,   400                      // Flashbang / Светошумовая
+        Grenade_ChemGas,        1,      10000,  1000                     // Chemical gas grenade / Химическая
+
+
+// =========================================================================
+// TRADER 3: WEAPON SUPPLIES (Ammo, Mags, Optics, Attachments)
+// =========================================================================
+//Marker 3
+<Trader> Weapon Supplies                                               // Trader ID 3
+
+    // ----- AMMUNITION (ALL CALIBERS, Loose Rounds) --------------------
+    <Category> Ammunition
+        // 5.56x45
+        Ammo_556x45,            1,      100,    10
+        Ammo_556x45,            10,     1000,   100
+        Ammo_556x45,            30,     3000,   300
+        Ammo_556x45Tracer,      1,      120,    12
+        Ammo_556x45Tracer,      10,     1200,   120
+        Ammo_556x45Tracer,      30,     3600,   360
+        // 7.62x39
+        Ammo_762x39,            1,      110,    11
+        Ammo_762x39,            10,     1100,   110
+        Ammo_762x39,            30,     3300,   330
+        Ammo_762x39Tracer,      1,      130,    13
+        Ammo_762x39Tracer,      10,     1300,   130
+        Ammo_762x39Tracer,      30,     3900,   390
+        // 5.45x39
+        Ammo_545x39,            1,      85,     8.5
+        Ammo_545x39,            10,     850,    85
+        Ammo_545x39,            30,     2550,   255
+        Ammo_545x39Tracer,      1,      100,    10
+        Ammo_545x39Tracer,      10,     1000,   100
+        Ammo_545x39Tracer,      30,     3000,   300
+        // 7.62x54
+        Ammo_762x54,            1,      140,    14
+        Ammo_762x54,            10,     1400,   140
+        Ammo_762x54,            30,     4200,   420
+        Ammo_762x54Tracer,      1,      160,    16
+        Ammo_762x54Tracer,      10,     1600,   160
+        Ammo_762x54Tracer,      30,     4800,   480
+        // 9x19
+        Ammo_9x19,              1,      40,     4
+        Ammo_9x19,              10,     400,    40
+        Ammo_9x19,              30,     1200,   120
+        // .45 ACP
+        Ammo_45ACP,             1,      50,     5
+        Ammo_45ACP,             10,     500,    50
+        Ammo_45ACP,             30,     1500,   150
+        // 9x39
+        Ammo_9x39,              1,      120,    12
+        Ammo_9x39,              10,     1200,   120
+        Ammo_9x39,              30,     3600,   360
+        Ammo_9x39AP,            1,      160,    16
+        Ammo_9x39AP,            10,     1600,   160
+        Ammo_9x39AP,            30,     4800,   480
+        // .308 Win
+        Ammo_308Win,            1,      150,    15
+        Ammo_308Win,            10,     1500,   150
+        Ammo_308Win,            30,     4500,   450
+        Ammo_308WinTracer,      1,      170,    17
+        Ammo_308WinTracer,      10,     1700,   170
+        Ammo_308WinTracer,      30,     5100,   510
+        // 12 Gauge
+        Ammo_12gaSlug,          1,      60,     6
+        Ammo_12gaSlug,          10,     600,    60
+        Ammo_12gaSlug,          30,     1800,   180
+        Ammo_12gaPellets,       1,      40,     4
+        Ammo_12gaPellets,       10,     400,    40
+        Ammo_12gaPellets,       30,     1200,   120
+        Ammo_12gaRubberSlug,    1,      40,     4
+        Ammo_12gaRubberSlug,    10,     400,    40
+        Ammo_12gaRubberSlug,    30,     1200,   120
+        // .380
+        Ammo_380,               1,      25,     2.5
+        Ammo_380,               10,     250,    25
+        Ammo_380,               30,     750,    75
+        // .22 LR
+        Ammo_22,                1,      15,     1.5
+        Ammo_22,                10,     150,    15
+        Ammo_22,                30,     450,    45
+        // .357
+        Ammo_357,               1,      70,     7
+        Ammo_357,               10,     700,    70
+        Ammo_357,               30,     2100,   210
+
+    // ----- AMMO BOXES (Sell Only, Sealed, 15% value) -----------------
+    <Category> AmmoBoxes (Sell Only)
+        AmmoBox_556x45_20Rnd,       *,      -1,     300                 // 20 × 100 × 0.15
+        AmmoBox_762x39_20Rnd,       *,      -1,     330                 // 20 × 110 × 0.15
+        AmmoBox_762x54_20Rnd,       *,      -1,     420                 // 20 × 140 × 0.15
+        AmmoBox_308Win_20Rnd,       *,      -1,     450                 // 20 × 150 × 0.15
+        AmmoBox_9x39_20Rnd,         *,      -1,     360                 // 20 × 120 × 0.15
+        AmmoBox_9x39AP_20Rnd,       *,      -1,     480                 // 20 × 160 × 0.15
+        AmmoBox_545x39_20Rnd,       *,      -1,     255                 // 20 × 85 × 0.15
+        AmmoBox_12gaSlug_10Rnd,     *,      -1,     90                  // 10 × 60 × 0.15
+        AmmoBox_00buck_10Rnd,       *,      -1,     60                  // 10 × 40 × 0.15
+        AmmoBox_9x19_25Rnd,         *,      -1,     150                 // 25 × 40 × 0.15
+        AmmoBox_45ACP_25Rnd,        *,      -1,     188                 // 25 × 50 × 0.15
+        AmmoBox_22_50Rnd,           *,      -1,     113                 // 50 × 15 × 0.15
+        AmmoBox_380_35rnd,          *,      -1,     131                 // 35 × 25 × 0.15
+        AmmoBox_357_20Rnd,          *,      -1,     210                 // 20 × 70 × 0.15
+
+    // ----- MAGAZINES (one unified category) ---------------------------
+    <Category> Magazines
+        // STANAG / Western
+        Mag_STANAG_30Rnd,       M,      400,    40
+        Mag_STANAGCoupled_30Rnd, M,   500,    50
+        Mag_STANAG_60Rnd,       M,      800,    80
+        Mag_CMAG_10Rnd,         M,      200,    20
+        Mag_CMAG_20Rnd,         M,      300,    30
+        Mag_CMAG_30Rnd,         M,      400,    40
+        Mag_CMAG_40Rnd,         M,      500,    50
+        Mag_Aug_30Rnd,          M,      400,    40
+        Mag_FAMAS_25Rnd,        M,      400,    40
+        Mag_Vikhr_30Rnd,        M,      480,    48
+        // AK
+        Mag_AKM_30Rnd,          M,      440,    44
+        Mag_AKM_Palm30Rnd,      M,      440,    44
+        Mag_AKM_Drum75Rnd,      M,      880,    88
+        Mag_AK74_30Rnd,         M,      340,    34
+        Mag_AK74_45Rnd,         M,      500,    50
+        Mag_AK101_30Rnd,        M,      400,    40
+        // Pistols
+        Mag_Glock_15Rnd,        M,      160,    16
+        Mag_FNX45_15Rnd,        M,      200,    20
+        Mag_Deagle_9rnd,        M,      280,    28
+        Mag_CZ75_15Rnd,         M,      160,    16
+        Mag_IJ70_8Rnd,          M,      100,    10
+        Mag_MKII_10Rnd,         M,      60,     6
+        // SMG
+        Mag_MP5_30Rnd,          M,      160,    16
+        Mag_UMP_25Rnd,          M,      200,    20
+        // Shotguns
+        Mag_Saiga_5Rnd,         M,      240,    24
+        Mag_Saiga_8Rnd,         M,      340,    34
+        Mag_Saiga_Drum20Rnd,    M,      560,    56
+        // Sniper
+        Mag_SVD_10Rnd,          M,      560,    56
+        Mag_VSS_10Rnd,          M,      480,    48
+        Mag_VAL_20Rnd,          M,      480,    48
+        Mag_CZ550_10Rnd,        M,      600,    60
+        Mag_PM73_15Rnd,                  M,      160,    16
+        Mag_PM73_25Rnd,                  M,      260,    26
+        
+        Mag_CZ527_5Rnd,         M,      220,    22
+        Mag_SV98_10Rnd,         M,      600,    60
+        Mag_SCARH_20Rnd,             M,      3000,  1000                     // SVD Dragunov / СВД Драгунова
+        Mag_SCARH_20Rnd_Black,             M,      3000,  1000                     // SVD Dragunov / СВД Драгунова
+         
+
+    // ----- SUPPRESSORS ------------------------------------------------
+    <Category> Suppressors
+        M4_Suppressor,          *,      8780,   878                      // M4 suppressor / Глушитель M4
+        AK_Suppressor,          *,      9350,   935                      // AK suppressor / Глушитель AK
+        PistolSuppressor,       *,      7370,   737                      // Pistol suppressor / Пистолетный глушитель
+
+        UniversalSuppressor,    *,      12000,  1200                     // Universal suppressor
+        UniversalSuppressor_02, *,      14000,  1400                     // Universal suppressor 02
+
+    // ----- OPTICS -----------------------------------------------------
+    <Category> Optics
+        M4_CarryHandleOptic,    *,      500,    50
+        BUISOptic,              *,      500,    50
+        M68Optic,               *,      800,    80
+        ACOGOptic,              *,      1200,   120
+        ACOGOptic_6x,           *,      1500,   150
+        M4_T3NRDSOptic,         *,      800,    80
+
+        PSO1Optic,              *,      1500,   150
+        PSO11Optic,             *,      1800,   180
+	KashtanOptic,		*,      2000,   200
+        KazuarOptic,            *,      3000,   300
+        StarlightOptic,         *,      3000,   300
+        PUScopeOptic,           *,      1000,   100
+        HuntingOptic,           *,      1200,   120
+        PistolOptic,            *,      150,    15
+
+        // SPS Optics
+        MK4Optic_Tan,           *,      2000,   200
+        MK4Optic_Green,         *,      2000,   200
+        MK4Optic_Black,         *,      2000,   200
+        PSO6Optic,              *,      2500,   250
+        sps_FNP45_MRDSOptic,    *,      1200,   120
+        sps_PistolOptic,        *,      1000,   100
+        sps_scope_b,            *,      1000,   100
+        SportingOptic,          *,      800,    80
+        sps_scope_a,            *,      1000,   100
+
+    // ----- HANDGUARDS & STOCKS ----------------------------------------
+    <Category> Handguards & Stocks
+        M4_PlasticHndgrd,       *,      150,    15
+        M4_RISHndgrd,           *,      300,    30
+        M4_MPHndgrd,            *,      400,    40
+        M4_OEBttstck,           *,      150,    15
+        M4_CQBBttstck,          *,      250,    25
+        M4_MPBttstck,           *,      350,    35
+        AK_WoodHndgrd,          *,      200,    20
+        AK_RailHndgrd,          *,      300,    30
+        AK_PlasticHndgrd,       *,      200,    20
+        AK74_Hndgrd,            *,      200,    20
+        AK_WoodBttstck,         *,      200,    20
+        AK_PlasticBttstck,      *,      150,    15
+        AK_FoldingBttstck,      *,      400,    40
+        AK74_WoodBttstck,       *,      200,    20
+        AKS74U_Bttstck,         *,      250,    25
+        MP5_PlasticHndgrd,      *,      100,    10
+        MP5_RailHndgrd,         *,      150,    15
+        MP5k_StockBttstck,      *,      100,    10
+        // SPS Stocks
+        AK_FoldingBttstck_Black,*,      400,    40
+        AK_FoldingBttstck_Green,*,      400,    40
+        AK_PlasticBttstck_Black,*,     150,    15
+        AK_PlasticBttstck_Green,*,     150,    15
+        AK_RailHndgrd_Black,    *,      300,    30
+        AK_RailHndgrd_Green,    *,      300,    30
+        AK_WoodBttstck_Black,   *,      200,    20
+        AK_WoodBttstck_Camo,    *,      200,    20
+        AK_WoodHndgrd_Black,    *,      200,    20
+        AK_WoodHndgrd_Camo,     *,      200,    20
+
+    // ----- OTHER ATTACHMENTS ------------------------------------------
+    <Category> Attachments
+        M9A1_Bayonet,           *,      300,    30
+        KA_Bayonet,             *,      300,    30
+        Mosin_Bayonet,          *,      300,    30
+        SKS_Bayonet,            *,      300,    30
+        UniversalLight,         *,      300,    30
+        Mosin_Compensator,      *,      300,    30
+
+
+
+// =========================================================================
+// TRADER 4: CLOTHING TRADER (All clothing, vests, bags, ghillie)
+// =========================================================================
+//Marker 4
+<Trader> Clothing Trader                                               // Trader ID 4
+
+    // ----- GLASSES ----------------------------------------------------
+    <Category> Glasses
+        SportGlasses_Orange,    *,      1500,   150
+        SportGlasses_Blue,      *,      1500,   150
+        SportGlasses_Black,     *,      1500,   150
+        SportGlasses_Green,     *,      1500,   150
+        ThinFramesGlasses,      *,      1500,   150
+        ThickFramesGlasses,     *,      1500,   150
+        DesignerGlasses,        *,      2000,   200
+        AviatorGlasses,         *,      2500,   250
+        TacticalGoggles,        *,      4000,   400
+        NVGHeadstrap,           *,      5000,   500
+
+
+    // ----- ARMBANDS ---------------------------------------------------
+    <Category> Armbands
+        Armband_Pink,           *,      200,    20
+        Armband_Yellow,         *,      200,    20
+        Armband_Orange,         *,      200,    20
+        Armband_Red,            *,      200,    20
+        Armband_Blue,           *,      200,    20
+        Armband_White,          *,      200,    20
+        Armband_Black,          *,      200,    20
+        Armband_Green,          *,      200,    20
+        Armband_Crook,          *,      200,    20
+        Armband_Rex,            *,      200,    20
+        Armband_Zagorky,        *,      200,    20
+
+    // ----- GLOVES -----------------------------------------------------
+    <Category> Gloves
+        SurgicalGloves_LightBlue,*,     500,    50
+        SurgicalGloves_Blue,    *,      500,    50
+        SurgicalGloves_White,   *,      500,    50
+        SurgicalGloves_Green,   *,      500,    50
+        WorkingGloves_Yellow,   *,      800,    80
+        WorkingGloves_Beige,    *,      1000,   100
+        WorkingGloves_Brown,    *,      1000,   100
+        WorkingGloves_Black,    *,      1000,   100
+        TacticalGloves_Beige,   *,      1500,   150
+        TacticalGloves_Black,   *,      1500,   150
+        TacticalGloves_Green,   *,      1500,   150
+        OMNOGloves_Gray,        *,      1500,   150
+        OMNOGloves_Brown,       *,      1500,   150
+        NBCGlovesGray,          *,      2000,   200
+        NBCGlovesYellow,        *,      2000,   200
+        WoolGlovesFingerless_Black, *,  800,    80
+        WoolGlovesFingerless_Green, *,  800,    80
+        WoolGlovesFingerless_Tan, *,    800,    80
+        WoolGlovesFingerless_White, *,  800,    80
+        WoolGloves_Black,       *,      800,    80
+        WoolGloves_Green,       *,      800,    80
+        WoolGloves_Tan,         *,      800,    80
+        WoolGloves_White,       *,      800,    80
+        WoolGloves_ChristmasBlue, *,    800,    80
+        WoolGloves_ChristmasRed, *,     800,    80
+        PaddedGloves_Beige,     *,      800,    80
+        PaddedGloves_Brown,     *,      800,    80
+        PaddedGloves_Threat,    *,      800,    80
+
+    // ----- HATS & CAPS ------------------------------------------------
+    <Category> Hats & Caps
+        MedicalScrubsHat_Blue,  *,      200,    20
+        MedicalScrubsHat_White, *,      200,    20
+        MedicalScrubsHat_Green, *,      200,    20
+        Bandana_Polkapattern,   *,      500,    50
+        Bandana_Redpattern,     *,      500,    50
+        Bandana_Blackpattern,   *,      500,    50
+        Bandana_Greenpattern,   *,      600,    60
+        Bandana_Camopattern,    *,      800,    80
+        BaseballCap_CMMG_Pink,  *,      800,    80
+        BaseballCap_Pink,       *,      800,    80
+        BaseballCap_Red,        *,      800,    80
+        BaseballCap_Blue,       *,      800,    80
+        BaseballCap_Beige,      *,      800,    80
+        BaseballCap_CMMG_Black, *,      800,    80
+        BaseballCap_Black,      *,      800,    80
+        BaseballCap_Olive,      *,      900,    90
+        BaseballCap_Camo,       *,      1000,   100
+        PrisonerCap,            *,      1000,   100
+        BoonieHat_Orange,       *,      1000,   100
+        BoonieHat_Red,          *,      1000,   100
+        BoonieHat_Blue,         *,      1000,   100
+        BoonieHat_NavyBlue,     *,      1000,   100
+        BoonieHat_Black,        *,      1100,   110
+        BoonieHat_Tan,          *,      1200,   120
+        BoonieHat_Olive,        *,      1200,   120
+        BoonieHat_DPM,          *,      1500,   150
+        BoonieHat_Dubok,        *,      1500,   150
+        BoonieHat_Flecktran,    *,      1500,   150
+        CowboyHat_Brown,        *,      1500,   150
+        CowboyHat_darkBrown,    *,      1500,   150
+        CowboyHat_black,        *,      1500,   150
+        CowboyHat_green,        *,      1500,   150
+        PilotkaCap,             *,      1500,   150
+        OKZKCap_Beige,          *,      1500,   150
+        OKZKCap_Green,          *,      1500,   150
+        OfficerHat,             *,      1500,   150
+        PoliceCap,              *,      1500,   150
+        MilitaryBeret_ChDKZ,    *,      1500,   150
+        MilitaryBeret_Red,      *,      1500,   150
+        MilitaryBeret_UN,       *,      1500,   150
+        MilitaryBeret_CDF,      *,      1500,   150
+        MilitaryBeret_NZ,       *,      1500,   150
+        BeanieHat_Pink,         *,      2000,   200
+        BeanieHat_Red,          *,      2000,   200
+        BeanieHat_Blue,         *,      2000,   200
+        BeanieHat_Grey,         *,      2000,   200
+        BeanieHat_Beige,        *,      2000,   200
+        BeanieHat_Brown,        *,      2000,   200
+        BeanieHat_Black,        *,      2000,   200
+        BeanieHat_Green,        *,      2000,   200
+        FlatCap_Red,            *,      2000,   200
+        FlatCap_Blue,           *,      2000,   200
+        FlatCap_BrownCheck,     *,      2000,   200
+        FlatCap_GreyCheck,      *,      2000,   200
+        FlatCap_Grey,           *,      2000,   200
+        FlatCap_Brown,          *,      2000,   200
+        FlatCap_Black,          *,      2000,   200
+        FlatCap_BlackCheck,     *,      2000,   200
+        ZmijovkaCap_Red,        *,      2000,   200
+        ZmijovkaCap_Blue,       *,      2000,   200
+        ZmijovkaCap_Brown,      *,      2000,   200
+        ZmijovkaCap_Black,      *,      2000,   200
+        ZmijovkaCap_Green,      *,      2000,   200
+        RadarCap_Red,           *,      2000,   200
+        RadarCap_Blue,          *,      2000,   200
+        RadarCap_Brown,         *,      2000,   200
+        RadarCap_Black,         *,      2000,   200
+        RadarCap_Green,         *,      2000,   200
+        Ushanka_Blue,           *,      3000,   300
+        Ushanka_Black,          *,      3000,   300
+        Ushanka_Green,          *,      3000,   300
+        PetushokHat_Black,      *,      3000,   300
+        PetushokHat_Green,      *,      3000,   300
+        PetushokHat_Yellow,     *,      3000,   300
+        WinterCoif_Black,       *,      3000,   300
+        WinterCoif_Blue,        *,      3000,   300
+        WinterCoif_Green,       *,      3000,   300
+        WinterCoif_Skull,       *,      3000,   300
+        NBCHoodGray,            *,      4000,   400
+        NBCHoodYellow,          *,      4000,   400
+
+        // HA Caps (Custom)
+        HA_Cap_Blink,           *,      800,    80
+        HA_Cap_Cherep,          *,      800,    80
+        HA_Cap_Night,           *,      800,    80
+        HA_Cap_Pauk,            *,      800,    80
+        HA_Cap_Print,           *,      800,    80
+        HA_Cap_Prizrak,         *,      800,    80
+        HA_Cap_Rombik,          *,      800,    80
+        HA_Cap_XXX,             *,      800,    80
+        HA_Cap_Yellow,          *,      800,    80
+        HA_Cap_YellowPrint,     *,      800,    80
+
+    // ----- HELMETS ----------------------------------------------------
+    <Category> Helmets
+        ConstructionHelmet_Yellow,*,   1500,   150
+        ConstructionHelmet_Orange,*,   1500,   150
+        ConstructionHelmet_Red, *,     1500,   150
+        ConstructionHelmet_Blue,*,     1500,   150
+        ConstructionHelmet_White,*,    1500,   150
+        ConstructionHelmet_Lime,*,     1500,   150
+        SkateHelmet_Red,        *,      2000,   200
+        SkateHelmet_Blue,       *,      2000,   200
+        SkateHelmet_Gray,       *,      2000,   200
+        SkateHelmet_Black,      *,      2000,   200
+        SkateHelmet_Green,      *,      2000,   200
+        HockeyHelmet_Red,       *,      2500,   250
+        HockeyHelmet_Blue,      *,      2500,   250
+        HockeyHelmet_White,     *,      2500,   250
+        HockeyHelmet_Black,     *,      2500,   250
+        DirtBikeHelmet_Mouthguard, *,  1500,   150
+        DirtBikeHelmet_Visor,   *,      2000,   200
+        DirtBikeHelmet_Red,     *,      3000,   300
+        DirtBikeHelmet_Blue,    *,      3000,   300
+        DirtBikeHelmet_Police,  *,      3000,   300
+        DirtBikeHelmet_Green,   *,      3000,   300
+        DirtBikeHelmet_Chernarus,*,     3000,   300
+        DirtBikeHelmet_Black,   *,      3500,   350
+        DirtBikeHelmet_Khaki,   *,      4000,   400
+        MotoHelmet_Red,         *,      4000,   400
+        MotoHelmet_Blue,        *,      4000,   400
+        MotoHelmet_White,       *,      4000,   400
+        MotoHelmet_Lime,        *,      4000,   400
+        MotoHelmet_Grey,        *,      4000,   400
+        MotoHelmet_Black,       *,      4000,   400
+        MotoHelmet_Green,       *,      4000,   400
+        MotoHelmet_Yellow,      *,      4000,   400
+        DarkMotoHelmet_Red,     *,      4000,   400
+        DarkMotoHelmet_Blue,    *,      4000,   400
+        DarkMotoHelmet_White,   *,      4000,   400
+        DarkMotoHelmet_Lime,    *,      4000,   400
+        DarkMotoHelmet_Grey,    *,      4000,   400
+        DarkMotoHelmet_Black,   *,      4000,   400
+        DarkMotoHelmet_Green,   *,      4000,   400
+        DarkMotoHelmet_YellowScarred, *,4000,   400
+        TankerHelmet,           *,      4000,   400
+        ZSh3PilotHelmet,        *,      5000,   500
+        FirefightersHelmet_Yellow, *,  5000,   500
+        FirefightersHelmet_Red, *,     5000,   500
+        FirefightersHelmet_White, *,   5000,   500
+        Mich2001Helmet,         *,      5000,   500
+        GorkaHelmetVisor,       *,      5000,   500
+        GorkaHelmet,            *,      6000,   600
+        Ssh68Helmet,            *,      6000,   600
+        BallisticHelmet_UN,     *,      6000,   600
+        BallisticHelmet_Black,  *,      7000,   700
+        BallisticHelmet_Green,  *,      7000,   700
+        BallisticHelmet_BDU,    *,      7000,   700
+        BallisticHelmet_Desert, *,      7000,   700
+        BallisticHelmet_Woodland, *,    7000,   700
+        // SPS Helmets
+        sps_Helmet_black_10,    *,      7000,   700
+        sps_Helmet_black_1,     *,      7000,   700
+
+    // ----- KNIGHTS CLOTHING -------------------------------------------
+    <Category> Knights Clothing
+        Chainmail,              *,      6000,   600
+        Chainmail_Coif,         *,      6000,   600
+        Chainmail_Leggings,     *,      6000,   600
+        Chestplate,             *,      6000,   600
+        GreatHelm,              *,      5000,   500
+        NorseHelm,              *,      5000,   500
+        MedievalBoots,          *,      1500,   150
+
+
+    // ----- MASKS ------------------------------------------------------
+    <Category> Masks
+        SurgicalMask,           *,      300,    30
+        BandanaMask_PolkaPattern,*,    500,    50
+        BandanaMask_RedPattern, *,     500,    50
+        EyeMask_NewYears,       *,      500,    50
+        EyeMask_Red,            *,      500,    50
+        EyeMask_Valentines,     *,      500,    50
+        EyeMask_Yellow,         *,      500,    50
+        EyeMask_Black,          *,      500,    50
+        EyeMask_Blue,           *,      500,    50
+        EyeMask_Christmas,      *,      500,    50
+        EyeMask_Dead,           *,      500,    50
+        MimeMask_Female,        *,      1000,   100
+        MimeMask_Male,          *,      1000,   100
+
+        NioshFaceMask,          *,      1200,   120
+        HockeyMask,             *,      1200,   120
+        Balaclava3Holes_Blue,   *,      1200,   120
+        Balaclava3Holes_Beige,  *,      1200,   120
+        Balaclava3Holes_Black,  *,      1300,   130
+        Balaclava3Holes_Green,  *,      1400,   140
+        WeldingMask,            *,      1500,   150
+        GP5GasMask,             *,      2500,   250
+        AirborneMask,           *,      2500,   250
+        GasMask_Filter,         *,      1000,   100
+        // VP Masks
+        Vp_Set18_Mask_White,    *,      500,    50
+        DM_MERCmask,            *,      500,    50
+
+    // ----- SHIRTS -----------------------------------------------------
+    <Category> Shirts
+        TShirt_OrangeWhiteStripes,*,   500,    50
+        TShirt_RedBlackStripes, *,     500,    50
+        TShirt_Red,             *,      500,    50
+        TShirt_Blue,            *,      500,    50
+        TShirt_White,           *,      600,    60
+        TShirt_Grey,            *,      600,    60
+        TShirt_Beige,           *,      600,    60
+        TShirt_Black,           *,      700,    70
+        TShirt_Green,           *,      700,    70
+        TelnyashkaShirt,        *,      800,    80
+        Shirt_RedCheck,         *,      1000,   100
+        Shirt_BlueCheckBright,  *,      1000,   100
+        Shirt_BlueCheck,        *,      1000,   100
+        Shirt_WhiteCheck,       *,      1000,   100
+        Shirt_PlaneBlack,       *,      1000,   100
+        Shirt_GreenCheck,       *,      1000,   100
+        Blouse_Violet,          *,      1000,   100
+        Blouse_Blue,            *,      1000,   100
+        Blouse_White,           *,      1000,   100
+        Blouse_Green,           *,      1000,   100
+        MedicalScrubsShirt_Blue,*,     1000,   100
+        MedicalScrubsShirt_White,*,    1000,   100
+        MedicalScrubsShirt_Green,*,    1000,   100
+        ChernarusSportShirt,    *,      1500,   150
+        TacticalShirt_Grey,     *,      2000,   200
+        TacticalShirt_Tan,      *,      2000,   200
+        TacticalShirt_Black,    *,      2000,   200
+        TacticalShirt_Olive,    *,      2000,   200
+        Tshirt_10thAnniversary, *,      2000,   200
+
+        // SPS Shirts
+        sps_StarperJacket_black,*,     2000,   200
+        sps_PCU5Jacket_black,   *,      2500,   250
+        sps_PCU5Jacket_olive,   *,      2500,   250
+        sps_PCU5Jacket_tan,     *,      2500,   250
+
+    // ----- HOODIES & SWEATERS -----------------------------------------
+    <Category> Hoodies & Sweater
+        Sweater_Red,            *,      1500,   150
+        Sweater_Blue,           *,      1500,   150
+        Sweater_Gray,           *,      1500,   150
+        Sweater_Green,          *,      1500,   150
+        Hoodie_Red,             *,      2000,   200
+        Hoodie_Blue,            *,      2000,   200
+        Hoodie_Grey,            *,      2000,   200
+        Hoodie_Brown,           *,      2000,   200
+        Hoodie_Black,           *,      2000,   200
+        Hoodie_Green,           *,      2000,   200
+        // DM / SM Hoods
+        DM_MERChood,            *,      1500,   150
+        DM2_MERChood,           *,      1500,   150
+
+    // ----- VESTS (Body armor & carriers) ------------------------------
+    <Category> Vests
+        ReflexVest,             *,      500,    50
+        PoliceVest,             *,      1500,   150
+        HuntingVest,            *,      2000,   200
+        PressVest_LightBlue,    *,      2500,   250
+        PressVest_Blue,         *,      2500,   250
+        UKAssVest_Black,        *,      3000,   300
+        UKAssVest_Khaki,        *,      3000,   300
+        UKAssVest_Olive,        *,      3000,   300
+        UKAssVest_Camo,         *,      3500,   350
+        SmershVest,             *,      5000,   500
+        HighCapacityVest_Black, *,      6000,   600
+        HighCapacityVest_Olive, *,      6500,   650
+        PlateCarrierVest,       *,      7000,   700
+        PlateCarrierVest_Black, *,      7000,   700
+        PlateCarrierVest_Camo,  *,      7000,   700
+        PlateCarrierVest_Green, *,      7000,   700
+        // SPS Vests
+        SPS_PlateCarrier_4x10,          *,      10000,  1000
+        SPS_PlateCarrier_3x10,          *,      8000,   800
+        SPS_PlateCarrier_2x10,          *,      6000,   600
+        SPS_PlateCarrier_non,           *,      4500,   450
+        SPS_PlateCarrier_admin,         *,      15000,  1500
+        SPS_PlateCarrierVest_Black_no_p,*,      5000,   500
+        SPS_PlateCarrierVest_Black_admin,*,     16000,  1600
+        SPS_PlateCarrierVest_Green_no_p,*,      5000,   500
+        SPS_PlateCarrierVest_Green_admin,*,     16000,  1600
+        // DM Vests
+        DM_MERCvest,            *,      3500,   350
+
+    // ----- JACKETS & COATS --------------------------------------------
+    <Category> Jackets & Coats
+        LabCoat,                *,      500,    50
+        TrackSuitJacket_Red,    *,      800,    80
+        TrackSuitJacket_LightBlue, *,  800,    80
+        TrackSuitJacket_Blue,   *,      800,    80
+        TrackSuitJacket_Black,  *,      800,    80
+        TrackSuitJacket_Green,  *,      800,    80
+        DenimJacket,            *,      1000,   100
+        ManSuit_Blue,           *,      1000,   100
+        ManSuit_White,          *,      1000,   100
+        ManSuit_LightGrey,      *,      1000,   100
+        ManSuit_DarkGrey,       *,      1000,   100
+        ManSuit_Beige,          *,      1000,   100
+        ManSuit_Brown,          *,      1000,   100
+        ManSuit_Black,          *,      1000,   100
+        ManSuit_Khaki,          *,      1000,   100
+        WomanSuit_Blue,         *,      1000,   100
+        WomanSuit_White,        *,      1000,   100
+        WomanSuit_LightGrey,    *,      1000,   100
+        WomanSuit_DarkGrey,     *,      1000,   100
+        WomanSuit_Beige,        *,      1000,   100
+        WomanSuit_Brown,        *,      1000,   100
+        WomanSuit_Black,        *,      1000,   100
+        WomanSuit_Khaki,        *,      1000,   100
+        WoolCoat_Red,           *,      1000,   100
+        WoolCoat_RedCheck,      *,      1000,   100
+        WoolCoat_Blue,          *,      1000,   100
+        WoolCoat_BlueCheck,     *,      1000,   100
+        WoolCoat_GreyCheck,     *,      1000,   100
+        WoolCoat_BrownCheck,    *,      1000,   100
+        WoolCoat_Beige,         *,      1000,   100
+        WoolCoat_Black,         *,      1100,   110
+        WoolCoat_BlackCheck,    *,      1100,   110
+        WoolCoat_Green,         *,      1200,   120
+        RidersJacket_Black,     *,      1200,   120
+        FirefighterJacket_Beige,*,      1500,   150
+        FirefighterJacket_Black,*,      1500,   150
+        JumpsuitJacket_Red,     *,      1500,   150
+        JumpsuitJacket_Blue,    *,      1500,   150
+        JumpsuitJacket_Gray,    *,      1500,   150
+        JumpsuitJacket_Green,   *,      1500,   150
+        BomberJacket_Maroon,    *,      1500,   150
+        BomberJacket_SkyBlue,   *,      1500,   150
+        BomberJacket_Blue,      *,      1500,   150
+        BomberJacket_Grey,      *,      1500,   150
+        BomberJacket_Brown,     *,      1500,   150
+        BomberJacket_Black,     *,      1500,   150
+        BomberJacket_Olive,     *,      1500,   150
+        QuiltedJacket_Orange,   *,      1500,   150
+        QuiltedJacket_Yellow,   *,      1500,   150
+        QuiltedJacket_Red,      *,      1500,   150
+        QuiltedJacket_Violet,   *,      1500,   150
+        QuiltedJacket_Blue,     *,      1500,   150
+        QuiltedJacket_Grey,     *,      1500,   150
+        QuiltedJacket_Black,    *,      1500,   150
+        QuiltedJacket_Green,    *,      1500,   150
+        PrisonUniformJacket,    *,      1500,   150
+        PoliceJacketOrel,       *,      1500,   150
+        PoliceJacket,           *,      1500,   150
+        ParamedicJacket_Crimson,*,     1500,   150
+        ParamedicJacket_Blue,   *,      1500,   150
+        ParamedicJacket_Green,  *,      1500,   150
+        HikingJacket_Red,       *,      2000,   200
+        HikingJacket_Blue,      *,      2000,   200
+        HikingJacket_Black,     *,      2000,   200
+        HikingJacket_Green,     *,      2000,   200
+        Raincoat_Pink,          *,      3000,   300
+        Raincoat_Orange,        *,      3000,   300
+        Raincoat_Yellow,        *,      3000,   300
+        Raincoat_Red,           *,      3000,   300
+        Raincoat_Blue,          *,      3000,   300
+        Raincoat_Black,         *,      3000,   300
+        Raincoat_Green,         *,      3000,   300
+        TTsKOJacket_Camo,       *,      3000,   300
+        BDUJacket,              *,      3000,   300
+        HuntingJacket_Winter,   *,      3500,   350
+        HuntingJacket_Brown,    *,      3500,   350
+        HuntingJacket_Autumn,   *,      3500,   350
+        HuntingJacket_Spring,   *,      3500,   350
+        HuntingJacket_Summer,   *,      3500,   350
+        M65Jacket_Tan,          *,      4000,   400
+        M65Jacket_Black,        *,      4000,   400
+        M65Jacket_Khaki,        *,      4000,   400
+        M65Jacket_Olive,        *,      4000,   400
+        GorkaEJacket_Autumn,    *,      4000,   400
+        GorkaEJacket_Flat,      *,      4000,   400
+        GorkaEJacket_PautRev,   *,      4000,   400
+        GorkaEJacket_Summer,    *,      4000,   400
+        USMCJacket_Desert,      *,      4000,   400
+        USMCJacket_Woodland,    *,      4000,   400
+        NBCJacketGray,          *,      5000,   500
+        NBCJacketYellow,        *,      5000,   500
+        // HA Jackets (Custom)
+        HA_Jacket_Blink,        *,      1500,   150
+        HA_Jacket_Cherep,       *,      1500,   150
+        HA_Jacket_Night,        *,      1500,   150
+        HA_Jacket_Pauk,         *,      1500,   150
+        HA_Jacket_Print,        *,      1500,   150
+        HA_Jacket_Prizrak,      *,      1500,   150
+        HA_Jacket_Rombik,       *,      1500,   150
+        HA_Jacket_XXX,          *,      1500,   150
+        HA_Jacket_Yellow,       *,      1500,   150
+        HA_Jacket_YellowPrint,  *,      1500,   150
+        // DM / SM Jackets
+        DM_MERCtops,            *,      2000,   200
+        DM2_MERCtops,           *,      2000,   200
+        SM_Rabbit_Jacket_Blue,          *,      2000,   200
+        SM_Rabbit_Jacket_Blue_Gray,     *,      2000,   200
+        SM_Rabbit_Jacket_Blue_Purple,   *,      2000,   200
+        SM_Rabbit_Jacket_Gold_Blue,     *,      2000,   200
+        SM_Rabbit_Jacket_Gray,          *,      2000,   200
+        SM_Rabbit_Jacket_Green,         *,      2000,   200
+        SM_Rabbit_Jacket_Pink,          *,      2000,   200
+        SM_Rabbit_Jacket_Pink_Pony,     *,      2000,   200
+        SM_Rabbit_Jacket_Purple_Blue,   *,      2000,   200
+        SM_Rabbit_Jacket_Purple_Pony,   *,      2000,   200
+        SM_Rabbit_Jacket_Red,           *,      2000,   200
+        SM_Rabbit_Jacket_Sakura,        *,      2000,   200
+
+    // ----- SKIRTS & DRESSES -------------------------------------------
+    <Category> Skirts & Dresses
+        Skirt_Yellow,           *,      1500,   150
+        Skirt_Red,              *,      1500,   150
+        Skirt_Blue,             *,      1500,   150
+        Skirt_White,            *,      1500,   150
+        MiniDress_Pink,         *,      2000,   200
+        MiniDress_PinkChecker,  *,      2000,   200
+        MiniDress_RedChecker,   *,      2000,   200
+        MiniDress_BlueChecker,  *,      2000,   200
+        MiniDress_BlueWithDots, *,      2000,   200
+        MiniDress_WhiteChecker, *,      2000,   200
+        MiniDress_BrownChecker, *,      2000,   200
+        MiniDress_GreenChecker, *,      2000,   200
+        NurseDress_Blue,        *,      2000,   200
+        NurseDress_White,       *,      2000,   200
+
+    // ----- PANTS ------------------------------------------------------
+    <Category> Pants
+        MedicalScrubsPants_Blue,*,     500,    50
+        MedicalScrubsPants_White,*,    500,    50
+        MedicalScrubsPants_Green,*,    500,    50
+        TrackSuitPants_Red,     *,      500,    50
+        TrackSuitPants_LightBlue,*,    500,    50
+        TrackSuitPants_Blue,    *,      500,    50
+        TrackSuitPants_Black,   *,      500,    50
+        TrackSuitPants_Green,   *,      500,    50
+        PrisonUniformPants,     *,      600,    60
+        Breeches_Pink,          *,      800,    80
+        Breeches_Red,           *,      800,    80
+        Breeches_Blue,          *,      800,    80
+        Breeches_White,         *,      800,    80
+        Breeches_Beetcheck,     *,      800,    80
+        Breeches_Beige,         *,      800,    80
+        Breeches_Browncheck,    *,      800,    80
+        Breeches_Black,         *,      800,    80
+        Breeches_Blackcheck,    *,      800,    80
+        Breeches_Green,         *,      800,    80
+        SlacksPants_Blue,       *,      800,    80
+        SlacksPants_White,      *,      800,    80
+        SlacksPants_LightGrey,  *,      800,    80
+        SlacksPants_DarkGrey,   *,      800,    80
+        SlacksPants_Beige,      *,      800,    80
+        SlacksPants_Brown,      *,      800,    80
+        SlacksPants_Black,      *,      800,    80
+        SlacksPants_Khaki,      *,      800,    80
+        CanvasPantsMidi_Red,    *,      1000,   100
+        CanvasPantsMidi_Violet, *,      1000,   100
+        CanvasPantsMidi_Blue,   *,      1000,   100
+        CanvasPantsMidi_Grey,   *,      1000,   100
+        CanvasPantsMidi_Beige,  *,      1000,   100
+        CanvasPants_Red,        *,      1000,   100
+        CanvasPants_Violet,     *,      1000,   100
+        CanvasPants_Blue,       *,      1000,   100
+        CanvasPants_Grey,       *,      1000,   100
+        CanvasPants_Beige,      *,      1000,   100
+        JumpsuitPants_Red,      *,      1000,   100
+        JumpsuitPants_Blue,     *,      1000,   100
+        JumpsuitPants_Grey,     *,      1000,   100
+        JumpsuitPants_Green,    *,      1000,   100
+        PolicePants,            *,      1000,   100
+        ParamedicPants_Crimson, *,     1500,   150
+        ParamedicPants_Blue,    *,      1500,   150
+        ParamedicPants_Green,   *,      1500,   150
+        FirefightersPants_Beige,*,     1500,   150
+        FirefightersPants_Black,*,     1500,   150
+        CargoPants_Blue,        *,      1500,   150
+        CargoPants_Grey,        *,      1500,   150
+        CargoPants_Beige,       *,      1500,   150
+        CargoPants_Black,       *,      1500,   150
+        CargoPants_Green,       *,      1500,   150
+        ShortJeans_Red,         *,      1500,   150
+        ShortJeans_Blue,        *,      1500,   150
+        ShortJeans_Darkblue,    *,      1500,   150
+        ShortJeans_Brown,       *,      1500,   150
+        ShortJeans_Black,       *,      1500,   150
+        ShortJeans_Green,       *,      1500,   150
+        Jeans_Blue,             *,      1500,   150
+        Jeans_BlueDark,         *,      1500,   150
+        Jeans_Grey,             *,      1500,   150
+        Jeans_Brown,            *,      1500,   150
+        Jeans_Black,            *,      1500,   150
+        Jeans_Green,            *,      1500,   150
+        TTSKOPants,             *,      2000,   200
+        BDUPants,               *,      2000,   200
+        USMCPants_Desert,       *,      2000,   200
+        USMCPants_Woodland,     *,      2000,   200
+        PolicePantsOrel,        *,      2000,   200
+        HunterPants_Winter,     *,      2500,   250
+        HunterPants_Brown,      *,      2500,   250
+        HunterPants_Spring,     *,      2500,   250
+        HunterPants_Autumn,     *,      2500,   250
+        HunterPants_Summer,     *,      2500,   250
+        GorkaPants_Flat,        *,      3000,   300
+        GorkaPants_PautRev,     *,      3000,   300
+        GorkaPants_Autumn,      *,      3000,   300
+        GorkaPants_Summer,      *,      3000,   300
+        NBCPantsGray,           *,      3500,   350
+        NBCPantsYellow,         *,      3500,   350
+
+        // SPS Pants
+        sps_GorkaPants_Summer,  *,      3000,   300
+        sps_GorkaPants_Autumn,  *,      3000,   300
+        sps_GorkaPants_Flat,    *,      3000,   300
+        sps_GorkaPants_PautRev, *,      3000,   300
+        sps_CargoPants_Beige,   *,      1500,   150
+        sps_CargoPants_Black,   *,      1500,   150
+        sps_CargoPants_Blue,    *,      1500,   150
+        sps_CargoPants_Green,   *,      1500,   150
+        sps_CargoPants_Grey,    *,      1500,   150
+        // HA Pants (Custom)
+        HA_Pants_Blink,         *,      1000,   100
+        HA_Pants_Cherep,        *,      1000,   100
+        HA_Pants_Night,         *,      1000,   100
+        HA_Pants_Pauk,          *,      1000,   100
+        HA_Pants_Prizrak,       *,      1000,   100
+        HA_Pants_Rombik,        *,      1000,   100
+        HA_Pants_Yellow,        *,      1000,   100
+        HA_Pants_YellowPrint,   *,      1000,   100
+        // DM / SM Pants
+        DM_MERCpants,           *,      2000,   200
+        DM2_MERCpants,          *,      2000,   200
+        SM_Rabbit_Pants_Blue,           *,      1500,   150
+        SM_Rabbit_Pants_Blue_Gray,      *,      1500,   150
+        SM_Rabbit_Pants_Blue_Purple,    *,      1500,   150
+        SM_Rabbit_Pants_Gold_Blue,      *,      1500,   150
+        SM_Rabbit_Pants_Gray,           *,      1500,   150
+        SM_Rabbit_Pants_Green,          *,      1500,   150
+        SM_Rabbit_Pants_Pink,           *,      1500,   150
+        SM_Rabbit_Pants_Pink_Pony,      *,      1500,   150
+        SM_Rabbit_Pants_Purple_Blue,    *,      1500,   150
+        SM_Rabbit_Pants_Purple_Pony,    *,      1500,   150
+        SM_Rabbit_Pants_Red,            *,      1500,   150
+        SM_Rabbit_Pants_Sakura,         *,      1500,   150
+        // VP Pants
+        Vp_SET18_Pants_White,   *,      1000,   100
+        Vp_SET23_Pants_Black,   *,      1000,   100
+        Vp_SET12_Pants_Black,   *,      1000,   100
+
+    // ----- SHOES & BOOTS ----------------------------------------------
+    <Category> Shoes & Boots
+        AthleticShoes_Blue,     *,      800,    80
+        AthleticShoes_Grey,     *,      800,    80
+        AthleticShoes_Brown,    *,      800,    80
+        AthleticShoes_Black,    *,      800,    80
+        AthleticShoes_Green,    *,      800,    80
+        JoggingShoes_Violet,    *,      1000,   100
+        JoggingShoes_Red,       *,      1000,   100
+        JoggingShoes_Blue,      *,      1000,   100
+        JoggingShoes_White,     *,      1000,   100
+        JoggingShoes_Black,     *,      1000,   100
+        Sneakers_Red,           *,      1000,   100
+        Sneakers_White,         *,      1000,   100
+        Sneakers_Gray,          *,      1000,   100
+        Sneakers_Black,         *,      1100,   110
+        Sneakers_Green,         *,      1200,   120
+        DressShoes_White,       *,      1200,   120
+        DressShoes_Brown,       *,      1200,   120
+        DressShoes_Black,       *,      1200,   120
+        DressShoes_Beige,       *,      1200,   120
+        DressShoes_Sunburst,    *,      1200,   120
+        HikingBootsLow_Blue,    *,      1500,   150
+        HikingBootsLow_Grey,    *,      1500,   150
+        HikingBootsLow_Beige,   *,      1500,   150
+        HikingBootsLow_Black,   *,      1500,   150
+        WorkingBoots_Yellow,    *,      1500,   150
+        WorkingBoots_Grey,      *,      1500,   150
+        WorkingBoots_Beige,     *,      1500,   150
+        WorkingBoots_Brown,     *,      1500,   150
+        WorkingBoots_Green,     *,      1500,   150
+        HikingBoots_Brown,      *,      2000,   200
+        HikingBoots_Black,      *,      2000,   200
+        CombatBoots_Grey,       *,      2000,   200
+        CombatBoots_Beige,      *,      2000,   200
+        CombatBoots_Brown,      *,      2000,   200
+        CombatBoots_Black,      *,      2000,   200
+        CombatBoots_Green,      *,      2000,   200
+        JungleBoots_Beige,      *,      2000,   200
+        JungleBoots_Brown,      *,      2000,   200
+        JungleBoots_Black,      *,      2000,   200
+        JungleBoots_Olive,      *,      2000,   200
+        JungleBoots_Green,      *,      2000,   200
+        Wellies_Grey,           *,      2000,   200
+        Wellies_Brown,          *,      2000,   200
+        Wellies_Black,          *,      2000,   200
+        Wellies_Green,          *,      2000,   200
+        TTSKOBoots,             *,      2500,   250
+        MilitaryBoots_Redpunk,  *,      2500,   250
+        MilitaryBoots_Bluerock, *,      2500,   250
+        MilitaryBoots_Beige,    *,      2500,   250
+        MilitaryBoots_Brown,    *,      2500,   250
+        MilitaryBoots_Black,    *,      2500,   250
+        NBCBootsGray,           *,      3000,   300
+        NBCBootsYellow,         *,      3000,   300
+
+        // HA Shoes
+        HA_Shoes_Blink,         *,      800,    80
+        HA_Shoes_Cherep,        *,      800,    80
+        HA_Shoes_Pauk,          *,      800,    80
+        HA_Shoes_Print,         *,      800,    80
+        HA_Shoes_Prizrak,       *,      800,    80
+        HA_Shoes_Rombik,        *,      800,    80
+        HA_Shoes_XXX,           *,      800,    80
+        HA_Shoes_Yellow,        *,      800,    80
+        HA_Shoes_YellowPrint,   *,      800,    80
+        // VP Shoes
+        VP_SET18_Boots_White,   *,      800,    80
+        VP_SET23_Shoes_Black,   *,      800,    80
+        VP_SET12_Shoes_Black,   *,      800,    80
+        // SM Rabbit Shoes
+        SM_Rabbit_Boots_White,  *,      800,    80
+
+    // ----- GHILLIE (Camouflage suits) ---------------------------------
+    <Category> Ghillie
+        GhillieAtt_Mossy,       *,      5000,   500
+        GhillieAtt_Tan,         *,      5000,   500
+        GhillieAtt_Woodland,    *,      5000,   500
+        GhillieHood_Mossy,      *,      5000,   500
+        GhillieHood_Tan,        *,      5000,   500
+        GhillieHood_Woodland,   *,      5000,   500
+        GhillieBushrag_Mossy,   *,      8000,   800
+        GhillieBushrag_Tan,     *,      8000,   800
+        GhillieBushrag_Woodland,*,      8000,   800
+        GhillieTop_Mossy,       *,      10000,  1000
+        GhillieTop_Tan,         *,      10000,  1000
+        GhillieTop_Woodland,    *,      10000,  1000
+        GhillieSuit_Mossy,      *,      15000,  1500
+        GhillieSuit_Tan,        *,      15000,  1500
+        GhillieSuit_Woodland,   *,      15000,  1500
+
+    // ----- FANCY DRESS (Holiday / Event items) ------------------------
+    <Category> Fancy Dress
+        CrookedNose,            *,      500,    0
+        SantasBeard,            *,      500,    0
+        SantasHat,              *,      1000,   0
+        ChristmasHeadband_Antlers, *,   1000,   0
+        ChristmasHeadband_Gingerbread, *,1000,   0
+        ChristmasHeadband_Trees, *,     1000,   0
+        PumpkinHelmet,          *,      1500,   0
+        MorozkoHat,             *,      1500,   0
+        WitchHat,               *,      3000,   300
+        WitchHood_Black,        *,      3000,   300
+        WitchHood_Brown,        *,      3000,   300
+        WitchHood_Red,          *,      3000,   300
+        EasterEgg,              *,      5000,   500
+
+    // ----- HOLSTERS & POUCHES -----------------------------------------
+    <Category> Holster & Pouches
+        ChestHolster,           *,      2000,   200
+        PlateCarrierHolster,    *,      2000,   200
+        PlateCarrierHolster_Black, *,   2000,   200
+        PlateCarrierHolster_Camo, *,    2000,   200
+        PlateCarrierHolster_Green, *,   2000,   200
+        PlateCarrierPouches,    *,      2500,   250
+        PlateCarrierPouches_Black, *,   2500,   250
+        PlateCarrierPouches_Camo, *,    2500,   250
+        PlateCarrierPouches_Green, *,   2500,   250
+        // SPS Pouches
+        sps_Pouches_black_10x4, *,      2500,   250
+        sps_Pouches_camo_10x4,  *,      2500,   250
+        sps_Pouches_tan_10x4,   *,      2500,   250
+        sps_Pouches_green_10x4, *,      2500,   250
+        sps_Pouches_black_10x12,*,      3000,   300
+        sps_Pouches_camo_10x12, *,      3000,   300
+        sps_Pouches_tan_10x12,  *,      3000,   300
+        sps_Pouches_green_10x12,*,      3000,   300
+
+    // ----- BELTS ------------------------------------------------------
+    <Category> Belt
+        CivilianBelt,           *,      1000,   100
+        MilitaryBelt,           *,      1000,   100
+        // SPS Belts
+
+        sps_Belt_10k,           *,      3000,   300
+        sps_Belt_20k,           *,      5000,   500
+        sps_Belt_30k,           *,      8000,   800
+        // VP Belts
+        VP_SET12_Belt_Black,    *,      1000,   100
+        DM_MERCbelt,            *,      1000,   100
+
+    // ----- BAGS (Backpacks, Pouches, Sacks) ---------------------------
+    <Category> Bags
+        ArmyPouch_Beige,        *,      1000,   100
+        ArmyPouch_Black,        *,      1000,   100
+        ArmyPouch_Camo,         *,      1000,   100
+        ArmyPouch_Green,        *,      1000,   100
+        CanvasBag_Medical,      *,      1000,   100
+        CanvasBag_Olive,        *,      1000,   100
+        DrysackBag_Green,       *,      1500,   150
+        DrysackBag_Orange,      *,      1500,   150
+        DrysackBag_Yellow,      *,      1500,   150
+        DuffelBagSmall_Camo,    *,      1500,   150
+        DuffelBagSmall_Green,   *,      1500,   150
+        DuffelBagSmall_Medical, *,      1500,   150
+        HipPack_Black,          *,      1000,   100
+        HipPack_Green,          *,      1000,   100
+        HipPack_Medical,        *,      1000,   100
+        HipPack_Party,          *,      1000,   100
+        Slingbag_Black,         *,      1500,   150
+        Slingbag_Brown,         *,      1500,   150
+        Slingbag_Gray,          *,      1500,   150
+        ChildBag_Red,           *,      1000,   100
+        ChildBag_Blue,          *,      1000,   100
+        ChildBag_Green,         *,      1000,   100
+        DryBag_Yellow,          *,      1500,   150
+        DryBag_Orange,          *,      1500,   150
+        DryBag_Red,             *,      1500,   150
+        DryBag_Blue,            *,      1500,   150
+        DryBag_Black,           *,      1500,   150
+        DryBag_Green,           *,      1500,   150
+        TaloonBag_Orange,       *,      2000,   200
+        TaloonBag_Violet,       *,      2000,   200
+        TaloonBag_Blue,         *,      2000,   200
+        TaloonBag_Green,        *,      2000,   200
+        SmershBag,              *,      3000,   300
+        WaterproofBag_Yellow,   *,      3000,   300
+        WaterproofBag_Orange,   *,      3000,   300
+        WaterproofBag_Green,    *,      3000,   300
+        AssaultBag_Black,       *,      3000,   300
+        AssaultBag_Green,       *,      3000,   300
+        AssaultBag_Ttsko,       *,      3000,   300
+        HuntingBag,             *,      4000,   400
+        TortillaBag,            *,      5000,   500
+        CoyoteBag_Brown,        *,      5000,   500
+        CoyoteBag_Green,        *,      5000,   500
+        MountainBag_Orange,     *,      6000,   600
+        MountainBag_Red,        *,      6000,   600
+        MountainBag_Blue,       *,      6000,   600
+        MountainBag_Green,      *,      6000,   600
+        AliceBag_Black,         *,      7000,   700
+        AliceBag_Green,         *,      7000,   700
+        AliceBag_Camo,          *,      7000,   700
+        AliceBag_GorkaS,        *,      8000,   800
+        AliceBag_GorkaW,        *,      8000,   800
+        Attack2Bag_Ttsko,       *,      7000,   700
+        Attack2Bag_Black,       *,      7000,   700
+        Attack2Bag_Green,       *,      7000,   700
+        Attack2Bag_Yeger,       *,      7000,   700
+        sps_AttackBag_Ttsko,       *,      17000,   7000
+        sps_AttackBag_Black,       *,      17000,   7000
+        sps_AttackBag_Green,       *,      17000,   7000
+        sps_AttackBag_Yeger,       *,      17000,   7000
+
+        sps_AssaultBag_Ttsko,   *,      6000,   600
+        TortillaBag_DPM,        *,      5000,   500
+        sps_AssaultBag_Black,   *,      6000,   600
+        TortillaBag_Flecktarn,  *,      5000,   500
+        sps_AssaultBag_Green,   *,      6000,   600
+        TortillaBag_Woodland,   *,      5000,   500
+        sps_AssaultBag_Tan,     *,      6000,   600
+        TortillaBag_Desert,     *,      5000,   500
+        sps_DryBagStarper_1,    *,      5000,   500
+        SmershBagWoodland,      *,      8000,   800
+        TortillaBag_TTsKO,      *,      5000,   500
+        sps_mbag_black_lable,   *,      7000,   700
+        SmershBagGorkaA,        *,      8000,   800
+        TortillaBag_GorkaA,     *,      5000,   500
+        TCP_CoyoteBagUmbrella,  *,      9000,   900
+        SmershBagGorkaW,        *,      8000,   800
+        TortillaBag_GorkaW,     *,      5000,   500
+        TCP_DryBagUmbrella,     *,      5000,   500
+        SmershBagBlack,         *,      8000,   800
+        TortillaBag_Black,      *,      5000,   500
+        TCP_UmbrellaMountainBag,*,      10000,  1000
+        SmershBagOlive,         *,      8000,   800
+
+        SmershBagTan,           *,      8000,   800
+
+        AliceBag_GorkaA,        *,      8000,   800
+        AliceBag_Black,         *,      7000,   700
+        AliceBag_Camo,          *,      7000,   700
+        AliceBag_Green,         *,      7000,   700
+        loop_marching_backpackp,*,      6000,   600
+        YM_ChimeCase,           *,      2500,   250
+        // SM Rabbit Vest
+        SM_Rabbit_Vest,         *,      3000,   300
+
+// =========================================================================
+// КОНЕЦ ФАЙЛА (БЕЗ ТРАНСПОРТА)
+// =========================================================================
+
+// УДАЛЯЕМ СТРОКУ: <OpenFile> TraderConfig_Vehicles.txt
+
+<FileEnd>                                               // This has to be on the End of this File and is very important!

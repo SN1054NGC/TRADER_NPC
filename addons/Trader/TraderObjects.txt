@@ -1,0 +1,121 @@
+//-----------------------------------------------------------
+//Consumables Trader
+
+<TraderMarker> 			0
+<TraderMarkerPosition>	13311.63, 9.65, 11007.78
+<TraderMarkerSafezone>	500
+
+<Object> 			SurvivorF_Eva
+<ObjectPosition>	13311.63, 9.65, 11007.78
+<ObjectOrientation>	-116.999916, 0,			0
+<ObjectAttachment>	NPC_DUMMY
+<ObjectAttachment>	BoxCerealCrunchin
+<ObjectAttachment>	SurgicalGloves_White
+<ObjectAttachment>	Bandana_Polkapattern
+<ObjectAttachment>	MiniDress_PinkChecker
+<ObjectAttachment>	DressShoes_White
+//-----------------------------------------------------------
+
+//-----------------------------------------------------------
+//Misc Trader
+
+<TraderMarker> 			1
+<TraderMarkerPosition>	13312.09, 9.65, 11006.45
+<TraderMarkerSafezone>	0
+
+<Object> 			SurvivorF_Gabi
+<ObjectPosition>	13312.09, 9.65, 11006.45
+<ObjectOrientation>	-116.999893, 0,			0
+<ObjectAttachment>	NPC_DUMMY
+<ObjectAttachment>	Wrench
+<ObjectAttachment>	SledgeHammer
+<ObjectAttachment>	WorkingGloves_Brown
+<ObjectAttachment>	ConstructionHelmet_White
+<ObjectAttachment>	Shirt_BlueCheck
+<ObjectAttachment>	CanvasPants_Blue
+<ObjectAttachment>	WorkingBoots_Grey
+//-----------------------------------------------------------
+
+//-----------------------------------------------------------
+//Weapon Trader
+
+<TraderMarker> 			2
+<TraderMarkerPosition>	13314.76, 9.65, 10999.72
+<TraderMarkerSafezone>	0
+
+<Object> 			SurvivorF_Keiko
+<ObjectPosition>	13314.76, 9.65, 10999.72
+<ObjectOrientation>	-107.999474, 0,			0
+<ObjectAttachment>	NPC_DUMMY
+<ObjectAttachment>	FirefighterAxe
+<ObjectAttachment>	SVD
+<ObjectAttachment>	PSO1Optic
+<ObjectAttachment>	M4A1
+<ObjectAttachment>	M4_RISHndgrd
+<ObjectAttachment>	Universallight
+<ObjectAttachment>	M4_OEBttstck
+<ObjectAttachment>	M68Optic
+<ObjectAttachment>	M4_Suppressor
+<ObjectAttachment>	OMNOGloves_Gray
+<ObjectAttachment>	MilitaryBeret_CDF
+<ObjectAttachment>	PlateCarrierVest
+<ObjectAttachment>	TTsKOJacket_Camo
+<ObjectAttachment>	TTSKOPants
+<ObjectAttachment>	MilitaryBoots_Black
+<ObjectAttachment>	AliceBag_Camo
+//-----------------------------------------------------------
+
+//-----------------------------------------------------------
+//Weapon Supplies
+
+<TraderMarker> 			3
+<TraderMarkerPosition>	13315.29, 9.65, 10998.51
+<TraderMarkerSafezone>	0
+
+<Object> 			SurvivorM_Taiki
+<ObjectPosition>	13315.29, 9.65, 10998.51
+<ObjectOrientation>	-98.999878, 0,			0
+<ObjectAttachment>	NPC_DUMMY
+<ObjectAttachment>	Mag_STANAG_30Rnd
+<ObjectAttachment>	SportGlasses_Orange
+<ObjectAttachment>	BaseballCap_Camo
+<ObjectAttachment>	TacticalShirt_Olive
+<ObjectAttachment>	SmershVest
+<ObjectAttachment>	BDUPants
+<ObjectAttachment>	TTSKOBoots
+<ObjectAttachment>	AssaultBag_Ttsko
+//-----------------------------------------------------------
+
+//-----------------------------------------------------------
+//Clothing Trader
+
+<TraderMarker> 			4
+<TraderMarkerPosition>	13312.65, 9.65, 11005.23
+<TraderMarkerSafezone>	0
+
+<Object> 			SurvivorF_Judy
+<ObjectPosition>	13312.65, 9.65, 11005.23
+<ObjectOrientation>	-107.999802, 0,			0
+<ObjectAttachment>	NPC_DUMMY
+<ObjectAttachment>	ThickFramesGlasses
+<ObjectAttachment>	WomanSuit_Black
+<ObjectAttachment>	SlacksPants_Black
+<ObjectAttachment>	DressShoes_Black
+//-----------------------------------------------------------
+//-----------------------------------------------------------
+//Buyer (Скупщик) - ТОЛЬКО ПОКУПАЕТ У ИГРОКОВ
+//Marker 5
+
+<TraderMarker> 5
+<TraderMarkerPosition> 13320.00, 9.65, 11000.00
+<TraderMarkerSafezone> 0
+
+<Object> SurvivorF_Judy
+<ObjectPosition> 13320.00, 9.65, 11000.00
+<ObjectOrientation>	-107.999802, 0,			0
+<ObjectAttachment>	NPC_DUMMY
+<ObjectAttachment>	ThickFramesGlasses
+<ObjectAttachment>	WomanSuit_Black
+<ObjectAttachment>	SlacksPants_Black
+<ObjectAttachment>	DressShoes_Black
+//-----------------------------------------------------------
