@@ -30,5 +30,9 @@ enum TRPCs
 	RPC_APPRAISE_SELL_REPLY,
 
 	// Звук денег (бумага/купюры) для всех игроков рядом
-	RPC_PLAY_TRADER_SOUND
+	RPC_PLAY_TRADER_SOUND,
+
+	// ИИ-торговец: вопрос из чата (!текст) и ответ модели
+	RPC_AI_ASK,
+	RPC_AI_ANSWER
 }

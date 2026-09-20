@@ -313,6 +313,26 @@ int m_Trader_LastApprTime = 0;   // лимит частоты запросов �
         }
     }
 
+	// ---- ИИ-торговец: вопрос из чата (!текст) ----
+	void handleAiAskRPC(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx)
+	{
+		#ifdef SERVER
+		Param1<string> data = new Param1<string>("");
+		if (!ctx.Read(data))
+			return;
+		TraderAiChat.Ask(PlayerBase.Cast(this), data.param1);
+		#endif
+	}
+
+	// ---- ответ модели приходит в чат ----
+	void handleAiAnswerRPC(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx)
+	{
+		Param1<string> data = new Param1<string>("");
+		if (!ctx.Read(data))
+			return;
+		g_Game.Chat("Торговец: " + data.param1, "colorAction");
+	}
+
     	void handleServerRPCs(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx)
 	{
 		if (rpc_type == TRPCs.RPC_BUY)
@@ -323,6 +343,8 @@ int m_Trader_LastApprTime = 0;   // лимит частоты запросов �
 
 		if (rpc_type == TRPCs.RPC_APPRAISE_SELL)
 			handleSellAppraiseRPC(sender, rpc_type, ctx);
+		if (rpc_type == TRPCs.RPC_AI_ASK)
+			handleAiAskRPC(sender, rpc_type, ctx);
 	}
 
     void handleBuyRPC(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx)
@@ -741,6 +763,11 @@ void handleSellAppraiseRPC(PlayerIdentity sender, int rpc_type, ParamsReadContex
 
 void handleClientRPCs(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx)
 {
+		if (rpc_type == TRPCs.RPC_AI_ANSWER)
+		{
+			handleAiAnswerRPC(sender, rpc_type, ctx);
+			return;
+		}
                 if (rpc_type == TRPCs.RPC_APPRAISE_SELL_REPLY)
             HandleSellAppraiseReply(sender, rpc_type, ctx);
         if (rpc_type == TRPCs.RPC_SEND_NOTIFICATION || rpc_type == TRPCs.RPC_DELETE_SAFEZONE_MESSAGES)
