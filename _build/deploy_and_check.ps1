@@ -12,7 +12,7 @@ for ($n = 1; $n -le 2; $n++) {
   "--- attempt " + $n + ": no trader log (known Lux crash), retrying ---"
 }
 "=== AUTO CONFIG ==="
-$auto = "D:\steam\steamapps\common\DayZServer\Profiles\Trader_NPC_Prof\TraderConfig_auto.txt"
+$auto = "D:\steam\steamapps\common\DayZServer\Profiles\Trader_NPC_Prof\TraderNpcConfig_auto.txt"
 if (Test-Path $auto) {
   $fi = Get-Item $auto
   "  exists: " + $fi.Length + " bytes, " + (Get-Content $auto).Count + " lines"
