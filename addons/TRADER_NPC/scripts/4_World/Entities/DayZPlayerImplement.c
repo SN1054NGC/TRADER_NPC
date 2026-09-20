@@ -316,7 +316,7 @@ int m_Trader_LastApprTime = 0;   // лимит частоты запросов �
 	// ---- ИИ-торговец: вопрос из чата (!текст) ----
 	void handleAiAskRPC(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx)
 	{
-		TraderVoice.Play( PlayerBase.Cast(this), "browse" );
+		TraderVoice.Play( PlayerBase.Cast(this), "funny" );
 		#ifdef SERVER
 		Param1<string> data = new Param1<string>("");
 		if (!ctx.Read(data))
@@ -350,7 +350,7 @@ int m_Trader_LastApprTime = 0;   // лимит частоты запросов �
 
     void handleBuyRPC(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx)
     {
-		TraderVoice.Play( PlayerBase.Cast(this), "buy_1" );
+		TraderVoice.Play( PlayerBase.Cast(this), "buy" );
         // param4 = количество единиц (0 = как раньше: количество из строки цены)
         Param4<int, int, string, int> rpb = new Param4<int, int, string, int>(-1, -1, "", 0);
         ctx.Read(rpb);
@@ -463,7 +463,7 @@ int m_Trader_LastApprTime = 0;   // лимит частоты запросов �
 
     void handleSellRPC(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx)
     {
-		TraderVoice.Play( PlayerBase.Cast(this), "sell_1" );
+		TraderVoice.Play( PlayerBase.Cast(this), "sell" );
         Param4<int, int, string, int> rps = new Param4<int, int, string, int>( -1, -1, "", 0 );
         ctx.Read(rps);
 
@@ -701,7 +701,7 @@ void SendAppraiseReply(int traderIndex, int itemID, int basePrice, int bonus, in
 
 void handleSellAppraiseRPC(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx)
 {
-		TraderVoice.Play( PlayerBase.Cast(this), "greet_1" );
+		TraderVoice.Play( PlayerBase.Cast(this), "greet" );
     // ---- ЗАЩИТА: не чаще 4 раз в секунду ----
     if ( GetGame().GetTime() - m_Trader_LastApprTime < 250 )
         return;
