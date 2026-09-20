@@ -2,78 +2,29 @@
 // ФАЙЛ: TraderNpcProfile.c   (серверная сторона)
 //
 // АВТОСОЗДАНИЕ ПРОФИЛЯ. При первом запуске, если профиля нет, создаём
-// `$profile:Trader_NPC_Prof/` и минимальные файлы настроек. Дальше мод
-// сам читает db/types.xml и генерирует черновик цен (TraderConfig_auto.txt)
-// - это делает TraderAutoPrices при <AutoPrices> yes (стоит в дефолте).
+// $profile:Trader_NPC_Prof/ и минимальные файлы настроек. Дальше мод сам
+// читает db/types.xml и генерирует черновик цен (TraderConfig_auto.txt) -
+// это делает TraderAutoPrices при <AutoPrices> yes (стоит в дефолте).
 //
 // Папка называется Trader_NPC_Prof, а не Trader, чтобы НЕ пересекаться с
 // оригинальным модом Trader (он читает $profile:Trader/).
 //
-// Используются только ванильные средства: FileExist / MakeDirectory / OpenFile / FPrintln.
+// Только ванильные средства: FileExist / MakeDirectory / OpenFile / FPrintln.
 // ============================================================
 class TraderNpcProfile
 {
 	static const string DIR = "$profile:Trader_NPC_Prof";
 
-	// --- содержимое файлов по умолчанию ---
-	static const string DEF_VARIABLES = "// TRADER_NPC - настройки (создано автоматически, правьте под себя)
-<BuySellTimer> 0.5
-<RatingEnabled> yes
-<RatingMaxDiscount> 20
-<RatingFullHours> 100
-<RatingCurve> 1.35
-<RatingFullDistance> 20000
-<RatingFullKills> 250
-<RatingWeightTime> 0.5
-<RatingWeightDistance> 0.3
-<RatingWeightKills> 0.2
-<SoundEnabled> yes
-<SoundRange> 60
-<KillReward> 0
-<SafezoneTimeout> 30
-<SafezoneRemoveAnimals> no
-<SafezoneRemoveInfected> no
-<SafezoneRemoveEAI> no
-<SafezoneShowDebugShape> no
-<FeatureRating> yes
-<FeatureSound> yes
-<FeatureSafezoneTrade> yes
-<FeatureMapTools> yes
-<FeatureHud> yes
-<FeatureKillReward> yes
-<FeatureAutoPrices> yes
-<FeatureNotifications> yes
-<AutoPrices> yes
-<AutoPricesMagFill> no
-<FileEnd>";
+	// --- содержимое файлов по умолчанию (одна строка = один файл, разделители \\n) ---
+	static const string DEF_VARIABLES = "// TRADER_NPC - настройки (создано автоматически)\n<BuySellTimer> 0.5\n<RatingEnabled> yes\n<RatingMaxDiscount> 20\n<RatingFullHours> 100\n<RatingCurve> 1.35\n<RatingFullDistance> 20000\n<RatingFullKills> 250\n<RatingWeightTime> 0.5\n<RatingWeightDistance> 0.3\n<RatingWeightKills> 0.2\n<SoundEnabled> yes\n<SoundRange> 60\n<KillReward> 0\n<SafezoneTimeout> 30\n<SafezoneRemoveAnimals> no\n<SafezoneRemoveInfected> no\n<SafezoneRemoveEAI> no\n<SafezoneShowDebugShape> no\n<FeatureRating> yes\n<FeatureSound> yes\n<FeatureSafezoneTrade> yes\n<FeatureMapTools> yes\n<FeatureHud> yes\n<FeatureKillReward> yes\n<FeatureAutoPrices> yes\n<FeatureNotifications> yes\n<AutoPrices> yes\n<AutoPricesMagFill> no\n<FileEnd>";
 
-	static const string DEF_OBJECTS = "// TRADER_NPC - торговцы. Скопируйте блок и укажите свои координаты (X, Y, Z).
-// Пока файл пуст, торговцы не спавнятся - это нормально для чистой установки.
-//
-// <TraderMarker> 0
-// <TraderMarkerPosition> 13311.63, 9.65, 11007.78
-// <TraderMarkerSafezone> 500
-// <Object> SurvivorF_Eva
-// <ObjectPosition> 13311.63, 9.65, 11007.78
-// <ObjectOrientation> 0, 0, 0
-// <ObjectAttachment> NPC_DUMMY
+	static const string DEF_OBJECTS = "// TRADER_NPC - торговцы. Скопируйте блок и укажите свои координаты (X, Y, Z).\n// Пока файл пуст, торговцы не спавнятся - это нормально для чистой установки.\n//\n// <TraderMarker> 0\n// <TraderMarkerPosition> 13311.63, 9.65, 11007.78\n// <TraderMarkerSafezone> 500\n// <Object> SurvivorF_Eva\n// <ObjectPosition> 13311.63, 9.65, 11007.78\n// <ObjectOrientation> 0, 0, 0\n// <ObjectAttachment> NPC_DUMMY\n\n<FileEnd>";
 
-<FileEnd>";
+	static const string DEF_CONFIG = "// TRADER_NPC - ассортимент: Classname, Quantity, BuyPrice[, SellPrice[, Ammo]]\n// Цены генерируются автоматически из db/types.xml (см. TraderConfig_auto.txt)\n<OpenFile>TraderConfig_auto.txt\n\n<TraderName> Weapon Trader\n<Category> AssaultRifles\nM4A1, 1, 40000, *\nAK101, 1, 35000, *\n<FileEnd>";
 
-	static const string DEF_CONFIG = "// TRADER_NPC - ассортимент: Classname, Quantity, BuyPrice[, SellPrice[, Ammo]]
-// Цены можно сгенерировать автоматически из db/types.xml: см. TraderConfig_auto.txt
-<OpenFile>TraderConfig_auto.txt
+	static const string DEF_ADMINS = "// TRADER_NPC - UID администраторов торговца (по одному в строке)\n<FileEnd>";
 
-<TraderName> Weapon Trader
-<Category> AssaultRifles
-M4A1, 1, 40000, *
-AK101, 1, 35000, *
-<FileEnd>";
-
-	static const string DEF_ADMINS = "// TRADER_NPC - UID администраторов торговца (по одному в строке)
-<FileEnd>";
-
-	// Создаёт профиль и недостающие файлы. Возвращает true, если что-то создано.
+	// Создаёт профиль и недостающие файлы. true = что-то создано.
 	static bool EnsureDefaults()
 	{
 		bool created = false;
@@ -106,7 +57,7 @@ AK101, 1, 35000, *
 		}
 
 		if ( created )
-			TraderMessage.ServerLog( "[TRADER] profile created: " + DIR + " (проверьте TraderObjects.txt - торговцы появятся после указания координат)" );
+			TraderMessage.ServerLog( "[TRADER] profile created: " + DIR );
 
 		return created;
 	}
@@ -122,7 +73,7 @@ AK101, 1, 35000, *
 		}
 
 		TStringArray lines = new TStringArray;
-		content.Split( "\n", lines );
+		content.Split( "\\n", lines );
 
 		for ( int i = 0; i < lines.Count(); i++ )
 			FPrintln( f, lines.Get( i ) );
