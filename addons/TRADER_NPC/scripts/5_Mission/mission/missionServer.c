@@ -555,6 +555,9 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
 
     void readTraderVariables()
     {
+
+        // Если профиля нет - создаём его (папка Trader_NPC_Prof) с дефолтами
+        TraderNpcProfile.EnsureDefaults();
         TraderMessage.ServerLog("[TRADER] READING TRADER VARIABLES FILE");
 
         FileHandle file_index = OpenFile(m_Trader_VariableFilePath, FileMode.READ);
