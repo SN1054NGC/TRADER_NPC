@@ -216,6 +216,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             string traderObjectType = line_content;
             // необязательное переопределение голоса: "<Object> SurvivorF_Eva, male_2"
             string voiceOverride = "";
+            string blockOverride = "";
             if ( traderObjectType.Contains( "," ) )
             {
                 TStringArray voiceParts = new TStringArray;
@@ -223,6 +224,8 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
                 traderObjectType = TraderNpcText.Tidy( voiceParts.Get( 0 ) );
                 if ( voiceParts.Count() > 1 )
                     voiceOverride = TraderNpcText.Tidy( voiceParts.Get( 1 ) );
+                if ( voiceParts.Count() > 2 )
+                    blockOverride = TraderNpcText.Tidy( voiceParts.Get( 2 ) );
             }
             TraderMessage.ServerLog("[TRADER] OBJECT TYPE ENTRY " + line_content);
             
@@ -299,7 +302,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
                 if (newtraderObj)
                 {            
                     m_Trader_ObjectsList.Insert(newtraderObj);
-        TraderVoiceRegistry.Register( newtraderObj, TraderVoiceRegistry.PickVoice( traderObjectType, voiceOverride ) );
+        TraderVoiceRegistry.Register( newtraderObj, TraderVoiceRegistry.PickVoice( traderObjectType, voiceOverride ), TraderVoiceRegistry.PickBlock( traderObjectType, blockOverride ) );
                     newtraderObj.SetPosition(objectPosition);
                     newtraderObj.SetOrientation(objectOrientation);
                     EntityAI entity = EntityAI.Cast(newtraderObj);
