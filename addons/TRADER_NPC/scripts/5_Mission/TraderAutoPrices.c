@@ -75,6 +75,14 @@ class TraderAutoPrices
 	static int    m_PriceStep  = 10;
 	static string m_SkipClasses = "";
 
+	// ---- результаты для missionServer.ApplyAutoPrices() ----
+	static bool m_Apply = true;              // <AutoPricesApply> yes|no
+	static ref array<string> m_OutClassnames;
+	static ref array<string> m_OutCategories;
+	static ref array<string> m_OutQuantity;
+	static ref array<int>    m_OutBuy;
+	static ref array<int>    m_OutSell;
+
 	// CE categories that must never be auto-priced (vehicles have their own file)
 	static const string m_SkipCats   = "zombie,animal,building,vehicle,vehiclesparts,tree,bush,rock,static,misc";
 	// class-name prefixes that are never tradeable loot ('#' = CE service groups)
@@ -97,6 +105,9 @@ class TraderAutoPrices
 			if ( line == "" )
 				continue;
 
+			if ( line.Contains( "<AutoPricesApply>" ) )
+				m_Apply = TagValue( line ) == "yes";
+			else 
 			if ( line.Contains( "<AutoPrices>" ) )
 				m_Enabled = TagValue( line ) == "yes";
 			else if ( line.Contains( "<AutoPricesSellCoef>" ) )
@@ -484,8 +495,31 @@ class TraderAutoPrices
 	// ------------------------------------------------------------------
 	// main entry - called once after readTraderData(), server only
 	// ------------------------------------------------------------------
+	// Понятное имя категории: для файла-справочника и для списка категорий в UI
+	static string DisplayCat( string ceCat )
+	{
+		if ( ceCat == "" )          return "Other";
+		if ( ceCat == "ammo" )      return "Ammo";
+		if ( ceCat == "magazines" ) return "Magazines";
+		if ( ceCat == "weapons" )   return "Weapons";
+		if ( ceCat == "clothes" )   return "Clothes";
+		if ( ceCat == "food" )      return "Food";
+		if ( ceCat == "medical" )   return "Medical";
+		if ( ceCat == "tools" )     return "Tools";
+		if ( ceCat == "containers" ) return "Containers";
+		if ( ceCat == "explosives" ) return "Explosives";
+		return "Auto " + ceCat;
+	}
+
 	static void Run( array<string> listedClasses )
 	{
+	// результаты для missionServer.ApplyAutoPrices() + заголовки категорий в файле
+	m_OutClassnames = new array<string>;
+	m_OutCategories = new array<string>;
+	m_OutQuantity   = new array<string>;
+	m_OutBuy        = new array<int>;
+	m_OutSell       = new array<int>;
+	string lastOutCat = "";
 		Configure();
 		if ( !m_Enabled )
 			return;
@@ -610,7 +644,20 @@ class TraderAutoPrices
 
 				if ( generated < m_MaxRows )
 				{
+					string dispCat = DisplayCat( cat );
+					if ( dispCat != lastOutCat )
+					{
+						outLines.Insert( "" );
+						outLines.Insert( "<Category> " + dispCat );
+						lastOutCat = dispCat;
+					}
+
 					outLines.Insert( "        " + cls + ", " + QtyToken( cls ) + ", " + buy + ", " + sell + ",   // " + cat + " / " + usage + " / " + tier );
+					m_OutClassnames.Insert( cls );
+					m_OutCategories.Insert( dispCat );
+					m_OutQuantity.Insert( QtyToken( cls ) );
+					m_OutBuy.Insert( buy );
+					m_OutSell.Insert( sell );
 					if ( minPrice == 0 || buy < minPrice )
 						minPrice = buy;
 					if ( buy > maxPrice )
@@ -641,14 +688,19 @@ class TraderAutoPrices
 		FPrintln( fo, "// source: " + types );
 		FPrintln( fo, "// types: " + total + "   generated: " + generated + "   skipped: " + skipped );
 		FPrintln( fo, "// price range: " + minPrice + " .. " + maxPrice );
-		FPrintln( fo, "// usage: put  <OpenFile>TraderNpcConfig_auto.txt  under the wanted <Trader>/<Category>" );
+		FPrintln( fo, "// ФАЙЛ-СПРАВОЧНИК. Подключать через <OpenFile> НЕ нужно:" );
+		FPrintln( fo, "// ассортимент применяется автоматически (missionServer.ApplyAutoPrices)" );
+		FPrintln( fo, "// торговец: " + m_BaseTrader + "   выключить: <AutoPricesApply> no" );
+		FPrintln( fo, "" );
+		FPrintln( fo, "<Trader> " + m_BaseTrader );
 		FPrintln( fo, "// suggested target: <Trader> " + m_BaseTrader + "   <Category> " + m_BaseCat );
 		for ( int i = 0; i < outLines.Count(); i++ )
 		{
 			FPrintln( fo, outLines.Get( i ) );
 		}
+		FPrintln( fo, "<FileEnd>" );
 		CloseFile( fo );
 
-		TraderMessage.ServerLog( "[AutoPrices] " + m_OutFile + " written: generated " + generated + " of " + total + " types (skipped " + skipped + ", price " + minPrice + ".." + maxPrice + ")" );
+		TraderMessage.ServerLog( "[AutoPrices] written " + m_OutFile + ": rows " + generated + "/" + total + ", apply=" + m_Apply );
 	}
 };

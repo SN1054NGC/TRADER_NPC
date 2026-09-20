@@ -83,6 +83,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
         // Nothing is applied automatically: the file is only offered, and the
         // owner includes it with <OpenFile>TraderNpcConfig_auto.txt.
         TraderAutoPrices.Run( m_Trader_ItemsClassnames );
+        ApplyAutoPrices();
         #endif
         
         // ============================================================
@@ -1373,6 +1374,103 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
         return 0;
     }
 
+    // ============================================================
+    // АВТО-АССОРТИМЕНТ из types.xml (TraderAutoPrices): позиции дописываются
+    // торговцу <AutoPricesTrader> (по имени, иначе первый). Ручной
+    // TraderNpcConfig.txt важнее - его классы не дублируются.
+    // Выключить: <AutoPricesApply> no в TraderNpcVariables.txt.
+    // ============================================================
+    #ifdef SERVER
+    void ApplyAutoPrices()
+    {
+    	if ( !TraderAutoPrices.m_Apply )
+    		return;
+    	if ( !TraderAutoPrices.m_OutClassnames || TraderAutoPrices.m_OutClassnames.Count() == 0 )
+    		return;
+    	if ( !m_Trader_TraderNames || m_Trader_TraderNames.Count() == 0 )
+    	{
+    		TraderMessage.ServerLog( "[AutoPrices] no traders in TraderNpcObjects.txt - auto items skipped" );
+    		return;
+    	}
+
+    	int targetTrader = 0;
+    	int byName = m_Trader_TraderNames.Find( TraderAutoPrices.m_BaseTrader );
+    	if ( byName >= 0 )
+    		targetTrader = byName;
+    	else if ( TraderAutoPrices.m_BaseTrader.ToInt() > 0 && TraderAutoPrices.m_BaseTrader.ToInt() < m_Trader_TraderNames.Count() )
+    		targetTrader = TraderAutoPrices.m_BaseTrader.ToInt();
+
+    	array<string> catNames = new array<string>;
+    	array<int> catIds = new array<int>;
+    	int applied = 0;
+
+    	for ( int i = 0; i < TraderAutoPrices.m_OutClassnames.Count(); i++ )
+    	{
+    		string cls = TraderAutoPrices.m_OutClassnames.Get( i );
+    		string catName = TraderAutoPrices.m_OutCategories.Get( i );
+
+    		// ручной конфиг имеет приоритет
+    		if ( m_Trader_ItemsClassnames.Find( cls ) != -1 )
+    			continue;
+
+    		int catId = -1;
+    		for ( int c = 0; c < catNames.Count(); c++ )
+    		{
+    			if ( catNames.Get( c ) == catName )
+    			{
+    				catId = catIds.Get( c );
+    				break;
+    			}
+    		}
+
+    		if ( catId < 0 )
+    		{
+    			// у этого торговца такая категория уже может быть - переиспользуем
+    			for ( int k = 0; k < m_Trader_Categorys.Count(); k++ )
+    			{
+    				if ( m_Trader_CategorysTraderKey.Get( k ) == targetTrader && m_Trader_Categorys.Get( k ) == catName )
+    				{
+    					catId = k;
+    					break;
+    				}
+    			}
+    			if ( catId < 0 )
+    			{
+    				m_Trader_Categorys.Insert( catName );
+    				m_Trader_CategorysTraderKey.Insert( targetTrader );
+    				catId = m_Trader_Categorys.Count() - 1;
+    			}
+    			catNames.Insert( catName );
+    			catIds.Insert( catId );
+    		}
+
+    		m_Trader_ItemsTraderId.Insert( targetTrader );
+    		m_Trader_ItemsCategoryId.Insert( catId );
+    		m_Trader_ItemsClassnames.Insert( cls );
+    		m_Trader_ItemsQuantity.Insert( AutoQtyToInt( TraderAutoPrices.m_OutQuantity.Get( i ), cls ) );
+    		m_Trader_ItemsBuyValue.Insert( TraderAutoPrices.m_OutBuy.Get( i ) );
+    		m_Trader_ItemsSellValue.Insert( TraderAutoPrices.m_OutSell.Get( i ) );
+    		m_Trader_ItemsAmmo.Insert( "" );
+    		applied++;
+    	}
+
+    	TraderMessage.ServerLog( "[AutoPrices] applied " + applied + " positions, categories " + catNames.Count() + ", trader " + targetTrader + " (" + m_Trader_TraderNames.Get( targetTrader ) + ")" );
+    }
+
+    // количество из токена конфига (как в readTraderData: *, M, W, S)
+    int AutoQtyToInt( string token, string cls )
+    {
+    	if ( token == "*" || token == "-1" )
+    		return GetItemMaxQuantity( cls );
+    	if ( token == "M" || token == "m" )
+    		return -3;
+    	if ( token == "W" || token == "w" )
+    		return -4;
+    	if ( token == "S" || token == "s" )
+    		return -5;
+    	return token.ToInt();
+    }
+    #endif
     void SetPlayerVehicleIsInSafezone( PlayerBase player, bool isInSafezone )
     {
         Print("A mod is using SetPlayerVehicleIsInSafezone from Trader mod. Function has been deprecated.");
