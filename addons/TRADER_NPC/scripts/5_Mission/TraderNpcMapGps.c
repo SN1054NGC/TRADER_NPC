@@ -21,11 +21,11 @@ modded class MapMenu
 		if ( !TraderNpcMapGps_HasItem( player, "GPSReceiver" ) )
 			return;
 
-		MapWidget map = MapWidget.Cast( layoutRoot.FindAnyWidget( "Map" ) );
-		if ( !map )
+		MapWidget mapWidget = MapWidget.Cast( layoutRoot.FindAnyWidget( "Map" ) );
+		if ( !mapWidget )
 			return;
 
-		map.AddUserMark( player.GetPosition(), "Я", COLOR_RED, "\\dz\\gear\\navigation\\data\\map_tree_ca.paa" );
+		mapWidget.AddUserMark( player.GetPosition(), "Я", COLOR_RED, "\\dz\\gear\\navigation\\data\\map_tree_ca.paa" );
 	}
 
 	static bool TraderNpcMapGps_HasItem( PlayerBase player, string typePart )
