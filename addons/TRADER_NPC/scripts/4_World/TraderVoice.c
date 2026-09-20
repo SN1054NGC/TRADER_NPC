@@ -60,20 +60,11 @@ class TraderVoice
 
 		TraderMessage.ServerLog( "[Voice] try " + base + " #" + calls );
 
-		if ( calls > 1 && ( calls % 2 ) == 0 )
-			return;
-		if ( ( m_CallsGlobal % 3 ) == 2 )
+		// мягкий анти-флуд: молчит только каждая четвертая фраза игроку
+		if ( calls > 1 && ( calls % 4 ) == 0 )
 			return;
 
-		// приветствие зависит от денег игрока
-		if ( base == "greet" )
-		{
-			int money = player.getPlayerCurrencyAmount();
-			if ( money < 2000 )
-				base = "greet_poor";
-			else if ( money > 20000 )
-				base = "greet_rich";
-		}
+		// (деление на бедных и богатых убрано - приветствие всегда обычное)
 
 		string voice = "";
 		int block = 0;

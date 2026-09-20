@@ -439,6 +439,7 @@ int m_Trader_LastApprTime = 0;   // лимит частоты запросов �
         if (m_Player_CurrencyAmount < payCosts)
         {
             TraderMessage.PlayerWhite("#tm_cant_afford", player);
+            TraderVoice.Play( PlayerBase.Cast(this), "no_money" );
             return;
         }
 
