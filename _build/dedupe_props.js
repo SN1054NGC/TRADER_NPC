@@ -1,6 +1,6 @@
 
 const fs=require('fs');
-const L='D:/DAYZDISKP/@sps_client_bot/addons/sps_client_bot/scripts/layouts/';
+const L='D:/DAYZDISKP/@TRADER_NPC/addons/TRADER_NPC/scripts/layouts/';
 // Убираем ПОВТОРЫ свойств внутри одного виджета, оставляя ПОСЛЕДНЕЕ значение
 // (движок применяет свойства по порядку, поэтому последнее и есть рабочее:
 // поведение не меняется, но файл становится однозначным).

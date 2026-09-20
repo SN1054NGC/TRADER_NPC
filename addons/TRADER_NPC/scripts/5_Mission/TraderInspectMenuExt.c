@@ -35,7 +35,7 @@ modded class InspectMenuNew
 	// ==================================================================
 	override Widget Init()
 	{
-		layoutRoot = GetGame().GetWorkspace().CreateWidgets( "sps_client_bot/scripts/layouts/TraderSellPopup.layout" );
+		layoutRoot = GetGame().GetWorkspace().CreateWidgets( "TRADER_NPC/scripts/layouts/TraderSellPopup.layout" );
 		TraderUI_BindWidgets( layoutRoot );
 		return layoutRoot;
 	}
@@ -79,7 +79,7 @@ modded class InspectMenuNew
 			return;
 		}
 
-		Widget overlay = GetGame().GetWorkspace().CreateWidgets( "sps_client_bot/scripts/layouts/TraderSellPopup.layout", layoutRoot );
+		Widget overlay = GetGame().GetWorkspace().CreateWidgets( "TRADER_NPC/scripts/layouts/TraderSellPopup.layout", layoutRoot );
 		if ( !overlay )
 			return;
 

@@ -9,9 +9,9 @@
 - Другие моды из вашей сборки — на ваш риск (см. «Совместимость»).
 
 ## Установка
-1. Скопировать `addons/sps_client_bot.pbo` (или папку `addons/sps_client_bot/` целиком) в
-   `<DayZ Server>/@sps_client_bot/addons/`.
-2. Запускать сервер с `-mod=...;@sps_client_bot`. Для loose-версии (исходники вместо PBO) нужен `-filePatching`.
+1. Скопировать `addons/TRADER_NPC.pbo` (или папку `addons/TRADER_NPC/` целиком) в
+   `<DayZ Server>/@TRADER_NPC/addons/`.
+2. Запускать сервер с `-mod=...;@TRADER_NPC`. Для loose-версии (исходники вместо PBO) нужен `-filePatching`.
 3. **Профильные файлы**: скопировать содержимое `Profiles/Trader/` в `<Профиль>/Trader/`
    (мод читает `$profile:Trader/*.txt`).
 4. Клиенту достаточно того же мода в `-mod=`.

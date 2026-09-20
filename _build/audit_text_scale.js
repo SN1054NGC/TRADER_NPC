@@ -1,6 +1,6 @@
 
 const fs=require('fs');
-const html=fs.readFileSync('D:/DAYZDISKP/@sps_client_bot/layout_viewer.html','utf8');
+const html=fs.readFileSync('D:/DAYZDISKP/@TRADER_NPC/layout_viewer.html','utf8');
 const a=html.indexOf('// ==PARSER_START=='), b=html.indexOf('// ==PARSER_END==');
 var state={loc:true}; var LOC={}; eval(html.slice(a,b));
 // 1) что ваниль делает со свойством "exact text" у текстовых классов
@@ -15,7 +15,7 @@ for(const f of files){ let res; try{ res=parseLayout(fs.readFileSync(f,'utf8'));
 console.log('=== ваниль: значения "exact text" ===');
 for(const [c,v] of Object.entries(V)) console.log('  '+c.padEnd(28)+' 0:'+String(v['0']||0).padStart(4)+'  1:'+String(v['1']||0).padStart(4));
 // 2) мои макеты: где текст может масштабироваться (exact text 0) или нет размера
-const L='D:/DAYZDISKP/@sps_client_bot/addons/sps_client_bot/scripts/layouts/';
+const L='D:/DAYZDISKP/@TRADER_NPC/addons/TRADER_NPC/scripts/layouts/';
 console.log('=== мои макеты: тексты без фиксированного размера ===');
 for(const f of fs.readdirSync(L).filter(x=>x.endsWith('.layout'))){
   const res=parseLayout(fs.readFileSync(L+f,'utf8'));

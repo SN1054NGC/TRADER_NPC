@@ -45,7 +45,7 @@ modded class InventoryMenu
 		if ( !layoutRoot )
 			return;
 
-		m_TraderRatingRoot = GetGame().GetWorkspace().CreateWidgets( "sps_client_bot/scripts/layouts/TraderRating.layout", layoutRoot );
+		m_TraderRatingRoot = GetGame().GetWorkspace().CreateWidgets( "TRADER_NPC/scripts/layouts/TraderRating.layout", layoutRoot );
 		if ( !m_TraderRatingRoot )
 			return;
 

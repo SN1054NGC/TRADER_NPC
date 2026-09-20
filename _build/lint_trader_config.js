@@ -2,7 +2,7 @@
 const fs=require('fs');
 const CFG=process.argv[2]||'D:/steam/steamapps/common/DayZServer/Profiles/Trader/TraderConfig.txt';
 const TYPES=process.argv[3]||'D:/steam/steamapps/common/DayZServer/mpmissions/dayzOffline.Lux/db/types.xml';
-const REPORT='D:/DAYZDISKP/@sps_client_bot/_build/log/trader_config_lint.txt';
+const REPORT='D:/DAYZDISKP/@TRADER_NPC/_build/log/trader_config_lint.txt';
 const out=[]; const say=(s)=>{ out.push(s); console.log(s); };
 const tx=fs.readFileSync(TYPES,'utf8'); const T={};
 for(const m of tx.matchAll(/<type\s+name="([^"]+)"\s*>([\s\S]*?)<\/type>/g)){

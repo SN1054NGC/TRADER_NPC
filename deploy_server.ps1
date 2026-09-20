@@ -1,18 +1,18 @@
 # ============================================================
 # deploy_server.ps1 - sync the MOD SOURCES to the server deployment.
-# Source of truth: D:/DAYZDISKP/@sps_client_bot/addons/sps_client_bot
-# Target:          D:/steam/steamapps/common/DayZServer/@sps_client_bot
+# Source of truth: D:/DAYZDISKP/@TRADER_NPC/addons/TRADER_NPC
+# Target:          D:/steam/steamapps/common/DayZServer/@TRADER_NPC
 # Only this mod is touched; every other mod is read-only.
 # Run this BEFORE building the pbo (build_pbo.ps1) or compiling in Workbench.
 # ============================================================
 $ErrorActionPreference = "Stop"
 
-$SrcAddon = "D:/DAYZDISKP/@sps_client_bot/addons/sps_client_bot"
-$SrvAddon = "D:/steam/steamapps/common/DayZServer/@sps_client_bot/addons/sps_client_bot"
-$SrvPbo   = "D:/steam/steamapps/common/DayZServer/@sps_client_bot/addons/sps_client_bot.pbo"
+$SrcAddon = "D:/DAYZDISKP/@TRADER_NPC/addons/TRADER_NPC"
+$SrvAddon = "D:/steam/steamapps/common/DayZServer/@TRADER_NPC/addons/TRADER_NPC"
+$SrvPbo   = "D:/steam/steamapps/common/DayZServer/@TRADER_NPC/addons/TRADER_NPC.pbo"
 $Elements = @("scripts", "languagecore", "images", "config.cpp")
 
-Write-Host "== deploy sps_client_bot :" (Get-Date -Format "yyyy-MM-dd HH:mm:ss") -ForegroundColor Cyan
+Write-Host "== deploy TRADER_NPC :" (Get-Date -Format "yyyy-MM-dd HH:mm:ss") -ForegroundColor Cyan
 
 if (-not (Test-Path $SrcAddon)) { Write-Error "missing source $SrcAddon"; exit 1 }
 if (-not (Test-Path $SrvAddon)) { Write-Error "missing server $SrvAddon"; exit 1 }

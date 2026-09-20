@@ -1,6 +1,6 @@
 
 const fs=require('fs');
-const P='D:/DAYZDISKP/@sps_client_bot/addons/sps_client_bot/scripts/layouts/TraderSellPopup.layout';
+const P='D:/DAYZDISKP/@TRADER_NPC/addons/TRADER_NPC/scripts/layouts/TraderSellPopup.layout';
 let s=fs.readFileSync(P,'utf8');
 const before=s;
 const pairs=[['27','0.9'],['29','0.88'],['22','0.9'],['24','0.88']];

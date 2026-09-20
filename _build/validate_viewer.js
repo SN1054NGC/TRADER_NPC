@@ -1,12 +1,12 @@
 
 const fs=require('fs');
-const H='D:/DAYZDISKP/@sps_client_bot/layout_viewer.html';
+const H='D:/DAYZDISKP/@TRADER_NPC/layout_viewer.html';
 const html=fs.readFileSync(H,'utf8');
 const s=html.indexOf('<script>')+8, e=html.lastIndexOf('</script>');
 try{ new Function(html.slice(s,e)); console.log('JS SYNTAX: OK'); }catch(err){ console.log('JS SYNTAX ERROR: '+err.message); process.exit(1); }
 const a=html.indexOf('// ==PARSER_START=='), b=html.indexOf('// ==PARSER_END==');
 var state={loc:true}; var LOC={}; eval(html.slice(a,b));
-const L='D:/DAYZDISKP/@sps_client_bot/addons/sps_client_bot/scripts/layouts/';
+const L='D:/DAYZDISKP/@TRADER_NPC/addons/TRADER_NPC/scripts/layouts/';
 // absolute rects: accumulate the parent origin, exactly like the DOM nesting does
 function absRects(file,w,h){
   const res=parseLayout(fs.readFileSync(L+file,'utf8'));

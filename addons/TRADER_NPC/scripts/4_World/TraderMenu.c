@@ -128,7 +128,7 @@ class TraderMenu extends UIScriptedMenu
     override Widget Init()
     {
 		m_Player = PlayerBase.Cast(GetGame().GetPlayer());
-		layoutRoot = GetGame().GetWorkspace().CreateWidgets( "sps_client_bot/scripts/layouts/TraderMenu.layout" );
+		layoutRoot = GetGame().GetWorkspace().CreateWidgets( "TRADER_NPC/scripts/layouts/TraderMenu.layout" );
 
         m_BtnBuy = ButtonWidget.Cast( layoutRoot.FindAnyWidget( "btn_buy" ) );
 		m_BtnSell = ButtonWidget.Cast( layoutRoot.FindAnyWidget( "btn_sell" ) );
@@ -1141,7 +1141,7 @@ class TraderMenu extends UIScriptedMenu
 	// title, the list, the details panel, the sell bar and the buttons, so a
 	// badge would overlap them. The full badge (star, progress bar and the
 	// right-click hint) is drawn in the inventory by TraderRatingUI.c from
-	// sps_client_bot/scripts/layouts/TraderRating.layout.
+	// TRADER_NPC/scripts/layouts/TraderRating.layout.
 	void TraderMenu_RatingRefresh()
 	{
 		if ( !m_Player )

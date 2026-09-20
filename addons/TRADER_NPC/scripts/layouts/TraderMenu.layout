@@ -21,7 +21,7 @@
 //
 // Icons: icon_plus (buy), iconArrowUp (sell), circle (quality), right_mouse
 // (right-click hint). The search icon is the mod's own magnifier texture
-// sps_client_bot/images/search.edds.
+// TRADER_NPC/images/search.edds.
 //
 // New widgets for the functionality added in the same pass:
 //   text_discount      - current survival rating discount
@@ -177,7 +177,7 @@ FrameWidgetClass TraderMenu {
    hexactsize 1
    vexactsize 1
    priority 2
-   imageTexture "sps_client_bot/images/search.edds"
+   imageTexture "TRADER_NPC/images/search.edds"
    mode blend
    "src alpha" 1
    stretch 1

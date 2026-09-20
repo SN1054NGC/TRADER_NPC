@@ -1,6 +1,6 @@
 
 const fs=require('fs');
-const root='D:/DAYZDISKP/@sps_client_bot/addons/sps_client_bot/';
+const root='D:/DAYZDISKP/@TRADER_NPC/addons/TRADER_NPC/';
 const st=fs.readFileSync(root+'languagecore/stringtable.csv','utf8').split('\n');
 const val={};
 for(const l of st){ const m=l.match(/^"(tm_[a-z_]+)","([^"]*)","([^"]*)"/); if(m) val[m[1]]={en:m[2],ru:m[5]||''}; }

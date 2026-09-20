@@ -1,10 +1,10 @@
 
 const fs=require('fs');
-const H='D:/DAYZDISKP/@sps_client_bot/layout_viewer.html';
+const H='D:/DAYZDISKP/@TRADER_NPC/layout_viewer.html';
 const html=fs.readFileSync(H,'utf8');
 const a=html.indexOf('// ==PARSER_START=='), b=html.indexOf('// ==PARSER_END==');
 var state={loc:true}; var LOC={}; eval(html.slice(a,b));
-const L='D:/DAYZDISKP/@sps_client_bot/addons/sps_client_bot/scripts/layouts/';
+const L='D:/DAYZDISKP/@TRADER_NPC/addons/TRADER_NPC/scripts/layouts/';
 const FILE=process.argv[2]||'TraderMenu.layout';
 const W=parseInt(process.argv[3]||'1300',10), Hh=parseInt(process.argv[4]||'990',10);
 const res=parseLayout(fs.readFileSync(L+FILE,'utf8'));

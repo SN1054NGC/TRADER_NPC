@@ -1,6 +1,6 @@
 class CfgPatches
 {
-	class sps_client_bot
+	class TRADER_NPC
 	{
 		units[]={};
 		weapons[]={};
@@ -14,14 +14,14 @@ class CfgPatches
 
 class CfgMods
 {
-	class sps_client_bot
+	class TRADER_NPC
 	{
-		dir="sps_client_bot";
+		dir="TRADER_NPC";
 		picture="";
 		action="";
 		hideName=1;
 		hidePicture=1;
-		name="sps_client_bot";
+		name="TRADER_NPC";
 		credits="";
 		author="";
 		authorID="0";
@@ -41,8 +41,8 @@ class CfgMods
 				value="";
 				files[]=
 				{
-					"sps_client_bot/scripts/defines",
-					"sps_client_bot/scripts/3_Game"
+					"TRADER_NPC/scripts/defines",
+					"TRADER_NPC/scripts/3_Game"
 				};
 			};
 			class worldScriptModule
@@ -50,8 +50,8 @@ class CfgMods
 				value="";
 				files[]=
 				{
-					"sps_client_bot/scripts/defines",
-					"sps_client_bot/scripts/4_World"
+					"TRADER_NPC/scripts/defines",
+					"TRADER_NPC/scripts/4_World"
 				};
 			};
 			class missionScriptModule
@@ -59,8 +59,8 @@ class CfgMods
 				value="";
 				files[]=
 				{
-					"sps_client_bot/scripts/defines",
-					"sps_client_bot/scripts/5_Mission"
+					"TRADER_NPC/scripts/defines",
+					"TRADER_NPC/scripts/5_Mission"
 				};
 			};
 		};

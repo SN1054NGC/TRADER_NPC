@@ -1,6 +1,6 @@
 
 const fs=require('fs');
-const html=fs.readFileSync('D:/DAYZDISKP/@sps_client_bot/layout_viewer.html','utf8');
+const html=fs.readFileSync('D:/DAYZDISKP/@TRADER_NPC/layout_viewer.html','utf8');
 const a=html.indexOf('// ==PARSER_START=='), b=html.indexOf('// ==PARSER_END==');
 var state={loc:true}; var LOC={}; eval(html.slice(a,b));
 const dir='D:/DAYZDISKP/gui/layouts/';

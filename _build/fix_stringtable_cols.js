@@ -1,6 +1,6 @@
 
 const fs=require('fs');
-const P='D:/DAYZDISKP/@sps_client_bot/addons/sps_client_bot/languagecore/stringtable.csv';
+const P='D:/DAYZDISKP/@TRADER_NPC/addons/TRADER_NPC/languagecore/stringtable.csv';
 // column order of the vanilla header:
 // Language, original, english, czech, german, russian, polish, hungarian, italian, spanish, french, chinese, japanese, portuguese, chinesesimp
 const EN=(s)=>s, rows={

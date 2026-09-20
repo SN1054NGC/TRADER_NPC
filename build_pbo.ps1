@@ -1,15 +1,15 @@
 # ============================================================
-# build_pbo.ps1 - pack the mod into sps_client_bot.pbo with PBO Manager.
+# build_pbo.ps1 - pack the mod into TRADER_NPC.pbo with PBO Manager.
 #
 # WHY THE $PREFIX$ FILE IS CRITICAL (this was the "traders disappeared" bug):
-#   The engine mounts '@sps_client_bot\addons\sps_client_bot.pbo' and looks for
+#   The engine mounts '@TRADER_NPC\addons\TRADER_NPC.pbo' and looks for
 #   config.cpp (CfgPatches/CfgMods) AT THE ADDON ROOT. A pbo built by PBOConsole
-#   WITHOUT a prefix contains a real 'sps_client_bot' sub-folder instead, so the
+#   WITHOUT a prefix contains a real 'TRADER_NPC' sub-folder instead, so the
 #   config is one level too deep: the engine mounts the package but loads no
 #   addon at all - no scripts, no plugins, no traders.
 #   PBO Manager sets the pbo property 'prefix' from a file named $PREFIX$ that
 #   sits in the folder being packed; its content must be the mod prefix.
-#   Result: prefix = sps_client_bot\  AND config.cpp at the addon root.
+#   Result: prefix = TRADER_NPC\  AND config.cpp at the addon root.
 #
 #  * no binarization at all (PBOConsole only stores files)
 #  * removes stray config .bin (we keep config.cpp only)
@@ -21,22 +21,22 @@ param(
 )
 $ErrorActionPreference = "Stop"
 
-$SrcAddon = "D:/DAYZDISKP/@sps_client_bot/addons/sps_client_bot"
-$Root     = "D:/DAYZDISKP/@sps_client_bot/_build"
+$SrcAddon = "D:/DAYZDISKP/@TRADER_NPC/addons/TRADER_NPC"
+$Root     = "D:/DAYZDISKP/@TRADER_NPC/_build"
 $Stage    = Join-Path $Root "stage"
 $LogDir   = Join-Path $Root "log"
-$OutPbo   = Join-Path $Root "sps_client_bot.pbo"
-$SrvAddon = "D:/steam/steamapps/common/DayZServer/@sps_client_bot/addons/sps_client_bot"
-$SrvPbo   = "D:/steam/steamapps/common/DayZServer/@sps_client_bot/addons/sps_client_bot.pbo"
+$OutPbo   = Join-Path $Root "TRADER_NPC.pbo"
+$SrvAddon = "D:/steam/steamapps/common/DayZServer/@TRADER_NPC/addons/TRADER_NPC"
+$SrvPbo   = "D:/steam/steamapps/common/DayZServer/@TRADER_NPC/addons/TRADER_NPC.pbo"
 $Backup   = Join-Path $Root "backup"
 $PboConsole = "C:/Program Files/PBO Manager v.1.4 beta/PBOConsole.exe"
-$Prefix   = "sps_client_bot"
+$Prefix   = "TRADER_NPC"
 # -NoDeploy : build the pbo only (the server may hold the deployed file open)
 
 if (-not (Test-Path $PboConsole)) { Write-Error "PBOConsole not found: $PboConsole"; exit 1 }
 if (-not (Test-Path $SrcAddon))   { Write-Error "missing source $SrcAddon"; exit 1 }
 
-Write-Host "== build_pbo sps_client_bot :" (Get-Date -Format "yyyy-MM-dd HH:mm:ss") -ForegroundColor Cyan
+Write-Host "== build_pbo TRADER_NPC :" (Get-Date -Format "yyyy-MM-dd HH:mm:ss") -ForegroundColor Cyan
 
 if (Test-Path $Stage) { Remove-Item $Stage -Recurse -Force }
 New-Item -ItemType Directory -Force -Path (Join-Path $Stage $Prefix) | Out-Null
@@ -90,7 +90,7 @@ if ($NoDeploy) {
 New-Item -ItemType Directory -Force -Path $Backup | Out-Null
 if (Test-Path $SrvPbo) {
   $stamp = Get-Date -Format "yyyyMMdd_HHmmss"
-  Copy-Item $SrvPbo (Join-Path $Backup "sps_client_bot.pbo.$stamp") -Force
+  Copy-Item $SrvPbo (Join-Path $Backup "TRADER_NPC.pbo.$stamp") -Force
   for ($i = 0; $i -lt 8; $i++) {
     try { Remove-Item $SrvPbo -Force -ErrorAction Stop; break }
     catch { Write-Host "  [pbo] locked, retry $($i + 1)..."; Start-Sleep -Milliseconds 700 }

@@ -1,7 +1,7 @@
 
 const fs=require('fs');
 const TYPES='D:/steam/steamapps/common/DayZServer/mpmissions/dayzOffline.Lux/db/types.xml';
-const OUT='D:/DAYZDISKP/@sps_client_bot/_build/log/TraderConfig_auto_preview.txt';
+const OUT='D:/DAYZDISKP/@TRADER_NPC/_build/log/TraderConfig_auto_preview.txt';
 const tx=fs.readFileSync(TYPES,'utf8'); const T={};
 for(const m of tx.matchAll(/<type\s+name="([^"]+)"\s*>([\s\S]*?)<\/type>/g)){
   const name=m[1], body=m[2];

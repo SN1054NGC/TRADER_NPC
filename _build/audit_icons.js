@@ -1,7 +1,7 @@
 
 const fs=require('fs');
-const L='D:/DAYZDISKP/@sps_client_bot/addons/sps_client_bot/scripts/layouts/';
-const ADDON='D:/DAYZDISKP/@sps_client_bot/addons/sps_client_bot/';
+const L='D:/DAYZDISKP/@TRADER_NPC/addons/TRADER_NPC/scripts/layouts/';
+const ADDON='D:/DAYZDISKP/@TRADER_NPC/addons/TRADER_NPC/';
 const sets={};
 for(const f of fs.readdirSync('D:/DAYZDISKP/gui/imagesets')){
   if(!f.endsWith('.imageset')) continue;
@@ -19,7 +19,7 @@ for(const f of fs.readdirSync(L).filter(x=>x.endsWith('.layout'))){
   }
   for(const m of t.matchAll(/imageTexture\s+"([^"]+)"/g)){
     const p=m[1].replace(/^\{[^}]+\}/,'').replace(/\\/g,'/'); tex++;
-    const cands=[ 'D:/DAYZDISKP/'+p, ADDON+p.replace(/^sps_client_bot\//,''), 'D:/DAYZDISKP/gui/'+p.replace(/^gui\//,'') ];
+    const cands=[ 'D:/DAYZDISKP/'+p, ADDON+p.replace(/^TRADER_NPC\//,''), 'D:/DAYZDISKP/gui/'+p.replace(/^gui\//,'') ];
     let ok=false; for(const c of cands){ if(fs.existsSync(c)){ ok=true; break; } }
     if(!ok){ console.log('НЕТ ТЕКСТУРЫ '+p+'  ('+f+')'); bad++; }
   }

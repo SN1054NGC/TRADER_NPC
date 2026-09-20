@@ -1,7 +1,7 @@
 
 const fs=require('fs');
-const L='D:/DAYZDISKP/@sps_client_bot/addons/sps_client_bot/scripts/layouts/';
-const H='D:/DAYZDISKP/@sps_client_bot/layout_viewer.html';
+const L='D:/DAYZDISKP/@TRADER_NPC/addons/TRADER_NPC/scripts/layouts/';
+const H='D:/DAYZDISKP/@TRADER_NPC/layout_viewer.html';
 const names=fs.readdirSync(L).filter(f=>f.endsWith('.layout')).sort();
 const builtin={};
 for(const n of names) builtin[n]=fs.readFileSync(L+n,'utf8').replace(/\r/g,'');

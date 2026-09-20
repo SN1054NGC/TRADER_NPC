@@ -1,6 +1,6 @@
 
 const fs=require('fs');
-const html=fs.readFileSync('D:/DAYZDISKP/@sps_client_bot/layout_viewer.html','utf8');
+const html=fs.readFileSync('D:/DAYZDISKP/@TRADER_NPC/layout_viewer.html','utf8');
 const a=html.indexOf('// ==PARSER_START=='), b=html.indexOf('// ==PARSER_END==');
 var state={loc:true}; var LOC={}; eval(html.slice(a,b));
 const ONLY=['exact text','exact text size','text halign','text valign','text color','bold text','italic text','wrap','size to text h','size to text v','text offset','text_proportion','lines','colums','title visible','text','font','highlight row','highlight on focus','no focus'];
@@ -16,7 +16,7 @@ console.log('ваниль Button:     '+show('ButtonWidgetClass'));
 console.log('ваниль CheckBox:   '+show('CheckBoxWidgetClass'));
 console.log('ваниль XComboBox:  '+show('XComboBoxWidgetClass'));
 console.log('');
-const L='D:/DAYZDISKP/@sps_client_bot/addons/sps_client_bot/scripts/layouts/';
+const L='D:/DAYZDISKP/@TRADER_NPC/addons/TRADER_NPC/scripts/layouts/';
 for(const f of ['TraderMenu.layout','TraderSellPopup.layout','TraderRating.layout']){
   const lines=fs.readFileSync(L+f,'utf8').split('\n');
   const stack=[]; let depth=0; const out=[]; const rep={};

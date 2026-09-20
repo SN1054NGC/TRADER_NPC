@@ -1,11 +1,11 @@
 # ИНТЕРФЕЙС И LAYOUT — КАК УСТРОЕНО И КАК ПОЗИЦИОНИРУЕТСЯ
 
-Документ для @sps_client_bot (DayZ 1.29). Всё измерено на реальных файлах игры и нашего мода.
+Документ для @TRADER_NPC (DayZ 1.29). Всё измерено на реальных файлах игры и нашего мода.
 Инструменты, которыми это проверяется: `_build/validate_layouts.js`, `_build/audit_my_fonts.js`, `layout_viewer.html`.
 
 ## 1. ГДЕ ЛЕЖИТ И КАК ЗАГРУЖАЕТСЯ
 
-Файлы: `addons/sps_client_bot/scripts/layouts/*.layout` (внутри PBO путь `sps_client_bot/scripts/layouts/...`).
+Файлы: `addons/TRADER_NPC/scripts/layouts/*.layout` (внутри PBO путь `TRADER_NPC/scripts/layouts/...`).
 
 | Файл | Строк | Назначение |
 |---|---|---|
@@ -18,10 +18,10 @@
 
 Загрузка (Enforce Script):
 
-    Widget root = GetGame().GetWorkspace().CreateWidgets("sps_client_bot/scripts/layouts/TraderMenu.layout");
+    Widget root = GetGame().GetWorkspace().CreateWidgets("TRADER_NPC/scripts/layouts/TraderMenu.layout");
     TextWidget t = TextWidget.Cast(root.FindAnyWidget("text_saldo"));
 
-Путь = префикс PBO (`sps_client_bot`, задан в `build_pbo.ps1` как `$PREFIX$`) + путь внутри аддона.
+Путь = префикс PBO (`TRADER_NPC`, задан в `build_pbo.ps1` как `$PREFIX$`) + путь внутри аддона.
 Один и тот же layout можно создать много раз — получится много независимых экземпляров (так работает строка уведомления).
 
 ## 2. СИНТАКСИС DSL

@@ -17,7 +17,7 @@ class TraderNotification
         // ============================================================
         // ИСПРАВЛЕНИЕ: ПРАВИЛЬНЫЙ ПУТЬ К LAYOUT
         // ============================================================
-        layoutRoot = GetGame().GetWorkspace().CreateWidgets("sps_client_bot/scripts/layouts/TraderNotification.layout", m_Parent);
+        layoutRoot = GetGame().GetWorkspace().CreateWidgets("TRADER_NPC/scripts/layouts/TraderNotification.layout", m_Parent);
         m_Message = RichTextWidget.Cast(layoutRoot.FindAnyWidget("text_message") );
         m_Timer = time;
         //Print("[Ntf:D] TraderNotification.Init layoutRoot=" + layoutRoot + " msgWidget=" + m_Message);
@@ -79,7 +79,7 @@ class TraderNotifications : Managed
         // ============================================================
         // ИСПРАВЛЕНИЕ: ПРАВИЛЬНЫЙ ПУТЬ К LAYOUT
         // ============================================================
-                Widget layoutRoot = GetGame().GetWorkspace().CreateWidgets("sps_client_bot/scripts/layouts/TraderNotificationsContainer.layout");
+                Widget layoutRoot = GetGame().GetWorkspace().CreateWidgets("TRADER_NPC/scripts/layouts/TraderNotificationsContainer.layout");
         m_Container = WrapSpacerWidget.Cast(layoutRoot.FindAnyWidget("Wrapper"));
         //Print("[Ntf:D] TraderNotifications.Init containerLayout=" + layoutRoot + " wrapper=" + m_Container);
         m_Messages = new array<ref TraderNotification>;

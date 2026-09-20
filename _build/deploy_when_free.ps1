@@ -1,5 +1,5 @@
 param([int]$MaxMinutes = 60)
-$log = "D:\DAYZDISKP\@sps_client_bot\_build\log\deploy_when_free.log"
+$log = "D:\DAYZDISKP\@TRADER_NPC\_build\log\deploy_when_free.log"
 function L($s){ $t=(Get-Date).ToString("HH:mm:ss"); Add-Content $log "$t $s" }
 L "waiting for DayZ processes to exit (max $MaxMinutes min)"
 $end = (Get-Date).AddMinutes($MaxMinutes)
@@ -11,12 +11,12 @@ while ((Get-Date) -lt $end) {
 if (Get-Process -Name DayZ_x64,DayZServer_x64 -ErrorAction SilentlyContinue) { L "timeout: still running"; exit 3 }
 L "free -> build + deploy + check"
 Start-Sleep -Seconds 3
-cd "D:\DAYZDISKP\@sps_client_bot"
+cd "D:\DAYZDISKP\@TRADER_NPC"
 & ".\build_pbo.ps1" *>> $log
 & ".\deploy_server.ps1" *>> $log
 $out = & ".\check_compile.ps1" -TraderCheckSeconds 45
 $out | Select-String "ERRORS|RESULT|traders =" | Add-Content $log
-$pbo = "D:\steam\steamapps\common\DayZServer\@sps_client_bot\addons\sps_client_bot.pbo"
+$pbo = "D:\steam\steamapps\common\DayZServer\@TRADER_NPC\addons\TRADER_NPC.pbo"
 $i = Get-Item $pbo
 L ("PBO now: " + $i.Length + " bytes, md5 " + (Get-FileHash $pbo -Algorithm MD5).Hash.Substring(0,8))
 L "done"

@@ -1,9 +1,9 @@
 
 const fs=require('fs');
-const html=fs.readFileSync('D:/DAYZDISKP/@sps_client_bot/layout_viewer.html','utf8');
+const html=fs.readFileSync('D:/DAYZDISKP/@TRADER_NPC/layout_viewer.html','utf8');
 const a=html.indexOf('// ==PARSER_START=='), b=html.indexOf('// ==PARSER_END==');
 var state={loc:true}; var LOC={}; eval(html.slice(a,b));
-const L='D:/DAYZDISKP/@sps_client_bot/addons/sps_client_bot/scripts/layouts/';
+const L='D:/DAYZDISKP/@TRADER_NPC/addons/TRADER_NPC/scripts/layouts/';
 const OK_TEXTPROPS={TextWidgetClass:1,MultilineTextWidgetClass:1,RichTextWidgetClass:1,MultilineEditBoxWidgetClass:1};
 const EDITBOX={EditBoxWidgetClass:1};
 

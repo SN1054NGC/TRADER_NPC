@@ -1,6 +1,6 @@
 
 const fs=require('fs');
-const P='D:/DAYZDISKP/@sps_client_bot/addons/sps_client_bot/languagecore/stringtable.csv';
+const P='D:/DAYZDISKP/@TRADER_NPC/addons/TRADER_NPC/languagecore/stringtable.csv';
 const lines=fs.readFileSync(P,'utf8').split('\n');
 let bad=[], rows=0;
 for(const l of lines){ if(!l.trim()) continue; rows++;

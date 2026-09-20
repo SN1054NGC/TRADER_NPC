@@ -1,14 +1,14 @@
 # ============================================================
 # check_compile.ps1 - verify the mod WITHOUT touching other mods.
 #
-#   1) PBO STRUCTURE  : unpack @sps_client_bot/addons/sps_client_bot.pbo and make
+#   1) PBO STRUCTURE  : unpack @TRADER_NPC/addons/TRADER_NPC.pbo and make
 #                       sure config.cpp sits at the ADDON ROOT. Without that the
 #                       engine mounts the package but loads no addon at all
 #                       (this is what made every trader disappear).
 #   2) SCRIPT COMPILE : start DayZServer, wait for "Module: Mission" in
 #                       Profiles/script_<stamp>.log. Lines that mention
-#                       sps_client_bot are split into errors and warnings.
-#                       PASS  = Mission reached and no sps_client_bot ERROR
+#                       TRADER_NPC are split into errors and warnings.
+#                       PASS  = Mission reached and no TRADER_NPC ERROR
 #                       (warnings such as unsafe down-casting do not fail).
 #   3) TRADER BOOT    : with -TraderCheckSeconds N the server keeps running N
 #                       seconds, is stopped gracefully (so the mod's log file is
@@ -27,18 +27,18 @@ $ErrorActionPreference = "Stop"
 $Srv      = "D:\steam\steamapps\common\DayZServer"
 $Profiles = Join-Path $Srv "Profiles"
 $Exe      = Join-Path $Srv "DayZServer_x64.exe"
-$SrvPbo   = Join-Path $Srv "@sps_client_bot\addons\sps_client_bot.pbo"
-$Root     = "D:\DAYZDISKP\@sps_client_bot\_build"
+$SrvPbo   = Join-Path $Srv "@TRADER_NPC\addons\TRADER_NPC.pbo"
+$Root     = "D:\DAYZDISKP\@TRADER_NPC\_build"
 $LogDir   = Join-Path $Root "log"
 $Report   = Join-Path $LogDir "compile_report.txt"
 $PboConsole = "C:\Program Files\PBO Manager v.1.4 beta\PBOConsole.exe"
-$ServerArgs = '-config=serverDZ.cfg -port=2302 -cpuCount=1 -exThreads=2 -maxMem=32768 -dologs -adminlog -netlog -freezecheck -filePatching "-servermod=@AntifreeZe;@sps_zmb_01;" -profiles=Profiles "-mod=@CF;@Community-Online-Tools;@LuxRedux;@Dabs Framework;@DayZ Editor Loader;@sps_client_bot;@sps_item;"'
+$ServerArgs = '-config=serverDZ.cfg -port=2302 -cpuCount=1 -exThreads=2 -maxMem=32768 -dologs -adminlog -netlog -freezecheck -filePatching "-servermod=@AntifreeZe;@sps_zmb_01;" -profiles=Profiles "-mod=@CF;@Community-Online-Tools;@LuxRedux;@Dabs Framework;@DayZ Editor Loader;@TRADER_NPC;@sps_item;"'
 
 New-Item -ItemType Directory -Force -Path $LogDir | Out-Null
 $Lines = New-Object System.Collections.ArrayList
 function Add-Line([string]$s) { [void]$Lines.Add($s); Write-Host $s }
 
-Add-Line ("# sps_client_bot check  " + (Get-Date -Format "yyyy-MM-dd HH:mm:ss"))
+Add-Line ("# TRADER_NPC check  " + (Get-Date -Format "yyyy-MM-dd HH:mm:ss"))
 
 # ---------------- 1) pbo structure ----------------
 $pboOk = $false
@@ -49,7 +49,7 @@ if (-not (Test-Path $SrvPbo)) {
   if (Test-Path $chk) { Remove-Item $chk -Recurse -Force }
   Start-Process -FilePath $PboConsole -ArgumentList "-unpack", $SrvPbo, $chk -Wait -RedirectStandardOutput (Join-Path $LogDir "pbo_check.log")
   if (Test-Path (Join-Path $chk "config.cpp")) { $pboOk = $true }
-  $nested = Test-Path (Join-Path $chk "sps_client_bot")
+  $nested = Test-Path (Join-Path $chk "TRADER_NPC")
   Add-Line ("PBO structure  = " + $(if ($pboOk) { "OK (config.cpp at addon root)" } else { "BAD (config.cpp missing at root, nested folder=" + $nested + ")" }))
   Add-Line ("PBO size       = " + (Get-Item $SrvPbo).Length + " bytes")
 }
@@ -126,7 +126,7 @@ $allErr = @()
 if ($log) {
   Add-Line ("script_log      = " + $log.FullName)
   foreach ($m in (Select-String -Path $log.FullName -Pattern "Module:")) { $mods += $m.Line.Trim() }
-  foreach ($m in (Select-String -Path $log.FullName -Pattern "sps_client_bot")) {
+  foreach ($m in (Select-String -Path $log.FullName -Pattern "TRADER_NPC")) {
     $line = $m.Line.Trim()
     $isErr = (($line -like "*(E)*") -or ($line -match ".c(d+):"))
     if ($isErr) { $ownErr += ("  " + $line) } else { $ownWarn += ("  " + $line) }
@@ -135,9 +135,9 @@ if ($log) {
 }
 Add-Line "--- modules ---"
 foreach ($m in $mods) { Add-Line $m }
-Add-Line "--- sps_client_bot ERRORS (must be empty) ---"
+Add-Line "--- TRADER_NPC ERRORS (must be empty) ---"
 if ($ownErr.Count -eq 0) { Add-Line "  (none)" } else { foreach ($l in $ownErr) { Add-Line $l } }
-Add-Line "--- sps_client_bot warnings (informational) ---"
+Add-Line "--- TRADER_NPC warnings (informational) ---"
 if ($ownWarn.Count -eq 0) { Add-Line "  (none)" } else { foreach ($l in $ownWarn) { Add-Line $l } }
 Add-Line "--- all (E) lines from every mod (informational) ---"
 if ($allErr.Count -eq 0) { Add-Line "  (none)" } else { foreach ($l in $allErr) { Add-Line $l } }
