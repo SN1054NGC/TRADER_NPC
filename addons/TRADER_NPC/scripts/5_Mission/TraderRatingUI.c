@@ -17,6 +17,8 @@ modded class InventoryMenu
 	private TextWidget m_TraderRatingInfo;
 	private Widget     m_TraderRatingBar;
 	private ButtonWidget m_TraderRatingToggle;
+	private Widget     m_TraderRatingIconCollapse;
+	private Widget     m_TraderRatingIconExpand;
 	private Widget     m_TraderRatingPanel;
 	private float      m_TraderRatingTimer;
 
@@ -55,6 +57,8 @@ modded class InventoryMenu
 		m_TraderRatingInfo  = TextWidget.Cast( m_TraderRatingRoot.FindAnyWidget( "RatingInfo" ) );
 		m_TraderRatingBar   = m_TraderRatingRoot.FindAnyWidget( "RatingBar" );
 		m_TraderRatingToggle = ButtonWidget.Cast( m_TraderRatingRoot.FindAnyWidget( "RatingToggle" ) );
+		m_TraderRatingIconCollapse = m_TraderRatingRoot.FindAnyWidget( "RatingIconCollapse" );
+		m_TraderRatingIconExpand   = m_TraderRatingRoot.FindAnyWidget( "RatingIconExpand" );
 		m_TraderRatingPanel  = m_TraderRatingRoot.FindAnyWidget( "RatingPanel" );
 	}
 
@@ -92,13 +96,11 @@ modded class InventoryMenu
 				bar.SetCurrent( player.m_Trader_RatingProgress * 100.0 );
 		}
 
-		if ( m_TraderRatingToggle )
-		{
-			if ( collapsed )
-				m_TraderRatingToggle.SetText( "#tm_rating_show" );
-			else
-				m_TraderRatingToggle.SetText( "#tm_rating_hide" );
-		}
+		if ( m_TraderRatingIconCollapse )
+			m_TraderRatingIconCollapse.Show( !collapsed );
+
+		if ( m_TraderRatingIconExpand )
+			m_TraderRatingIconExpand.Show( collapsed );
 
 		if ( m_TraderRatingInfo )
 		{
@@ -119,6 +121,18 @@ modded class InventoryMenu
 				info = info + "  " + TraderRatingUI_PosText( player );
 
 			m_TraderRatingInfo.SetText( info );
+
+			// Панель расширяется по тексту (влево, якорь справа)
+			int textW, textH;
+			m_TraderRatingInfo.GetTextSize( textW, textH );
+
+			float panelW = ( textW + 70 ) / 0.66;
+			if ( panelW < 380 )
+				panelW = 380;
+			if ( panelW > 1250 )
+				panelW = 1250;
+
+			m_TraderRatingRoot.SetSize( panelW / 1920.0, 0.038 );
 		}
 	}
 
