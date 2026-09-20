@@ -19,6 +19,7 @@ modded class InventoryMenu
 	private ButtonWidget m_TraderRatingToggle;
 	private Widget     m_TraderRatingIconCollapse;
 	private Widget     m_TraderRatingIconExpand;
+	private CheckBoxWidget m_TraderRatingHudCheck;
 	private Widget     m_TraderRatingPanel;
 	private float      m_TraderRatingTimer;
 
@@ -27,6 +28,7 @@ modded class InventoryMenu
 		super.OnShow();
 		TraderRatingUI_Ensure();
 		TraderRatingUI_Refresh();
+		TraderRatingHud.Get().Bootstrap();
 	}
 
 	override void Update( float timeslice )
@@ -59,6 +61,7 @@ modded class InventoryMenu
 		m_TraderRatingToggle = ButtonWidget.Cast( m_TraderRatingRoot.FindAnyWidget( "RatingToggle" ) );
 		m_TraderRatingIconCollapse = m_TraderRatingRoot.FindAnyWidget( "RatingIconCollapse" );
 		m_TraderRatingIconExpand   = m_TraderRatingRoot.FindAnyWidget( "RatingIconExpand" );
+		m_TraderRatingHudCheck     = CheckBoxWidget.Cast( m_TraderRatingRoot.FindAnyWidget( "RatingHudCheck" ) );
 		m_TraderRatingPanel  = m_TraderRatingRoot.FindAnyWidget( "RatingPanel" );
 	}
 
@@ -101,6 +104,9 @@ modded class InventoryMenu
 
 		if ( m_TraderRatingIconExpand )
 			m_TraderRatingIconExpand.Show( collapsed );
+
+		if ( m_TraderRatingHudCheck )
+			m_TraderRatingHudCheck.SetChecked( player.m_Trader_RatingHud );
 
 		if ( m_TraderRatingInfo )
 		{
@@ -187,6 +193,18 @@ modded class InventoryMenu
 			if ( player )
 			{
 				player.m_Trader_RatingCollapsed = !player.m_Trader_RatingCollapsed;
+				TraderRatingUI_Refresh();
+			}
+			return true;
+		}
+
+		if ( w == m_TraderRatingHudCheck )
+		{
+			PlayerBase hudPlayer = PlayerBase.Cast( GetGame().GetPlayer() );
+			if ( hudPlayer )
+			{
+				hudPlayer.m_Trader_RatingHud = !hudPlayer.m_Trader_RatingHud;
+				m_TraderRatingHudCheck.SetChecked( hudPlayer.m_Trader_RatingHud );
 				TraderRatingUI_Refresh();
 			}
 			return true;

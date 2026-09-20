@@ -80,11 +80,11 @@ FrameWidgetClass RatingRoot {
    "text halign" left
    "text valign" center
   }
-  ButtonWidgetClass RatingHudToggle {
+  CheckBoxWidgetClass RatingHudCheck {
    visible 1
    ignorepointer 0
-   position 0.785 0.04
-   size 0.075 0.92
+   position 0.76 0.04
+   size 0.11 0.92
    halign left_ref
    valign top_ref
    hexactpos 0
@@ -92,50 +92,9 @@ FrameWidgetClass RatingRoot {
    hexactsize 0
    vexactsize 0
    priority 4
-   style MenuDefault
-   text ""
-   {
-    ImageWidgetClass RatingHudOnIcon {
-     visible 1
-     ignorepointer 1
-     color 1 1 1 1
-     fixaspect fixwidth
-     mode blend
-     "src alpha" 1
-     "clamp mode" clamp
-     filter 1
-     image0 "set:dayz_gui image:icon_player"
-     position 0 0
-     size 16 16
-     halign center_ref
-     valign center_ref
-     hexactpos 1
-     vexactpos 1
-     hexactsize 1
-     vexactsize 1
-     priority 2
-    }
-    ImageWidgetClass RatingHudOffIcon {
-     visible 0
-     ignorepointer 1
-     color 1 1 1 1
-     fixaspect fixwidth
-     mode blend
-     "src alpha" 1
-     "clamp mode" clamp
-     filter 1
-     image0 "set:dayz_gui image:icon_close"
-     position 0 0
-     size 16 16
-     halign center_ref
-     valign center_ref
-     hexactpos 1
-     vexactpos 1
-     hexactsize 1
-     vexactsize 1
-     priority 2
-    }
-   }
+   style Default
+   font "gui/fonts/Metron22"
+   text "#tm_rating_hud"
   }
   ButtonWidgetClass RatingToggle {
    visible 1
