@@ -1,6 +1,6 @@
 
 const fs = require('fs');
-const CFG = 'D:/steam/steamapps/common/DayZServer/Profiles/Trader/TraderConfig.txt';
+const CFG = 'D:/steam/steamapps/common/DayZServer/Profiles/Trader_NPC_Prof/TraderConfig.txt';
 const lines = fs.readFileSync(CFG, 'utf8').split(/\r?\n/);
 const rows = [];
 for (const ln of lines) {

@@ -50,7 +50,7 @@ class TraderTradeRules
 			return;
 		m_Loaded = true;
 
-		FileHandle fh = OpenFile( "$profile:Trader/TraderVariables.txt", FileMode.READ );
+		FileHandle fh = OpenFile( "$profile:Trader_NPC_Prof/TraderVariables.txt", FileMode.READ );
 		if ( fh == 0 )
 			return;
 

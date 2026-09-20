@@ -16,5 +16,5 @@ _build/stage/
 _build/working_*
 _build/wip_economy_*
 ArmorStats/
-Profiles/Trader/Trader*.txt
-Profiles/Trader/TraderAdmins.txt
+Profiles/Trader_NPC_Prof/Trader*.txt
+Profiles/Trader_NPC_Prof/TraderAdmins.txt

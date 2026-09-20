@@ -1,10 +1,10 @@
 modded class MissionServer
 {
-    static const string m_Trader_ConfigFilePath = "$profile:Trader/TraderConfig.txt";
-    static const string m_Trader_ObjectsFilePath = "$profile:Trader/TraderObjects.txt";
-    static const string m_Trader_VehiclePartsFilePath = "$profile:Trader/TraderVehicleParts.txt";
-    static const string m_Trader_VariableFilePath = "$profile:Trader/TraderVariables.txt";
-    static const string m_Trader_AdminsFilePath = "$profile:Trader/TraderAdmins.txt";
+    static const string m_Trader_ConfigFilePath = "$profile:Trader_NPC_Prof/TraderConfig.txt";
+    static const string m_Trader_ObjectsFilePath = "$profile:Trader_NPC_Prof/TraderObjects.txt";
+    static const string m_Trader_VehiclePartsFilePath = "$profile:Trader_NPC_Prof/TraderVehicleParts.txt";
+    static const string m_Trader_VariableFilePath = "$profile:Trader_NPC_Prof/TraderVariables.txt";
+    static const string m_Trader_AdminsFilePath = "$profile:Trader_NPC_Prof/TraderAdmins.txt";
 
     float m_Trader_SafezoneTimeout = 30;
     bool m_Trader_SafezoneRemoveAnimals = false;
@@ -77,7 +77,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
         readTraderAdmins();
 
         #ifdef SERVER
-        // Auto-prices: builds $profile:Trader/TraderConfig_auto.txt from the
+        // Auto-prices: builds $profile:Trader_NPC_Prof/TraderConfig_auto.txt from the
         // mission types.xml for every tradeable class the manual config does
         // not list. Disabled by default - see <AutoPrices> in TraderVariables.txt.
         // Nothing is applied automatically: the file is only offered, and the
@@ -851,11 +851,11 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
         line_content = TraderNpcText.Clean(line_content);
 
         CloseFile(file_index);
-        file_index = OpenFile("$profile:Trader/" + line_content, FileMode.READ);
+        file_index = OpenFile("$profile:Trader_NPC_Prof/" + line_content, FileMode.READ);
 
         if ( file_index == 0 )
         {
-            TraderMessage.ServerLog("[TRADER] CANT FIND LINKED FILE " + "$profile:Trader/" + line_content + "!");
+            TraderMessage.ServerLog("[TRADER] CANT FIND LINKED FILE " + "$profile:Trader_NPC_Prof/" + line_content + "!");
             return false;
         }
         

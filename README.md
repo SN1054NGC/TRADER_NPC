@@ -12,11 +12,11 @@
 1. Скопировать `addons/TRADER_NPC.pbo` (или папку `addons/TRADER_NPC/` целиком) в
    `<DayZ Server>/@TRADER_NPC/addons/`.
 2. Запускать сервер с `-mod=...;@TRADER_NPC`. Для loose-версии (исходники вместо PBO) нужен `-filePatching`.
-3. **Профильные файлы**: скопировать содержимое `Profiles/Trader/` в `<Профиль>/Trader/`
-   (мод читает `$profile:Trader/*.txt`).
+3. **Профильные файлы**: скопировать содержимое `Profiles/Trader_NPC_Prof/` в `<Профиль>/Trader/`
+   (мод читает `$profile:Trader_NPC_Prof/*.txt`).
 4. Клиенту достаточно того же мода в `-mod=`.
 
-## Профильные файлы (`Profiles/Trader/`)
+## Профильные файлы (`Profiles/Trader_NPC_Prof/`)
 | Файл | Назначение |
 |---|---|
 | `TraderVariables.txt` | основные настройки (таймеры, рейтинг, скидка, авто-цены, звук) |

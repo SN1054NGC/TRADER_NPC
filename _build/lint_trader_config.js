@@ -1,6 +1,6 @@
 
 const fs=require('fs');
-const CFG=process.argv[2]||'D:/steam/steamapps/common/DayZServer/Profiles/Trader/TraderConfig.txt';
+const CFG=process.argv[2]||'D:/steam/steamapps/common/DayZServer/Profiles/Trader_NPC_Prof/TraderConfig.txt';
 const TYPES=process.argv[3]||'D:/steam/steamapps/common/DayZServer/mpmissions/dayzOffline.Lux/db/types.xml';
 const REPORT='D:/DAYZDISKP/@TRADER_NPC/_build/log/trader_config_lint.txt';
 const out=[]; const say=(s)=>{ out.push(s); console.log(s); };

@@ -10,9 +10,9 @@ class TRITEM
 
 modded class DayZPlayerImplement
 {
-    static const string m_Trader_ConfigFilePath = "$profile:Trader/TraderConfig.txt";
-    static const string m_Trader_ObjectsFilePath = "$profile:Trader/TraderObjects.txt";
-    static const string m_Trader_VehiclePartsFilePath = "$profile:Trader/TraderVehicleParts.txt";
+    static const string m_Trader_ConfigFilePath = "$profile:Trader_NPC_Prof/TraderConfig.txt";
+    static const string m_Trader_ObjectsFilePath = "$profile:Trader_NPC_Prof/TraderObjects.txt";
+    static const string m_Trader_VehiclePartsFilePath = "$profile:Trader_NPC_Prof/TraderVehicleParts.txt";
 
     bool m_Trader_RecievedAllData = false;
     bool m_Trader_IsInSafezone = false;

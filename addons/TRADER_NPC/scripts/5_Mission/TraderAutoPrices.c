@@ -6,7 +6,7 @@
 //   a buy/sell price for every TRADEABLE class that the manual TraderConfig.txt
 //   does NOT list (onlyUnlisted = yes by default). The result is written as a
 //   NORMAL config fragment into
-//        $profile:Trader/TraderConfig_auto.txt
+//        $profile:Trader_NPC_Prof/TraderConfig_auto.txt
 //   Nothing is applied automatically - the owner reviews the file and includes
 //   it with the mechanism that already exists in the config:
 //        <Trader> Misc Trader
@@ -35,8 +35,8 @@
 // ============================================================
 class TraderAutoPrices
 {
-	static string m_VarsFile  = "$profile:Trader/TraderVariables.txt";
-	static string m_OutFile   = "$profile:Trader/TraderConfig_auto.txt";
+	static string m_VarsFile  = "$profile:Trader_NPC_Prof/TraderVariables.txt";
+	static string m_OutFile   = "$profile:Trader_NPC_Prof/TraderConfig_auto.txt";
 	static string m_TypesFile = "";
 
 	static bool   m_Enabled    = false;
