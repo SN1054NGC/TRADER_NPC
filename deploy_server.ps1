@@ -10,7 +10,7 @@ $ErrorActionPreference = "Stop"
 $SrcAddon = "D:/DAYZDISKP/@TRADER_NPC/addons/TRADER_NPC"
 $SrvAddon = "D:/steam/steamapps/common/DayZServer/@TRADER_NPC/addons/TRADER_NPC"
 $SrvPbo   = "D:/steam/steamapps/common/DayZServer/@TRADER_NPC/addons/TRADER_NPC.pbo"
-$Elements = @("scripts", "languagecore", "images", "config.cpp")
+$Elements = @("scripts", "languagecore", "images", "sounds", "config.cpp")
 
 Write-Host "== deploy TRADER_NPC :" (Get-Date -Format "yyyy-MM-dd HH:mm:ss") -ForegroundColor Cyan
 

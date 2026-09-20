@@ -14,8 +14,8 @@ class TraderVoice
 		if ( !m_Enabled || !player || phrase == "" )
 			return;
 
-		string set = "TRADER_NPC_VOICE_" + phrase + "_SoundSet";
-		GetGame().CreateSoundOnObject( player, set, 25, false, true );
+		string soundSet = "TRADER_NPC_VOICE_" + phrase + "_SoundSet";
+		GetGame().CreateSoundOnObject( player, soundSet, 25, false, true );
 		TraderMessage.ServerLog( "[Voice] " + phrase );
 	}
 }
