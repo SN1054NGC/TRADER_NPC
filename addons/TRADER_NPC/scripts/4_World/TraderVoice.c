@@ -9,6 +9,7 @@ class TraderVoice
 	static int  m_CooldownMs = 6000;
 	static int  m_GlobalMs   = 2000;
 	static int  m_LastGlobal = 0;
+	static int  m_CallCounter = 0;
 	static ref array<string> m_Ids;
 	static ref array<string> m_Last;
 	static ref array<int>    m_Times;
@@ -72,12 +73,19 @@ class TraderVoice
 		if ( pid == "" )
 			return;
 
-		int now = GetGame().GetTime();
-		if ( now - m_LastGlobal < m_GlobalMs )
-			return;
-
+		// ВАЖНО: GetGame().GetTime() в DayZ считает не миллисекунды, поэтому
+		// временной анти-флуд здесь не использовать. Считаем попытки:
+		// каждая вторая фраза игроку и каждая третья на сервере молчат.
 		int slot = PlayerSlot( pid );
-		if ( now - m_Times.Get( slot ) < m_CooldownMs )
+		int calls = m_Times.Get( slot ) + 1;
+		m_Times.Set( slot, calls );
+		m_CallCounter = m_CallCounter + 1;
+
+		TraderMessage.ServerLog( "[Voice] try " + base + " #" + calls + " " + pid.Substring( 0, 6 ) );
+
+		if ( calls > 1 && ( calls % 2 ) == 0 )
+			return;
+		if ( ( m_CallCounter % 3 ) == 2 )
 			return;
 
 		if ( base == "greet" )
@@ -108,8 +116,7 @@ class TraderVoice
 
 		player.TraderPlaySoundForAll( soundSet, pos );
 
-		m_LastGlobal = now;
-		m_Times.Set( slot, now );
+		// счётчики уже обновлены выше
 		m_Last.Set( slot, phrase );
 
 		TraderMessage.ServerLog( "[Voice] " + phrase + " voice=" + voice + " from=" + from );
