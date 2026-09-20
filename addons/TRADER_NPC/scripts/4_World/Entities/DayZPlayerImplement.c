@@ -314,6 +314,12 @@ int m_Trader_LastApprTime = 0;   // лимит частоты запросов �
     }
 
 	// ---- ИИ-торговец: вопрос из чата (!текст) ----
+	void handleTraderByeRPC(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx)
+	{
+		#ifdef SERVER
+		TraderVoice.Play( PlayerBase.Cast(this), "bye" );
+		#endif
+	}
 	void handleAiAskRPC(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx)
 	{
 		TraderVoice.Play( PlayerBase.Cast(this), "funny" );
@@ -345,7 +351,9 @@ int m_Trader_LastApprTime = 0;   // лимит частоты запросов �
 		if (rpc_type == TRPCs.RPC_APPRAISE_SELL)
 			handleSellAppraiseRPC(sender, rpc_type, ctx);
 		if (rpc_type == TRPCs.RPC_AI_ASK)
-			handleAiAskRPC(sender, rpc_type, ctx);
+						 handleAiAskRPC(sender, rpc_type, ctx);
+		if (rpc_type == TRPCs.RPC_TRADER_BYE)
+			handleTraderByeRPC(sender, rpc_type, ctx);
 	}
 
     void handleBuyRPC(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx)
@@ -516,6 +524,7 @@ int m_Trader_LastApprTime = 0;   // лимит частоты запросов �
         if (itemSellValue < 0)
         {
             TraderMessage.PlayerWhite("#tm_cant_be_sold", player);
+            TraderVoice.Play( PlayerBase.Cast(this), "notrade" );
             return;
         }
 
@@ -549,6 +558,7 @@ int m_Trader_LastApprTime = 0;   // лимит частоты запросов �
             }
 
             TraderMessage.PlayerWhite( "#tm_you_cant_sell", player );
+            TraderVoice.Play( PlayerBase.Cast(this), "notrade" );
             return;
         }
                         if ( sellableItem && sellableItem.IsRuined() )

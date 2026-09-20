@@ -34,5 +34,5 @@ enum TRPCs
 
 	// ИИ-торговец: вопрос из чата (!текст) и ответ модели
 	RPC_AI_ASK,
-	RPC_AI_ANSWER
+	RPC_AI_ANSWER,  RPC_TRADER_BYE
 }
