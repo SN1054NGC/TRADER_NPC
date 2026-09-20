@@ -23,17 +23,16 @@ class TraderVoice
 			soundSet = "TRADER_NPC_VOICE_female_1_" + phrase + "_SoundSet";
 
 		string from = "player";
-		Object src = trader;
+		vector pos = player.GetPosition();
 		if ( trader )
 		{
+			pos = trader.GetPosition();
 			from = "trader";
 		}
-		else
-		{
-			src = player;
-		}
 
-		GetGame().CreateSoundOnObject( src, soundSet, 25, false );
+		// Проверенный путь мода: сервер рассылает RPC игрокам в радиусе,
+		// каждый играет набор локально (SEffectManager.PlaySound).
+		player.TraderPlaySoundForAll( soundSet, pos );
 		TraderMessage.ServerLog( "[Voice] " + phrase + " voice=" + voice + " from=" + from );
 	}
 }
