@@ -44,9 +44,12 @@ class TraderVoiceRegistry
 			m_MaleCount = m_MaleCount + 1;
 		}
 
-		if ( n % 2 == 0 )
+		int v = n % 3;
+		if ( v == 0 )
 			return prefix + "1";
-		return prefix + "2";
+		if ( v == 1 )
+			return prefix + "2";
+		return prefix + "3";
 	}
 
 	static void Register( Object trader, string voice )
