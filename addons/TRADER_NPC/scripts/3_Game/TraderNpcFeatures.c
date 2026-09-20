@@ -8,7 +8,7 @@
 //            `modded class` просто вызывает super (ванильное поведение),
 //            то есть патч становится "прозрачным".
 //
-// Ключи конфига (TraderVariables.txt), по умолчанию все ВКЛЮЧЕНЫ,
+// Ключи конфига (TraderNpcVariables.txt), по умолчанию все ВКЛЮЧЕНЫ,
 // кроме AutoPrices (генерирует файл цен):
 //   <FeatureRating>          рейтинг выживания и скидка
 //   <FeatureSound>           звук денег/бумаги
@@ -25,7 +25,7 @@
 // ============================================================
 class TraderNpcFeatures
 {
-	// серверные флаги (читаются из TraderVariables.txt)
+	// серверные флаги (читаются из TraderNpcVariables.txt)
 	static bool  s_Rating = true;
 	static bool  s_Sound = true;
 	static bool  s_SafezoneTrade = true;

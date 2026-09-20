@@ -3,7 +3,7 @@
 //
 // АВТОСОЗДАНИЕ ПРОФИЛЯ. При первом запуске, если профиля нет, создаём
 // $profile:Trader_NPC_Prof/ и минимальные файлы настроек. Дальше мод сам
-// читает db/types.xml и генерирует черновик цен (TraderConfig_auto.txt) -
+// читает db/types.xml и генерирует черновик цен (TraderNpcConfig_auto.txt) -
 // это делает TraderAutoPrices при <AutoPrices> yes (стоит в дефолте).
 //
 // Папка называется Trader_NPC_Prof, а не Trader, чтобы НЕ пересекаться с
@@ -20,7 +20,7 @@ class TraderNpcProfile
 
 	static const string DEF_OBJECTS = "// TRADER_NPC - торговцы. Скопируйте блок и укажите свои координаты (X, Y, Z).\n// Пока файл пуст, торговцы не спавнятся - это нормально для чистой установки.\n//\n// <TraderMarker> 0\n// <TraderMarkerPosition> 13311.63, 9.65, 11007.78\n// <TraderMarkerSafezone> 500\n// <Object> SurvivorF_Eva\n// <ObjectPosition> 13311.63, 9.65, 11007.78\n// <ObjectOrientation> 0, 0, 0\n// <ObjectAttachment> NPC_DUMMY\n\n<FileEnd>";
 
-	static const string DEF_CONFIG = "// TRADER_NPC - ассортимент: Classname, Quantity, BuyPrice[, SellPrice[, Ammo]]\n// Цены генерируются автоматически из db/types.xml (см. TraderConfig_auto.txt)\n<CurrencyName> #tm_ruble\n\n// Валюту можно поменять на любой предмет: <Currency> ИмяКласса, номинал\n<Currency> TraderNpcMoney, 1\n\n<OpenFile>TraderConfig_auto.txt\n\n<TraderName> Weapon Trader\n<Category> AssaultRifles\nM4A1, 1, 40000, *\nAK101, 1, 35000, *\n<FileEnd>";
+	static const string DEF_CONFIG = "// TRADER_NPC - ассортимент: Classname, Quantity, BuyPrice[, SellPrice[, Ammo]]\n// Цены генерируются автоматически из db/types.xml (см. TraderNpcConfig_auto.txt)\n<CurrencyName> #tm_ruble\n\n// Валюту можно поменять на любой предмет: <Currency> ИмяКласса, номинал\n<Currency> TraderNpcMoney, 1\n\n<OpenFile>TraderNpcConfig_auto.txt\n\n<TraderName> Weapon Trader\n<Category> AssaultRifles\nM4A1, 1, 40000, *\nAK101, 1, 35000, *\n<FileEnd>";
 
 	static const string DEF_ADMINS = "// TRADER_NPC - UID администраторов торговца (по одному в строке)\n<FileEnd>";
 
@@ -35,24 +35,24 @@ class TraderNpcProfile
 			created = true;
 		}
 
-		if ( !FileExist( DIR + "/TraderVariables.txt" ) )
+		if ( !FileExist( DIR + "/TraderNpcVariables.txt" ) )
 		{
-			WriteText( DIR + "/TraderVariables.txt", DEF_VARIABLES );
+			WriteText( DIR + "/TraderNpcVariables.txt", DEF_VARIABLES );
 			created = true;
 		}
-		if ( !FileExist( DIR + "/TraderObjects.txt" ) )
+		if ( !FileExist( DIR + "/TraderNpcObjects.txt" ) )
 		{
-			WriteText( DIR + "/TraderObjects.txt", DEF_OBJECTS );
+			WriteText( DIR + "/TraderNpcObjects.txt", DEF_OBJECTS );
 			created = true;
 		}
-		if ( !FileExist( DIR + "/TraderConfig.txt" ) )
+		if ( !FileExist( DIR + "/TraderNpcConfig.txt" ) )
 		{
-			WriteText( DIR + "/TraderConfig.txt", DEF_CONFIG );
+			WriteText( DIR + "/TraderNpcConfig.txt", DEF_CONFIG );
 			created = true;
 		}
-		if ( !FileExist( DIR + "/TraderAdmins.txt" ) )
+		if ( !FileExist( DIR + "/TraderNpcAdmins.txt" ) )
 		{
-			WriteText( DIR + "/TraderAdmins.txt", DEF_ADMINS );
+			WriteText( DIR + "/TraderNpcAdmins.txt", DEF_ADMINS );
 			created = true;
 		}
 

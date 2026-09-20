@@ -1,10 +1,10 @@
 modded class MissionServer
 {
-    static const string m_Trader_ConfigFilePath = "$profile:Trader_NPC_Prof/TraderConfig.txt";
-    static const string m_Trader_ObjectsFilePath = "$profile:Trader_NPC_Prof/TraderObjects.txt";
-    static const string m_Trader_VehiclePartsFilePath = "$profile:Trader_NPC_Prof/TraderVehicleParts.txt";
-    static const string m_Trader_VariableFilePath = "$profile:Trader_NPC_Prof/TraderVariables.txt";
-    static const string m_Trader_AdminsFilePath = "$profile:Trader_NPC_Prof/TraderAdmins.txt";
+    static const string m_Trader_ConfigFilePath = "$profile:Trader_NPC_Prof/TraderNpcConfig.txt";
+    static const string m_Trader_ObjectsFilePath = "$profile:Trader_NPC_Prof/TraderNpcObjects.txt";
+    static const string m_Trader_VehiclePartsFilePath = "$profile:Trader_NPC_Prof/TraderNpcVehicleParts.txt";
+    static const string m_Trader_VariableFilePath = "$profile:Trader_NPC_Prof/TraderNpcVariables.txt";
+    static const string m_Trader_AdminsFilePath = "$profile:Trader_NPC_Prof/TraderNpcAdmins.txt";
 
     float m_Trader_SafezoneTimeout = 30;
     bool m_Trader_SafezoneRemoveAnimals = false;
@@ -42,7 +42,7 @@ modded class MissionServer
 
     float m_Trader_BuySellTimer = 0.3;
 
-    // ---- survival rating (trader discount), tuned in TraderVariables.txt ----
+    // ---- survival rating (trader discount), tuned in TraderNpcVariables.txt ----
     bool  m_Trader_RatingEnabled = true;
     int   m_Trader_RatingMaxDiscount = 20;
     int   m_Trader_RatingFullHours = 100;
@@ -71,17 +71,17 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
     {
         GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Remove(this.LoadServerConfigs);
         TraderMessage.ServerLog("[TRADER] LOADING TRADER CONFIG");
-        SpawnTraderObjects();
-        readTraderVariables();
+        SpawnTraderNpcObjects();
+        readTraderNpcVariables();
         readTraderData();
-        readTraderAdmins();
+        readTraderNpcAdmins();
 
         #ifdef SERVER
-        // Auto-prices: builds $profile:Trader_NPC_Prof/TraderConfig_auto.txt from the
+        // Auto-prices: builds $profile:Trader_NPC_Prof/TraderNpcConfig_auto.txt from the
         // mission types.xml for every tradeable class the manual config does
-        // not list. Disabled by default - see <AutoPrices> in TraderVariables.txt.
+        // not list. Disabled by default - see <AutoPrices> in TraderNpcVariables.txt.
         // Nothing is applied automatically: the file is only offered, and the
-        // owner includes it with <OpenFile>TraderConfig_auto.txt.
+        // owner includes it with <OpenFile>TraderNpcConfig_auto.txt.
         TraderAutoPrices.Run( m_Trader_ItemsClassnames );
         #endif
         
@@ -180,7 +180,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
         }
     }
     
-    void SpawnTraderObjects()
+    void SpawnTraderNpcObjects()
     {
         m_Trader_NPCDummyClasses = new array<string>;
         m_Trader_ObjectsList = new array<Object>;
@@ -553,7 +553,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
         return best;
     }
 
-    void readTraderVariables()
+    void readTraderNpcVariables()
     {
         TraderMessage.ServerLog("[TRADER] READING TRADER VARIABLES FILE");
 
@@ -811,7 +811,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
         TraderMessage.ServerLog("[TRADER] DONE END!");
     }
 
-    void readTraderAdmins()
+    void readTraderNpcAdmins()
     {
         TraderMessage.ServerLog("[TRADER] READING TRADER ADMINS FILE");
         m_Trader_AdminPlayerUIDs = new array<string>;    
@@ -1021,7 +1021,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
         int traderID = -1;
         int categoryId = -1;
 
-        // ---- price defaults (см. <SellCoef> в TraderConfig.txt) ----
+        // ---- price defaults (см. <SellCoef> в TraderNpcConfig.txt) ----
         // Строку можно писать в 3 поля: "Class, Qty, Buy" - цена продажи тогда
         // считается как Buy * SellCoef. SellCoef задаётся на трейдера и, при
         // желании, переопределяется в отдельной категории. Явные 4 поля всегда

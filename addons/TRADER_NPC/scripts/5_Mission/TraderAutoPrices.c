@@ -3,15 +3,15 @@
 //
 // WHAT IT DOES
 //   Reads the mission Central Economy file <mission>/db/types.xml and computes
-//   a buy/sell price for every TRADEABLE class that the manual TraderConfig.txt
+//   a buy/sell price for every TRADEABLE class that the manual TraderNpcConfig.txt
 //   does NOT list (onlyUnlisted = yes by default). The result is written as a
 //   NORMAL config fragment into
-//        $profile:Trader_NPC_Prof/TraderConfig_auto.txt
+//        $profile:Trader_NPC_Prof/TraderNpcConfig_auto.txt
 //   Nothing is applied automatically - the owner reviews the file and includes
 //   it with the mechanism that already exists in the config:
 //        <Trader> Misc Trader
 //            <Category> Auto
-//                <OpenFile>TraderConfig_auto.txt
+//                <OpenFile>TraderNpcConfig_auto.txt
 //   The include inherits the current <Trader>/<Category>, so the fragment itself
 //   contains only item lines (plus comments).
 //
@@ -23,7 +23,7 @@
 //        buy  = clamp( round( base(category) * usageMul(usage) * tierMul(value)
 //                     * rarityMul(nominal) ), MinBuy, MaxBuy )
 //        sell = max( 1, round( buy * SellCoef ) )
-//   Everything is configurable in TraderVariables.txt (see Configure()).
+//   Everything is configurable in TraderNpcVariables.txt (see Configure()).
 //
 // SAFETY
 //   * server only, runs once per mission start
@@ -35,8 +35,8 @@
 // ============================================================
 class TraderAutoPrices
 {
-	static string m_VarsFile  = "$profile:Trader_NPC_Prof/TraderVariables.txt";
-	static string m_OutFile   = "$profile:Trader_NPC_Prof/TraderConfig_auto.txt";
+	static string m_VarsFile  = "$profile:Trader_NPC_Prof/TraderNpcVariables.txt";
+	static string m_OutFile   = "$profile:Trader_NPC_Prof/TraderNpcConfig_auto.txt";
 	static string m_TypesFile = "";
 
 	static bool   m_Enabled    = false;
@@ -81,7 +81,7 @@ class TraderAutoPrices
 	static const string m_SkipPrefix = "#,Zmb,Animal,Land,StaticObj,Car_,Boat_,Plane_,House_,Grave,Underground";
 
 	// ------------------------------------------------------------------
-	// knobs are read from TraderVariables.txt so this file stays
+	// knobs are read from TraderNpcVariables.txt so this file stays
 	// self-contained and missionServer needs no extra parsing
 	// ------------------------------------------------------------------
 	static void Configure()
@@ -641,7 +641,7 @@ class TraderAutoPrices
 		FPrintln( fo, "// source: " + types );
 		FPrintln( fo, "// types: " + total + "   generated: " + generated + "   skipped: " + skipped );
 		FPrintln( fo, "// price range: " + minPrice + " .. " + maxPrice );
-		FPrintln( fo, "// usage: put  <OpenFile>TraderConfig_auto.txt  under the wanted <Trader>/<Category>" );
+		FPrintln( fo, "// usage: put  <OpenFile>TraderNpcConfig_auto.txt  under the wanted <Trader>/<Category>" );
 		FPrintln( fo, "// suggested target: <Trader> " + m_BaseTrader + "   <Category> " + m_BaseCat );
 		for ( int i = 0; i < outLines.Count(); i++ )
 		{

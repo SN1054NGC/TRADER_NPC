@@ -1,0 +1,6 @@
+// TRADER_NPC — пример TraderNpcAdmins.txt. Скопируйте в <Профиль>/Trader/TraderNpcAdmins.txt
+// По одному UID администратора в строке. Впишите свои — чужие в публичном репозитории не нужны.
+
+PUT_YOUR_ID_HERE
+
+<FileEnd>

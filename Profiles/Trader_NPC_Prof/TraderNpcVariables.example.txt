@@ -1,0 +1,48 @@
+// TRADER_NPC — пример TraderNpcVariables.txt. Скопируйте в <Профиль>/Trader/TraderNpcVariables.txt
+// Комментарии только одиночные // ; <FileEnd> обязателен в конце файла.
+
+// --- общее ---
+<BuySellTimer> 0.5
+
+// --- рейтинг выживания и скидка ---
+<RatingEnabled> yes               // включить систему рейтинга (yes/no)
+<RatingMaxDiscount> 20            // максимальная скидка в % (0..100)
+<RatingFullHours> 100             // часов выживания для полного прогресса
+<RatingCurve> 1.35                // кривая (больше 1 = медленный старт)
+<RatingFullDistance> 20000        // метров пути для полного прогресса
+<RatingFullKills> 250             // убитых заражённых для полного прогресса
+<RatingWeightTime> 0.5            // веса вкладов (нормируются)
+<RatingWeightDistance> 0.3
+<RatingWeightKills> 0.2
+
+// --- звук денег ---
+<SoundEnabled> yes                // слышат все игроки в радиусе
+<SoundRange> 60                   // радиус слышимости, метры
+
+// --- выплата за заражённого ---
+<KillReward> 0                    // 0 = авто: цена 1 шт. самого слабого патрона
+
+// --- сейф-зоны торговцев ---
+<SafezoneTimeout> 30              // секунд до полного выхода из сейф-зоны
+<SafezoneRemoveAnimals> no
+<SafezoneRemoveInfected> no
+<SafezoneRemoveEAI> no
+<SafezoneShowDebugShape> no
+
+// --- ЕДИНЫЙ РЕЕСТР ПЕРЕКЛЮЧАТЕЛЕЙ ФУНКЦИЙ (см. TraderNpcFeatures.c) ---
+// выключенная функция не удаляет патч, но ведёт себя как ваниль (нет конфликтов с другими модами)
+<FeatureRating> yes
+<FeatureSound> yes
+<FeatureSafezoneTrade> yes
+<FeatureMapTools> yes
+<FeatureHud> yes
+<FeatureKillReward> yes
+<FeatureAutoPrices> yes
+<FeatureNotifications> yes
+
+// --- авто-цены из db/types.xml ---
+// полный список ключей <AutoPrices*> смотрите в рабочем файле сервера
+<AutoPrices> no                   // генерация черновика цен в TraderNpcConfig_auto.txt
+<AutoPricesMagFill> no            // снаряжать магазины при продаже (по умолчанию выключено)
+
+<FileEnd>

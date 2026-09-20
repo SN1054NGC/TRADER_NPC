@@ -2,7 +2,7 @@
 // ФАЙЛ: TraderNpcText.c   (модуль 3_Game — общий для сервера и клиента)
 //
 // Собственный текстовый помощник TRADER_NPC для разбора конфигов
-// (TraderVariables.txt / TraderObjects.txt / TraderConfig*.txt).
+// (TraderNpcVariables.txt / TraderNpcObjects.txt / TraderNpcConfig*.txt).
 // Используются только ванильные средства: FGets() для чтения строк и
 // методы класса string. Кода сторонних модов здесь нет.
 //

@@ -1,0 +1,37 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////
+// TRADER_NPC — пример ассортимента. Скопируйте в <Профиль>/Trader_NPC_Prof/TraderNpcConfig.txt
+//
+// ВАЛЮТА (по умолчанию — бумага TRADER_NPC, стак до 99999):
+//   <CurrencyName> #tm_ruble      — как валюта называется в интерфейсе (ключ строки или текст)
+//   <Currency> TraderNpcMoney, 1  — Класс, Номинал. Строк <Currency> может быть несколько,
+//                                   читаются от старшей купюры к младшей.
+//   Можно указать ЛЮБОЙ класс игры: предмет без количества (varQuantityMax/count)
+//   считается за одну штуку. Пример: <Currency> Nail, 10
+//   Строки валюты обязаны стоять ДО первого <TraderName>.
+//
+// ФОРМАТ АССОРТИМЕНТА: Classname, Quantity, BuyPrice[, SellPrice[, Ammo]]
+//   Quantity : 1 = за штуку; * = максимум стека/пачки; M = магазин
+//   SellPrice: * = посчитать от BuyPrice по SellCoef (по умолчанию 0.10)
+//   Ammo     : 5-е поле для магазинов: "" = базовый патрон, "empty" = пустой, иначе класс патрона
+//
+// ВСЕ ЦЕНЫ — в рублях (1 бумага = 1 рубль). Комментарии только одиночные // ; <FileEnd> обязателен.
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+<CurrencyName> #tm_ruble
+<Currency> TraderNpcMoney, 1
+
+<TraderName> Weapon Trader
+<Category> AssaultRifles
+M4A1, 1, 40000, *
+AK101, 1, 35000, *
+Mag_STANAG_30Rnd, M, 4000, 1200, Ammo_556x45
+
+<Category> Pistols
+MakarovIJ70, 1, 8000, *
+Mag_IJ70_8Rnd, M, 900, 300, Ammo_9x18
+
+<TraderName> Food Trader
+<Category> Food
+BakedBeansCan, 1, 300, *
+TunaCan, 1, 350, *
+<FileEnd>

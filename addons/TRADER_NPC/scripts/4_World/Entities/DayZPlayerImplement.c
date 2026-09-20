@@ -10,9 +10,9 @@ class TRITEM
 
 modded class DayZPlayerImplement
 {
-    static const string m_Trader_ConfigFilePath = "$profile:Trader_NPC_Prof/TraderConfig.txt";
-    static const string m_Trader_ObjectsFilePath = "$profile:Trader_NPC_Prof/TraderObjects.txt";
-    static const string m_Trader_VehiclePartsFilePath = "$profile:Trader_NPC_Prof/TraderVehicleParts.txt";
+    static const string m_Trader_ConfigFilePath = "$profile:Trader_NPC_Prof/TraderNpcConfig.txt";
+    static const string m_Trader_ObjectsFilePath = "$profile:Trader_NPC_Prof/TraderNpcObjects.txt";
+    static const string m_Trader_VehiclePartsFilePath = "$profile:Trader_NPC_Prof/TraderNpcVehicleParts.txt";
 
     bool m_Trader_RecievedAllData = false;
     bool m_Trader_IsInSafezone = false;
@@ -64,7 +64,7 @@ int m_Trader_LastApprTime = 0;   // лимит частоты запросов �
     int   m_Trader_RatingDiscount = 0;       // 0..100 %
     float m_Trader_RatingProgress = 0;       // 0..1, drives the badge progress bar
     bool  m_Trader_RatingEnabled = false;    // server: feature enabled, client: show badge
-    int   m_Trader_RatingMaxDiscount = 20;   // server tuning (TraderVariables.txt)
+    int   m_Trader_RatingMaxDiscount = 20;   // server tuning (TraderNpcVariables.txt)
     int   m_Trader_RatingFullHours = 100;    // server tuning
     float m_Trader_RatingCurve = 1.35;       // server tuning
     bool  m_Trader_RatingCollapsed = false;  // значок рейтинга свёрнут игроком (клиент)
@@ -508,7 +508,7 @@ int m_Trader_LastApprTime = 0;   // лимит частоты запросов �
             // Уничтоженный предмет торговец принимает как ХЛАМ: забирает и
             // удаляет (утилизация), платит TraderTradeRules.m_RuinedPrice
             // (0 = бесплатно, но мусор исчезает). Цена настраивается в
-            // TraderVariables.txt (<AutoPricesRuinedPrice>).
+            // TraderNpcVariables.txt (<AutoPricesRuinedPrice>).
             TraderTradeRules.Load();
             ItemBase scrapItem;
             if ( isInPlayerInventory( itemType, sellAmount, scrapItem, true ) && scrapItem && scrapItem.IsRuined() )
@@ -804,7 +804,7 @@ void handleClientRPCs(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx
             break;
 
             case TRPCs.RPC_SEND_TRADER_VARIABLES_ENTRY:
-                handleSendTraderVariablesEntryRPC(sender, rpc_type, ctx);
+                handleSendTraderNpcVariablesEntryRPC(sender, rpc_type, ctx);
             break;
 
             case TRPCs.RPC_SEND_TRADER_PLAYERUID:
@@ -812,7 +812,7 @@ void handleClientRPCs(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx
             break;
 
             case TRPCs.RPC_SEND_TRADER_ADMINS_ENTRY:
-                handleSendTraderAdminsEntryRPC(sender, rpc_type, ctx);
+                handleSendTraderNpcAdminsEntryRPC(sender, rpc_type, ctx);
             break;
         }
     }
@@ -979,7 +979,7 @@ void handleClientRPCs(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx
         SEffectManager.PlaySound(rp.param1, Vector(rp.param2, rp.param3, rp.param4), 0.05, 0.1);
     }
 
-    void handleSendTraderVariablesEntryRPC(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx)
+    void handleSendTraderNpcVariablesEntryRPC(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx)
     {
         Param1<float> traderVariables_rp = new Param1<float>( 0 );
         ctx.Read( traderVariables_rp );
@@ -995,7 +995,7 @@ void handleClientRPCs(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx
         m_Trader_PlayerUID = traderPlayerUID_rp.param1;
     }
 
-    void handleSendTraderAdminsEntryRPC(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx)
+    void handleSendTraderNpcAdminsEntryRPC(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx)
     {
         Param1<string> traderAdmins_rp = new Param1<string>( "" );
         ctx.Read( traderAdmins_rp );

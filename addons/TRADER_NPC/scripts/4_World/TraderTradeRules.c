@@ -6,7 +6,7 @@
 //   * 5_Mission (TraderAutoPrices)                - the generated price list
 //
 // Module note: 4_World may not reference 5_Mission classes, so these rules live
-// in 3_Game and are loaded once on the server from TraderVariables.txt.
+// in 3_Game and are loaded once on the server from TraderNpcVariables.txt.
 //
 // What is here:
 //   * ruined items: the trader takes destroyed gear as scrap ("утилизация")
@@ -50,7 +50,7 @@ class TraderTradeRules
 			return;
 		m_Loaded = true;
 
-		FileHandle fh = OpenFile( "$profile:Trader_NPC_Prof/TraderVariables.txt", FileMode.READ );
+		FileHandle fh = OpenFile( "$profile:Trader_NPC_Prof/TraderNpcVariables.txt", FileMode.READ );
 		if ( fh == 0 )
 			return;
 

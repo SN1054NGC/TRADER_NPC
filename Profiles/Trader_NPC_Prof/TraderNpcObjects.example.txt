@@ -1,0 +1,31 @@
+// TRADER_NPC — пример TraderNpcObjects.txt. Скопируйте в <Профиль>/Trader/TraderNpcObjects.txt
+// На каждого торговца: маркер (номер для карты), позиция маркера, радиус сейф-зоны,
+// объект (модель NPC), его позиция и поворот, затем список <ObjectAttachment> (NPC_DUMMY + одежда).
+// Координаты ниже — заглушки: поставьте свои (координаты в формате X, Y, Z).
+
+<TraderMarker> 0
+<TraderMarkerPosition> 0, 0, 0
+<TraderMarkerSafezone> 500
+
+<Object> SurvivorF_Eva
+<ObjectPosition> 0, 0, 0
+<ObjectOrientation> 0, 0, 0
+<ObjectAttachment> NPC_DUMMY
+<ObjectAttachment> Bandana_RedPattern
+<ObjectAttachment> Shirt_BlueCheck
+<ObjectAttachment> CanvasPants_Beige
+<ObjectAttachment> WorkingBoots_Brown
+//-----------------------------------------------------------
+
+<TraderMarker> 1
+<TraderMarkerPosition> 0, 0, 0
+<TraderMarkerSafezone> 0
+
+<Object> SurvivorF_Gabi
+<ObjectPosition> 0, 0, 0
+<ObjectOrientation> 0, 0, 0
+<ObjectAttachment> NPC_DUMMY
+<ObjectAttachment> Wrench
+//-----------------------------------------------------------
+
+<FileEnd>
