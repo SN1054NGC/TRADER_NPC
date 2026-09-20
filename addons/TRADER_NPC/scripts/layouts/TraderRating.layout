@@ -80,7 +80,7 @@ FrameWidgetClass RatingRoot {
    "text halign" left
    "text valign" center
   }
-  ProgressBarWidgetClass RatingBar {
+  SimpleProgressBarWidgetClass RatingBar {
    visible 1
    ignorepointer 1
    color 0.451 0.902 0.627 1

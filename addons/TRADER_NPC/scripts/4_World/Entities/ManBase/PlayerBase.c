@@ -69,6 +69,8 @@ modded class PlayerBase
             {
                 GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Remove(OnExitSafeZoneCountdownComplete);
                 TraderMessage.DeleteSafezoneMessages(this);
+                // Подсказка при входе в сейф-зону: как продавать (ПКМ в инвентаре или у торговца)
+                TraderMessage.PlayerGreen("#tm_safezone_hint", this, 15);
                 TraderMessage.PlayerGreen("#tm_entered_safezone", this);
             }
         }
