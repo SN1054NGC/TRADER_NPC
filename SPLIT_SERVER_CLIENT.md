@@ -63,3 +63,112 @@
 3. Раздавать серверный мод только владельцам серверов вместе с исходниками (GPL)? Обфусцировать или нет?
 4. Коины/сайт: серверный мост к БД оставляем только в серверном моде (в публичном клиенте — ничего)?
 5. Что именно из «патчей ванилы» (сейф-зона, `WeaponManager` и т.п.) обязано быть на клиенте, а что можно унести на сервер?
+
+---
+
+## Результат анализа зависимостей (2026-09-20)
+
+Проверено скриптом `_split_analysis.js` по всем 67 `.c` файлам аддона:
+файл считается серверным, если он объявляет серверный класс (`MissionServer`,
+`TraderAutoPrices`, `TraderSmartSell`, `TraderTradeRules`, `TraderKillReward`,
+`TraderNpcProfile`, `PluginTrader*`) или пишет в `$profile:` и при этом не строит виджеты;
+клиентским — если объявляет клиентский класс/строит виджеты (`CreateWidgets`).
+
+```
+=== ТОЛЬКО СЕРВЕР (в приватный аддон): 9 ===
+  1565 строк  4_World/Entities/DayZPlayerImplement.c  [#ifdef SERVER]  [профиль]
+  1380 строк  5_Mission/mission/missionServer.c  [#ifdef SERVER]  [профиль]
+   655 строк  5_Mission/TraderAutoPrices.c  [профиль]
+   519 строк  4_World/TraderSmartSell.c  [#ifdef SERVER]
+   116 строк  4_World/Plugins/PluginTraderLogBase.c  [#ifdef SERVER]  [профиль]
+   106 строк  4_World/TraderTradeRules.c  [профиль]
+    84 строк  5_Mission/TraderNpcProfile.c  [профиль]
+     9 строк  4_World/Plugins/PluginTraderServerLog.c  [#ifdef SERVER]
+     9 строк  4_World/Plugins/PluginTraderTradesLog.c  [#ifdef SERVER]
+=== ТОЛЬКО КЛИЕНТ (в публичный аддон): 7 ===
+  1415 строк  4_World/TraderMenu.c  [виджеты]
+   548 строк  5_Mission/TraderInspectMenuExt.c  [виджеты]
+   216 строк  5_Mission/TraderRatingUI.c  [виджеты]
+   190 строк  5_Mission/TraderRatingHud.c  [виджеты]
+   168 строк  4_World/TraderNotifications.c  [виджеты]
+   118 строк  4_World/TraderMessage.c  [#ifdef SERVER]
+   104 строк  5_Mission/TraderSellInput.c
+=== СМЕШАННЫЕ (нужна работа с #ifdef): 52 ===
+   298 строк  4_World/Entities/ManBase/PlayerBase.c  [#ifdef SERVER]
+   204 строк  4_World/Classes/SafeZone/SafeZone.c  [#ifdef SERVER]
+   157 строк  4_World/Classes/UserActionsComponent/Actions/Trader/ActionTrade.c
+   136 строк  3_Game/TraderRating.c
+   102 строк  3_Game/TraderNpcFeatures.c
+    92 строк  3_Game/TraderNpcText.c
+    87 строк  3_Game/TraderNpcHelper.c
+    74 строк  4_World/InventoryTransactions.c  [#ifdef SERVER]
+    61 строк  4_World/Entities/ItemBase/ChemGas_Grenade.c
+    48 строк  4_World/Entities/Ammunition_Base.c
+    46 строк  5_Mission/TraderNpcMapGps.c
+    45 строк  3_Game/VONManager.c
+    44 строк  3_Game/DayZGame.c
+    43 строк  4_World/Entities/ItemBase.c
+    36 строк  4_World/Plugins/PluginBase/PluginTransmissionAgents.c
+    36 строк  4_World/TraderKillReward.c
+    34 строк  3_Game/Enums/TraderNpcRPCs.c
+    23 строк  5_Mission/TraderSellRMB.c
+    20 строк  5_Mission/mission/missionBase.c
+    18 строк  4_World/Entities/ItemBase/Grenade_Base.c
+    17 строк  4_World/Classes/UserActionsComponent/Actions/Continuous/ActionRestrainTarget.c
+    17 строк  4_World/Entities/ItemBase/TraderNpcMoney.c
+    16 строк  4_World/Classes/ContaminatedArea/ContaminatedArea_Local.c
+    16 строк  4_World/Plugins/PluginManager.c  [#ifdef SERVER]
+    16 строк  5_Mission/mission/missionGameplay.c
+    15 строк  4_World/Classes/PlayerModifiers/Modifiers/Conditions/AreaExposure.c
+    14 строк  4_World/Classes/UserActionsComponent/Actions/Continuous/Medical/ActionCheckPulseTarget.c
+    14 строк  4_World/Entities/ItemBase/TrapBase.c
+    14 строк  4_World/Entities/ManBase/DayZPlayer/DayZPlayerMeleeFightLogic_LightHeavy.c
+    13 строк  4_World/Animations.c
+    12 строк  4_World/Classes/TransmissionAgents/Agents/InfluenzaAgent.c
+    11 строк  4_World/Classes/UserActionsComponent/Actions/Continuous/DeployActions/ActionDeployObject.c
+    11 строк  4_World/Classes/UserActionsComponent/Actions/Continuous/Medical/ActionCheckPulse.c
+    11 строк  4_World/Classes/UserActionsComponent/Actions/Continuous/Medical/ActionCollectBloodTarget.c
+    10 строк  4_World/Classes/UserActionsComponent/ActionConstructor.c
+    10 строк  4_World/Classes/UserActionsComponent/Actions/Continuous/ActionForceConsume.c
+    10 строк  4_World/Classes/UserActionsComponent/Actions/Continuous/ActionForceFeedCan.c
+    10 строк  4_World/Classes/UserActionsComponent/Actions/Continuous/ActionLockDoors.c
+    10 строк  4_World/Classes/UserActionsComponent/Actions/Continuous/ActionRestrainSelf.c
+    10 строк  4_World/Classes/UserActionsComponent/Actions/Continuous/Medical/ActionBurnSewTarget.c
+    10 строк  4_World/Classes/UserActionsComponent/Actions/Continuous/Medical/ActionDefibrilateTarget.c
+    10 строк  4_World/Classes/UserActionsComponent/Actions/Continuous/Medical/ActionGiveBloodTarget.c
+    10 строк  4_World/Classes/UserActionsComponent/Actions/Continuous/Medical/ActionGiveSalineTarget.c
+    10 строк  4_World/Classes/UserActionsComponent/Actions/Continuous/Medical/ActionSewTarget.c
+    10 строк  4_World/Classes/UserActionsComponent/Actions/SingleUse/ActionForceConsumeSingle.c
+    10 строк  4_World/Classes/UserActionsComponent/Actions/SingleUse/ActionUnpin.c
+    10 строк  4_World/Classes/UserActionsComponent/Actions/SingleUse/Medical/ActionDisinfectTarget.c
+    10 строк  4_World/Classes/UserActionsComponent/Actions/SingleUse/Medical/ActionInjectTarget.c
+    10 строк  4_World/Classes/Weapons/WeaponManager.c
+     8 строк  4_World/Entities/BuildingBase.c
+     7 строк  4_World/Classes/UserActionsComponent/Actions/Interact/ActionDetach.c
+     7 строк  defines/traderDefines.c
+```
+
+### Вывод: чистого разделения по файлам нет
+
+* **9 файлов только серверные** — их можно целиком унести в приватный аддон.
+* **7 файлов только клиентские** — остаются в публичном.
+* **51 файл смешанный.** Главные из них:
+  * `scripts/4_World/Entities/DayZPlayerImplement.c` (1556 строк) — в одном классе и клиентский
+    `OnRPC`/чат-уведомления, и серверные `handleBuyRPC`/`handleSellRPC`/`increasePlayerCurrency`;
+  * `scripts/4_World/Entities/ManBase/PlayerBase.c` — сейф-зона (сервер) + рейтинг/HUD (клиент);
+  * `scripts/4_World/TraderMenu.c` (клиент) **вызывает** методы из серверного файла
+    (`getPlayerCurrencyAmount`), поэтому просто выкинуть серверный файл из клиентского PBO нельзя.
+* Разделение вида «выкинуть серверные файлы из клиентского PBO» ломает компиляцию клиента.
+
+### Как разделить правильно (архитектура-заготовка)
+
+1. Публичный `@TRADER_NPC` (клиент): UI/layouts/сеть + **пустые виртуальные заглушки**
+   (`class TraderNpcBackend { void HandleBuy(...) {} ... }`) и весь RPC-плумбинг под `#ifdef SERVER`,
+   который только вызывает эти заглушки.
+2. Приватный `@TRADER_NPC_Server` (servermod): `modded class TraderNpcBackend` с `override` —
+   там остаётся вся закрытая логика (цены, скупка, награды, профиль, авто-цены).
+   Enforce разрешает `modded class` + `override` для класса, объявленного в другом аддоне,
+   поэтому серверный код не попадает в публичный PBO.
+3. Проверка: `check_compile.ps1` (сервер компилирует оба модуля) + отдельная сборка двух PBO.
+
+> Пока пункты 1-3 не сделаны, публиковать `DayZPlayerImplement.c` нельзя — в нём лежит серверная логика.
