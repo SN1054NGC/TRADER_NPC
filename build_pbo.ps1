@@ -42,7 +42,7 @@ if (Test-Path $Stage) { Remove-Item $Stage -Recurse -Force }
 New-Item -ItemType Directory -Force -Path (Join-Path $Stage $Prefix) | Out-Null
 New-Item -ItemType Directory -Force -Path $LogDir | Out-Null
 
-foreach ($el in @("scripts", "languagecore", "images", "config.cpp")) {
+foreach ($el in @("scripts", "languagecore", "images", "sounds", "config.cpp")) {
   $s = Join-Path $SrcAddon $el
   if (-not (Test-Path $s)) { Write-Host "  [skip] $el"; continue }
   Copy-Item $s (Join-Path (Join-Path $Stage $Prefix) $el) -Recurse -Force
