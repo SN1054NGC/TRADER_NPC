@@ -33,7 +33,7 @@ class TraderVoice
 			src = player;
 		}
 
-		GetGame().CreateSoundOnObject( src, soundSet, 25, false, true );
+		GetGame().CreateSoundOnObject( src, soundSet, 25, false );
 		TraderMessage.ServerLog( "[Voice] " + phrase + " voice=" + voice + " from=" + from );
 	}
 }

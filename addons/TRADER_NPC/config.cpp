@@ -103,247 +103,214 @@ class CfgVehicles
 // Голос торговца: фразы сгенерированы локально (piper -> ogg).
 // Голос выбирается по имени NPC (пол) и порядку спавна: female_1/female_2/male_1/male_2.
 // ============================================================
+// Голос торговца: фразы сгенерированы локально (piper -> ogg).
+// Голос выбирается по имени NPC: SurvivorF_* -> female_*, SurvivorM_* -> male_*.
+// ============================================================
 class CfgSoundShaders
 {
-	class TRADER_NPC_VOICE_female_1_greet_1_SoundShader
+	class TRADER_NPC_Voice_Base
+	{
+		range = 25;
+	};
+	class TRADER_NPC_VOICE_female_1_greet_1_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\female_1_greet_1", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_female_1_greet_2_SoundShader
+	class TRADER_NPC_VOICE_female_1_greet_2_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\female_1_greet_2", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_female_1_browse_SoundShader
+	class TRADER_NPC_VOICE_female_1_browse_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\female_1_browse", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_female_1_buy_1_SoundShader
+	class TRADER_NPC_VOICE_female_1_buy_1_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\female_1_buy_1", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_female_1_buy_2_SoundShader
+	class TRADER_NPC_VOICE_female_1_buy_2_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\female_1_buy_2", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_female_1_no_money_SoundShader
+	class TRADER_NPC_VOICE_female_1_no_money_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\female_1_no_money", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_female_1_sell_1_SoundShader
+	class TRADER_NPC_VOICE_female_1_sell_1_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\female_1_sell_1", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_female_1_empty_SoundShader
+	class TRADER_NPC_VOICE_female_1_empty_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\female_1_empty", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_female_1_notrade_SoundShader
+	class TRADER_NPC_VOICE_female_1_notrade_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\female_1_notrade", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_female_1_bye_SoundShader
+	class TRADER_NPC_VOICE_female_1_bye_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\female_1_bye", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_female_2_greet_1_SoundShader
+	class TRADER_NPC_VOICE_female_2_greet_1_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\female_2_greet_1", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_female_2_greet_2_SoundShader
+	class TRADER_NPC_VOICE_female_2_greet_2_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\female_2_greet_2", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_female_2_browse_SoundShader
+	class TRADER_NPC_VOICE_female_2_browse_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\female_2_browse", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_female_2_buy_1_SoundShader
+	class TRADER_NPC_VOICE_female_2_buy_1_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\female_2_buy_1", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_female_2_buy_2_SoundShader
+	class TRADER_NPC_VOICE_female_2_buy_2_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\female_2_buy_2", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_female_2_no_money_SoundShader
+	class TRADER_NPC_VOICE_female_2_no_money_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\female_2_no_money", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_female_2_sell_1_SoundShader
+	class TRADER_NPC_VOICE_female_2_sell_1_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\female_2_sell_1", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_female_2_empty_SoundShader
+	class TRADER_NPC_VOICE_female_2_empty_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\female_2_empty", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_female_2_notrade_SoundShader
+	class TRADER_NPC_VOICE_female_2_notrade_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\female_2_notrade", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_female_2_bye_SoundShader
+	class TRADER_NPC_VOICE_female_2_bye_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\female_2_bye", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_male_1_greet_1_SoundShader
+	class TRADER_NPC_VOICE_male_1_greet_1_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\male_1_greet_1", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_male_1_greet_2_SoundShader
+	class TRADER_NPC_VOICE_male_1_greet_2_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\male_1_greet_2", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_male_1_browse_SoundShader
+	class TRADER_NPC_VOICE_male_1_browse_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\male_1_browse", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_male_1_buy_1_SoundShader
+	class TRADER_NPC_VOICE_male_1_buy_1_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\male_1_buy_1", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_male_1_buy_2_SoundShader
+	class TRADER_NPC_VOICE_male_1_buy_2_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\male_1_buy_2", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_male_1_no_money_SoundShader
+	class TRADER_NPC_VOICE_male_1_no_money_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\male_1_no_money", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_male_1_sell_1_SoundShader
+	class TRADER_NPC_VOICE_male_1_sell_1_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\male_1_sell_1", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_male_1_empty_SoundShader
+	class TRADER_NPC_VOICE_male_1_empty_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\male_1_empty", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_male_1_notrade_SoundShader
+	class TRADER_NPC_VOICE_male_1_notrade_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\male_1_notrade", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_male_1_bye_SoundShader
+	class TRADER_NPC_VOICE_male_1_bye_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\male_1_bye", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_male_2_greet_1_SoundShader
+	class TRADER_NPC_VOICE_male_2_greet_1_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\male_2_greet_1", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_male_2_greet_2_SoundShader
+	class TRADER_NPC_VOICE_male_2_greet_2_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\male_2_greet_2", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_male_2_browse_SoundShader
+	class TRADER_NPC_VOICE_male_2_browse_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\male_2_browse", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_male_2_buy_1_SoundShader
+	class TRADER_NPC_VOICE_male_2_buy_1_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\male_2_buy_1", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_male_2_buy_2_SoundShader
+	class TRADER_NPC_VOICE_male_2_buy_2_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\male_2_buy_2", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_male_2_no_money_SoundShader
+	class TRADER_NPC_VOICE_male_2_no_money_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\male_2_no_money", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_male_2_sell_1_SoundShader
+	class TRADER_NPC_VOICE_male_2_sell_1_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\male_2_sell_1", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_male_2_empty_SoundShader
+	class TRADER_NPC_VOICE_male_2_empty_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\male_2_empty", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_male_2_notrade_SoundShader
+	class TRADER_NPC_VOICE_male_2_notrade_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\male_2_notrade", 1}};
 		volume = 1.0;
-		range = 25;
 	};
-	class TRADER_NPC_VOICE_male_2_bye_SoundShader
+	class TRADER_NPC_VOICE_male_2_bye_SoundShader: TRADER_NPC_Voice_Base
 	{
 		samples[] = {{"TRADER_NPC\sounds\voice\male_2_bye", 1}};
 		volume = 1.0;
-		range = 25;
 	};
 };
 
