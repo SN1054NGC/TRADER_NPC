@@ -22,7 +22,8 @@ class TraderMenu extends UIScriptedMenu
 	TextWidget m_Saldo;
 	TextWidget m_SaldoValue;
 	TextWidget m_TraderName;
-	XComboBoxWidget m_XComboboxCategorys;
+	XComboBoxWidget m_XComboboxCategorys;   // скрыт: категории выбираются списком слева
+	TextListboxWidget m_CategoryList;
 	ItemPreviewWidget m_ItemPreviewWidget;
 	protected EntityAI previewItem;
 	MultilineTextWidget m_ItemDescription;
@@ -138,6 +139,7 @@ class TraderMenu extends UIScriptedMenu
 		m_SaldoValue = TextWidget.Cast(layoutRoot.FindAnyWidget("text_saldoValue") );
 		m_TraderName = TextWidget.Cast(layoutRoot.FindAnyWidget("title_text") );
 		m_XComboboxCategorys = XComboBoxWidget.Cast( layoutRoot.FindAnyWidget( "xcombobox_categorys" ) );
+		m_CategoryList = TextListboxWidget.Cast( layoutRoot.FindAnyWidget( "CategoryList" ) );
 		m_ItemDescription = MultilineTextWidget.Cast( layoutRoot.FindAnyWidget( "ItemDescWidget" ) );
 		m_ItemWeight = TextWidget.Cast(layoutRoot.FindAnyWidget("ItemWeight") );
 		m_ItemQuantity = TextWidget.Cast(layoutRoot.FindAnyWidget("ItemQuantity"));
@@ -339,6 +341,18 @@ class TraderMenu extends UIScriptedMenu
 			return true;
 		}
 		
+		if ( w == m_CategoryList )
+		{
+			// выбор категории списком слева (вместо стрелочек комбобокса)
+			m_CategorysCurrentIndex = m_CategoryList.GetSelectedRow();
+			updateListbox = false;
+			updateItemListboxContent();
+			m_ListboxItems.SelectRow(0);
+			updatePlayerCurrencyAmount();
+			updateItemListboxColors();
+			return true;
+		}
+
 		if (w == m_XComboboxCategorys)
 		{
 			if (updateListbox)
@@ -1194,6 +1208,9 @@ class TraderMenu extends UIScriptedMenu
 		m_Saldo.SetText(m_Player.m_Trader_CurrencyName + ": ");
 
 		m_XComboboxCategorys.ClearAll();
+
+		if ( m_CategoryList )
+			m_CategoryList.ClearItems();
 		m_Categorys = new array<string>;
 		m_CategorysTraderKey = new array<int>;
 		m_CategorysKey = new array<int>;
@@ -1204,6 +1221,9 @@ class TraderMenu extends UIScriptedMenu
 				continue;
 			
 			m_XComboboxCategorys.AddItem(m_Player.m_Trader_Categorys.Get(i));
+
+			if ( m_CategoryList )
+				m_CategoryList.AddItem( m_Player.m_Trader_Categorys.Get(i), NULL, 0 );
 			m_Categorys.Insert(m_Player.m_Trader_Categorys.Get(i));
 			m_CategorysTraderKey.Insert(m_Player.m_Trader_CategorysTraderKey.Get(i));
 			m_CategorysKey.Insert(i);

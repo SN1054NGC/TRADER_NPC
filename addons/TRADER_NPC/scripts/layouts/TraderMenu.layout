@@ -99,7 +99,7 @@ FrameWidgetClass TraderMenu {
     text "#tm_trader"
    }
    CheckBoxWidgetClass SellablesCheckBox {
-    visible 1
+    visible 0
     ignorepointer 0
     position 0.62 0.22
     size 0.34 0.50
@@ -117,7 +117,7 @@ FrameWidgetClass TraderMenu {
    }
   }
   XComboBoxWidgetClass xcombobox_categorys {
-   visible 1
+   visible 0
    ignorepointer 0
    position 8 58
    size 516 40
@@ -135,8 +135,8 @@ FrameWidgetClass TraderMenu {
    visible 1
    ignorepointer 0
    color 0 0 0 0.55
-   position 576 58
-   size 300 40
+   position 540 938
+   size 340 44
    halign left_ref
    valign top_ref
    hexactpos 1
@@ -149,8 +149,8 @@ FrameWidgetClass TraderMenu {
    EditBoxWidgetClass SearchBox {
     visible 1
     ignorepointer 0
-    position 0 0
-    size 0.96 0.80
+    position 584 942
+    size 292 36
     halign center_ref
     valign center_ref
     hexactpos 0
@@ -168,7 +168,7 @@ FrameWidgetClass TraderMenu {
    visible 1
    ignorepointer 1
    color 1 1 1 0.85
-   position 532 62
+   position 546 946
    size 32 32
    halign left_ref
    valign top_ref
@@ -271,8 +271,8 @@ FrameWidgetClass TraderMenu {
   TextWidgetClass colTitleItem {
    visible 1
    ignorepointer 1
-   position 12 102
-   size 788 20
+   position 220 102
+   size 584 20
    halign left_ref
    valign top_ref
    hexactpos 1
@@ -352,12 +352,31 @@ FrameWidgetClass TraderMenu {
    "text halign" left
    "text valign" center
   }
+   TextListboxWidgetClass CategoryList {
+    visible 1
+    clipchildren 0
+    color 1 1 1 0.5843
+    position 8 126
+    size 200 448
+    halign left_ref
+    valign top_ref
+    hexactpos 1
+    vexactpos 1
+    hexactsize 1
+    vexactsize 1
+    priority 2
+    style Default
+    font "gui/fonts/Metron22"
+    "title visible" 0
+    "highlight row" 1
+    lines 17
+   }
   TextListboxWidgetClass txtlist_items {
    visible 1
    clipchildren 0
    color 1 1 1 0.5843
-   position 8 126
-   size 1284 448
+   position 216 126
+   size 1076 448
    halign left_ref
    valign top_ref
    hexactpos 1
