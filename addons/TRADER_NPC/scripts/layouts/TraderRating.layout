@@ -9,9 +9,9 @@ FrameWidgetClass RatingRoot {
  visible 1
  clipchildren 1
  ignorepointer 1
- position 0 0.004
+ position 0.012 0.004
  size 0.30 0.038
- halign center_ref
+ halign right_ref
  valign bottom_ref
  hexactpos 0
  vexactpos 0
@@ -62,7 +62,7 @@ FrameWidgetClass RatingRoot {
    clipchildren 0
    ignorepointer 1
    position 0.20 0.05
-   size 0.78 0.90
+   size 0.64 0.90
    halign left_ref
    valign top_ref
    hexactpos 0
@@ -79,6 +79,22 @@ FrameWidgetClass RatingRoot {
    "bold text" 0
    "text halign" left
    "text valign" center
+  }
+  ButtonWidgetClass RatingToggle {
+   visible 1
+   ignorepointer 0
+   position 0.86 0.05
+   size 0.13 0.90
+   halign left_ref
+   valign top_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   priority 4
+   style MenuDefault
+   font "gui/fonts/sdf_MetronLight24"
+   text "#tm_rating_hide"
   }
   SimpleProgressBarWidgetClass RatingBar {
    visible 1

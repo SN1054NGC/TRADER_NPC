@@ -67,6 +67,7 @@ int m_Trader_LastApprTime = 0;   // лимит частоты запросов �
     int   m_Trader_RatingMaxDiscount = 20;   // server tuning (TraderVariables.txt)
     int   m_Trader_RatingFullHours = 100;    // server tuning
     float m_Trader_RatingCurve = 1.35;       // server tuning
+    bool  m_Trader_RatingCollapsed = false;  // значок рейтинга свёрнут игроком (клиент)
 
     // Путь и убийства тоже влияют на выживаемость (и на скидку)
     int   m_Trader_RatingDistance = 0;        // пройдено метров (сервер считает, клиент видит)
