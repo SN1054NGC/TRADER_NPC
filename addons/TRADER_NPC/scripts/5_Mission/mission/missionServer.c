@@ -587,6 +587,18 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
                 TraderMessage.ServerLog("[TRADER] BuySellTimer = " + line_content);
             }
 
+            // Единый реестр переключателей функций: <FeatureXxx> yes|no
+            if ( TraderNpcFeatures.Apply( line_content ) )
+            {
+                validEntry = true;
+
+                string autoOff = TraderNpcFeatures.AutoDetectConflicts();
+                if ( autoOff != "" )
+                    TraderMessage.ServerLog( "[TRADER] auto-disabled for:" + autoOff );
+
+                TraderMessage.ServerLog( "[TRADER] FEATURES:" + TraderNpcFeatures.Report() + " (changed by " + line_content + ")" );
+            }
+
             if (line_content.Contains("<SafezoneTimeout>"))
             {
                 line_content.Replace("<SafezoneTimeout>", "");
