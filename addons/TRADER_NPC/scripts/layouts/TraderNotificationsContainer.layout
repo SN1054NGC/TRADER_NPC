@@ -1,7 +1,7 @@
 FrameWidgetClass Container {
  ignorepointer 1
- position 772 60
- size 520 600
+ position 1618 320
+ size 294 600
  halign left_ref
  valign top_ref
  hexactpos 1

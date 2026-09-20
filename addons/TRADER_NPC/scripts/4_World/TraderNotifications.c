@@ -71,7 +71,8 @@ class TraderNotification
 class TraderNotifications : Managed
 {
     ref array<ref TraderNotification> m_Messages;
-    WrapSpacerWidget m_Container;
+    WrapSpacerWidget m_Container;            // окно операций (справа)
+    WrapSpacerWidget m_SafezoneContainer;    // индикатор сейф-зоны (центр сверху)
 	private ref Timer m_TimeoutTimer;
 
     void Init()
@@ -81,7 +82,12 @@ class TraderNotifications : Managed
         // ============================================================
                 Widget layoutRoot = GetGame().GetWorkspace().CreateWidgets("TRADER_NPC/scripts/layouts/TraderNotificationsContainer.layout");
         m_Container = WrapSpacerWidget.Cast(layoutRoot.FindAnyWidget("Wrapper"));
-        //Print("[Ntf:D] TraderNotifications.Init containerLayout=" + layoutRoot + " wrapper=" + m_Container);
+
+        // Индикатор сейф-зоны — отдельный контейнер по центру сверху, чтобы
+        // не смешивался с сообщениями об операциях справа.
+        Widget safezoneLayout = GetGame().GetWorkspace().CreateWidgets("TRADER_NPC/scripts/layouts/TraderSafezoneNotice.layout");
+        if (safezoneLayout)
+            m_SafezoneContainer = WrapSpacerWidget.Cast(safezoneLayout.FindAnyWidget("Wrapper"));
         m_Messages = new array<ref TraderNotification>;
 		m_TimeoutTimer = new Timer(CALL_CATEGORY_GUI);
     }
@@ -121,8 +127,12 @@ class TraderNotifications : Managed
     {
         DeleteAllMessages();
 
+        WrapSpacerWidget target = m_SafezoneContainer;
+        if (!target)
+            target = m_Container;
+
         TraderNotification notification = new TraderNotification();
-        notification.Init(m_Container, "", time, true);
+        notification.Init(target, "", time, true);
 
         notification.SetTextColor(COLOR_RED);
         InsertMessage(notification);
