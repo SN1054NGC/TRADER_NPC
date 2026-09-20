@@ -50,6 +50,8 @@
 "tm_rating_hours","h","h","h","Std","ч","g","h","h","h","h","h","h","h","h",
 "tm_rating_minutes","m","m","m","Min","мин","min","m","m","m","m","min","m","m","m",
 "tm_money","Money","Money","Peníze","Geld","Деньги","Pieniądze","Money","Money","Dinero","Argent","金钱","お金","Dinheiro","金錢",
+"STR_tm_money","Money","Money","Peníze","Geld","Деньги","Pieniądze","Money","Money","Dinero","Argent","金钱","お金","Dinheiro","金錢",
+"STR_tm_money_description","Server currency. Stacks up to 99999 pcs.","Server currency. Stacks up to 99999 pcs.","Server currency. Stacks up to 99999 pcs.","Serverwährung. Stapel bis 99999 Stk.","Игровая валюта. Складывается в пачку до 99999 штук.","Server currency. Stacks up to 99999 pcs.","Server currency. Stacks up to 99999 pcs.","Server currency. Stacks up to 99999 pcs.","Server currency. Stacks up to 99999 pcs.","Server currency. Stacks up to 99999 pcs.","Server currency. Stacks up to 99999 pcs.","Server currency. Stacks up to 99999 pcs.","Server currency. Stacks up to 99999 pcs.","Server currency. Stacks up to 99999 pcs.",
 "tm_quantity","Quantity","Quantity","Množství","Menge","Количество","Ilość","Quantity","Quantity","Cantidad","Quantité","数量","数量","Quantidade","數量",
 "tm_quality","Condition","Condition","Stav","Zustand","Состояние","Stan","Condition","Condition","Estado","État","状态","状態","Condição","狀態",
 "tm_cond_pristine","Pristine","Pristine","Bezchybný","Makellos","Идеальное","Idealny","Pristine","Pristine","Impecable","Impeccable","完好","新品同様","Impecável","完好無損",

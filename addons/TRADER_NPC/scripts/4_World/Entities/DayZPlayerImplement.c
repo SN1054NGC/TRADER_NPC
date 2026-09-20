@@ -286,11 +286,12 @@ int m_Trader_LastApprTime = 0;   // лимит частоты запросов �
         // неоплачиваемом остатке цикл уходил в минус и висел)
         for (int i = m_Trader_CurrencyClassnames.Count() - 1; i >= 0; i--)
         {
+            // Класс без varQuantityMax/count (обычный предмет, например Paper) -
+            // это не ошибка: одна штука предмета = один номинал.
             int itemMaxAmount = GetItemMaxQuantity(m_Trader_CurrencyClassnames.Get(i));
-            if(itemMaxAmount == 0)
+            if(itemMaxAmount <= 0)
             {
-                Error("[Trader] Currency "+ m_Trader_CurrencyClassnames.Get(i) +" has max quantity 0 which might mean this class doesn't exist."); 
-                continue;
+                itemMaxAmount = 1;
             }
 
             while (currencyAmount / m_Trader_CurrencyValues.Get(i) > 0)
@@ -1444,7 +1445,12 @@ void handleClientRPCs(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx
             {
                 if(item.GetType() == m_Player.m_Trader_CurrencyClassnames.Get(j))
                 {
-                    currencyAmount += getItemAmount(item) * m_Player.m_Trader_CurrencyValues.Get(j);
+                    int itemAmount = getItemAmount(item);
+
+                    if (itemAmount <= 0)
+                        itemAmount = 1;      // предмет без количества = 1 штука
+
+                    currencyAmount += itemAmount * m_Player.m_Trader_CurrencyValues.Get(j);
                 }
             }
         }
@@ -1473,6 +1479,9 @@ void handleClientRPCs(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx
                 if(item.GetType() == m_Trader_CurrencyClassnames.Get(i))
                 {
                     int itemAmount = getItemAmount(item);
+
+                    if (itemAmount <= 0)
+                        itemAmount = 1;      // предмет без количества = 1 штука
 
                     if(itemAmount * m_Trader_CurrencyValues.Get(i) > currencyAmount)
                     {
