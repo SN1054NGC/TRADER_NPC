@@ -149,8 +149,8 @@ FrameWidgetClass TraderMenu {
    EditBoxWidgetClass SearchBox {
     visible 1
     ignorepointer 0
-    position 584 942
-    size 292 36
+    position 0 0
+    size 0.96 0.80
     halign center_ref
     valign center_ref
     hexactpos 0
