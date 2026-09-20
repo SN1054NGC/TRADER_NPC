@@ -93,7 +93,7 @@ class TraderAutoPrices
 		string line = "";
 		while ( FGets( fh, line ) != -1 )
 		{
-			line = FileReadHelper.TrimComment( line );
+			line = TraderNpcText.Clean( line );
 			if ( line == "" )
 				continue;
 
@@ -175,8 +175,8 @@ class TraderAutoPrices
 			return "";
 		string v = line.Substring( a + 1, line.Length() - a - 1 );
 		v.Replace( "<", " " );
-		v = FileReadHelper.TrimComment( v );
-		return FileReadHelper.TrimSpaces( v );
+		v = TraderNpcText.Clean( v );
+		return TraderNpcText.Tidy( v );
 	}
 
 	// name="XXX" -> XXX
@@ -195,10 +195,10 @@ class TraderAutoPrices
 		int c = rest.IndexOf( "/" );
 		if ( c >= 0 )
 			rest = rest.Substring( 0, c );
-		rest = FileReadHelper.TrimSpaces( rest );
+		rest = TraderNpcText.Tidy( rest );
 		if ( rest.Length() >= 2 )
 			rest = rest.Substring( 1, rest.Length() - 2 );
-		return FileReadHelper.TrimSpaces( rest );
+		return TraderNpcText.Tidy( rest );
 	}
 
 	// <nominal>8</nominal> -> 8
@@ -209,7 +209,7 @@ class TraderAutoPrices
 		if ( a < 0 || b < 0 || b <= a )
 			return 0;
 		string v = line.Substring( a + 1, b - a - 1 );
-		return FileReadHelper.TrimSpaces( v ).ToInt();
+		return TraderNpcText.Tidy( v ).ToInt();
 	}
 
 	static bool InList( string list, string value )
@@ -220,7 +220,7 @@ class TraderAutoPrices
 		list.Split( ",", parts );
 		for ( int i = 0; i < parts.Count(); i++ )
 		{
-			string p = FileReadHelper.TrimSpaces( parts.Get( i ) );
+			string p = TraderNpcText.Tidy( parts.Get( i ) );
 			if ( p == "" )
 				continue;
 			if ( p == "#" )
@@ -541,7 +541,7 @@ class TraderAutoPrices
 		string line = "";
 		while ( FGets( fi, line ) != -1 )
 		{
-			line = FileReadHelper.TrimComment( line );
+			line = TraderNpcText.Clean( line );
 			if ( line == "" )
 				continue;
 

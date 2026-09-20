@@ -40,8 +40,8 @@ class TraderTradeRules
 			return "";
 		string v = line.Substring( a + 1, line.Length() - a - 1 );
 		v.Replace( "<", " " );
-		v = FileReadHelper.TrimComment( v );
-		return FileReadHelper.TrimSpaces( v );
+		v = TraderNpcText.Clean( v );
+		return TraderNpcText.Tidy( v );
 	}
 
 	static void Load()
@@ -57,7 +57,7 @@ class TraderTradeRules
 		string line = "";
 		while ( FGets( fh, line ) != -1 )
 		{
-			line = FileReadHelper.TrimComment( line );
+			line = TraderNpcText.Clean( line );
 			if ( line == "" )
 				continue;
 

@@ -202,34 +202,34 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             if (skipDirEntry)
                 skipDirEntry = false;
             else
-                line_content = FileReadHelper.SearchForNextTermInFile(file_index, "<Object>", "<FileEnd>");
+                line_content = TraderNpcText.NextTerm(file_index, "<Object>", "<FileEnd>");
             
             if (!line_content.Contains("<Object>"))
                 continue;
             
             line_content.Replace("<Object>", "");
-            line_content = FileReadHelper.TrimComment(line_content);
-            line_content = FileReadHelper.TrimSpaces(line_content);
+            line_content = TraderNpcText.Clean(line_content);
+            line_content = TraderNpcText.Tidy(line_content);
             
             string traderObjectType = line_content;
             TraderMessage.ServerLog("[TRADER] OBJECT TYPE ENTRY " + line_content);
             
-            line_content = FileReadHelper.SearchForNextTermInFile(file_index, "<ObjectPosition>", "<FileEnd>");
+            line_content = TraderNpcText.NextTerm(file_index, "<ObjectPosition>", "<FileEnd>");
             
             line_content.Replace("<ObjectPosition>", "");
-            line_content = FileReadHelper.TrimComment(line_content);
+            line_content = TraderNpcText.Clean(line_content);
             
             TStringArray strso = new TStringArray;
             line_content.Split( ",", strso );
             
             string traderObjectPosX = strso.Get(0);
-            traderObjectPosX = FileReadHelper.TrimSpaces(traderObjectPosX);
+            traderObjectPosX = TraderNpcText.Tidy(traderObjectPosX);
             
             string traderObjectPosY = strso.Get(1);
-            traderObjectPosY = FileReadHelper.TrimSpaces(traderObjectPosY);
+            traderObjectPosY = TraderNpcText.Tidy(traderObjectPosY);
             
             string traderObjectPosZ = strso.Get(2);
-            traderObjectPosZ = FileReadHelper.TrimSpaces(traderObjectPosZ);
+            traderObjectPosZ = TraderNpcText.Tidy(traderObjectPosZ);
             
             vector objectPosition = "0 0 0";
             objectPosition[0] = traderObjectPosX.ToFloat();
@@ -238,22 +238,22 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
 
             TraderMessage.ServerLog("[TRADER] OBJECT POSITION = '" + objectPosition + "'");
             
-            line_content = FileReadHelper.SearchForNextTermInFile(file_index, "<ObjectOrientation>", "<FileEnd>");
+            line_content = TraderNpcText.NextTerm(file_index, "<ObjectOrientation>", "<FileEnd>");
             
             line_content.Replace("<ObjectOrientation>", "");
-            line_content = FileReadHelper.TrimComment(line_content);
+            line_content = TraderNpcText.Clean(line_content);
 
             TStringArray strsod = new TStringArray;
             line_content.Split( ",", strsod );
             
             string traderObjectOriX = strsod.Get(0);
-            traderObjectOriX = FileReadHelper.TrimSpaces(traderObjectOriX);
+            traderObjectOriX = TraderNpcText.Tidy(traderObjectOriX);
             
             string traderObjectOriY = strsod.Get(1);
-            traderObjectOriY = FileReadHelper.TrimSpaces(traderObjectOriY);
+            traderObjectOriY = TraderNpcText.Tidy(traderObjectOriY);
             
             string traderObjectOriZ = strsod.Get(2);
-            traderObjectOriZ = FileReadHelper.TrimSpaces(traderObjectOriZ);
+            traderObjectOriZ = TraderNpcText.Tidy(traderObjectOriZ);
             
             vector objectOrientation = vector.Zero;
             objectOrientation[0] = traderObjectOriX.ToFloat();
@@ -313,7 +313,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             int attachmentCounter = 0;
             while ( attachmentCounter <= 1000 && line_content.Contains("<Object>") == false)
             {
-                line_content = FileReadHelper.SearchForNextTermsInFile(file_index, {"<ObjectAttachment>", "<OpenFile>"}, "<Object>");
+                line_content = TraderNpcText.NextTerms(file_index, {"<ObjectAttachment>", "<OpenFile>"}, "<Object>");
 
                 if (line_content == string.Empty)    
                 {
@@ -337,7 +337,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
                 }
 
                 line_content.Replace("<ObjectAttachment>", "");
-                line_content = FileReadHelper.TrimComment(line_content);
+                line_content = TraderNpcText.Clean(line_content);
 
                 if (isTrader)
                 {
@@ -574,12 +574,12 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
 
             line_content = "";
             int char_count = FGets( file_index,  line_content );
-            line_content = FileReadHelper.TrimComment(line_content);
+            line_content = TraderNpcText.Clean(line_content);
 
             if (line_content.Contains("<BuySellTimer>"))
             {
                 line_content.Replace("<BuySellTimer>", "");
-                line_content = FileReadHelper.TrimComment(line_content);
+                line_content = TraderNpcText.Clean(line_content);
 
                 m_Trader_BuySellTimer = line_content.ToFloat();
                 validEntry = true;
@@ -590,7 +590,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             if (line_content.Contains("<SafezoneTimeout>"))
             {
                 line_content.Replace("<SafezoneTimeout>", "");
-                line_content = FileReadHelper.TrimComment(line_content);
+                line_content = TraderNpcText.Clean(line_content);
 
                 m_Trader_SafezoneTimeout = line_content.ToFloat();
                 validEntry = true;
@@ -601,7 +601,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             if (line_content.Contains("<SafezoneRemoveAnimals>"))
             {
                 line_content.Replace("<SafezoneRemoveAnimals>", "");
-                line_content = FileReadHelper.TrimComment(line_content);
+                line_content = TraderNpcText.Clean(line_content);
                 lowerLine = line_content;
                 lowerLine.ToLower();
                 if(lowerLine.Contains("yes"))
@@ -616,7 +616,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             if (line_content.Contains("<SafezoneRemoveInfected>"))
             {
                 line_content.Replace("<SafezoneRemoveInfected>", "");
-                line_content = FileReadHelper.TrimComment(line_content);
+                line_content = TraderNpcText.Clean(line_content);
                 lowerLine = line_content;
                 lowerLine.ToLower();
                 if(lowerLine.Contains("yes"))
@@ -631,7 +631,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             if (line_content.Contains("<SafezoneRemoveEAI>"))
             {
                 line_content.Replace("<SafezoneRemoveEAI>", "");
-                line_content = FileReadHelper.TrimComment(line_content);
+                line_content = TraderNpcText.Clean(line_content);
                 lowerLine = line_content;
                 lowerLine.ToLower();
                 if(lowerLine.Contains("yes"))
@@ -645,7 +645,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             if (line_content.Contains("<SafezoneShowDebugShape>"))
             {
                 line_content.Replace("<SafezoneShowDebugShape>", "");
-                line_content = FileReadHelper.TrimComment(line_content);
+                line_content = TraderNpcText.Clean(line_content);
                 lowerLine = line_content;
                 lowerLine.ToLower();
                 if(lowerLine.Contains("yes"))
@@ -659,7 +659,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             if (line_content.Contains("<TradingDistance>"))
             {
                 line_content.Replace("<TradingDistance>", "");
-                line_content = FileReadHelper.TrimComment(line_content);
+                line_content = TraderNpcText.Clean(line_content);
                 m_Trader_TradingDistance = line_content.ToFloat();
                 validEntry = true;
 
@@ -670,7 +670,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             if (line_content.Contains("<RatingEnabled>"))
             {
                 line_content.Replace("<RatingEnabled>", "");
-                line_content = FileReadHelper.TrimComment(line_content);
+                line_content = TraderNpcText.Clean(line_content);
                 lowerLine = line_content;
                 lowerLine.ToLower();
                 m_Trader_RatingEnabled = lowerLine.Contains("yes");
@@ -682,7 +682,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             if (line_content.Contains("<RatingMaxDiscount>"))
             {
                 line_content.Replace("<RatingMaxDiscount>", "");
-                line_content = FileReadHelper.TrimComment(line_content);
+                line_content = TraderNpcText.Clean(line_content);
                 m_Trader_RatingMaxDiscount = line_content.ToInt();
                 if ( m_Trader_RatingMaxDiscount < 0 ) m_Trader_RatingMaxDiscount = 0;
                 if ( m_Trader_RatingMaxDiscount > 100 ) m_Trader_RatingMaxDiscount = 100;
@@ -694,7 +694,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             if (line_content.Contains("<RatingFullHours>"))
             {
                 line_content.Replace("<RatingFullHours>", "");
-                line_content = FileReadHelper.TrimComment(line_content);
+                line_content = TraderNpcText.Clean(line_content);
                 m_Trader_RatingFullHours = line_content.ToInt();
                 if ( m_Trader_RatingFullHours < 1 ) m_Trader_RatingFullHours = 1;
                 validEntry = true;
@@ -705,7 +705,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             if (line_content.Contains("<RatingCurve>"))
             {
                 line_content.Replace("<RatingCurve>", "");
-                line_content = FileReadHelper.TrimComment(line_content);
+                line_content = TraderNpcText.Clean(line_content);
                 m_Trader_RatingCurve = line_content.ToFloat();
                 if ( m_Trader_RatingCurve < 0.1 ) m_Trader_RatingCurve = 0.1;
                 validEntry = true;
@@ -716,7 +716,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             if (line_content.Contains("<RatingFullDistance>"))
             {
                 line_content.Replace("<RatingFullDistance>", "");
-                line_content = FileReadHelper.TrimComment(line_content);
+                line_content = TraderNpcText.Clean(line_content);
                 m_Trader_RatingFullDistance = line_content.ToInt();
                 if ( m_Trader_RatingFullDistance < 1 ) m_Trader_RatingFullDistance = 1;
                 validEntry = true;
@@ -727,7 +727,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             if (line_content.Contains("<RatingFullKills>"))
             {
                 line_content.Replace("<RatingFullKills>", "");
-                line_content = FileReadHelper.TrimComment(line_content);
+                line_content = TraderNpcText.Clean(line_content);
                 m_Trader_RatingFullKills = line_content.ToInt();
                 if ( m_Trader_RatingFullKills < 1 ) m_Trader_RatingFullKills = 1;
                 validEntry = true;
@@ -738,7 +738,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             if (line_content.Contains("<RatingWeightTime>"))
             {
                 line_content.Replace("<RatingWeightTime>", "");
-                line_content = FileReadHelper.TrimComment(line_content);
+                line_content = TraderNpcText.Clean(line_content);
                 m_Trader_RatingWeightTime = line_content.ToFloat();
                 if ( m_Trader_RatingWeightTime < 0 ) m_Trader_RatingWeightTime = 0;
                 validEntry = true;
@@ -747,7 +747,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             if (line_content.Contains("<RatingWeightDistance>"))
             {
                 line_content.Replace("<RatingWeightDistance>", "");
-                line_content = FileReadHelper.TrimComment(line_content);
+                line_content = TraderNpcText.Clean(line_content);
                 m_Trader_RatingWeightDistance = line_content.ToFloat();
                 if ( m_Trader_RatingWeightDistance < 0 ) m_Trader_RatingWeightDistance = 0;
                 validEntry = true;
@@ -756,7 +756,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             if (line_content.Contains("<RatingWeightKills>"))
             {
                 line_content.Replace("<RatingWeightKills>", "");
-                line_content = FileReadHelper.TrimComment(line_content);
+                line_content = TraderNpcText.Clean(line_content);
                 m_Trader_RatingWeightKills = line_content.ToFloat();
                 if ( m_Trader_RatingWeightKills < 0 ) m_Trader_RatingWeightKills = 0;
                 validEntry = true;
@@ -773,7 +773,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             if (line_content.Contains("<SoundRange>"))
             {
                 line_content.Replace("<SoundRange>", "");
-                line_content = FileReadHelper.TrimComment(line_content);
+                line_content = TraderNpcText.Clean(line_content);
                 m_Trader_SoundRange = line_content.ToFloat();
                 if ( m_Trader_SoundRange < 1 ) m_Trader_SoundRange = 1;
                 validEntry = true;
@@ -782,7 +782,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             if (line_content.Contains("<KillReward>"))
             {
                 line_content.Replace("<KillReward>", "");
-                line_content = FileReadHelper.TrimComment(line_content);
+                line_content = TraderNpcText.Clean(line_content);
                 m_Trader_KillReward = line_content.ToInt();
                 if ( m_Trader_KillReward < 0 ) m_Trader_KillReward = 0;
                 validEntry = true;
@@ -819,7 +819,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
         {
             line_content = "";
             int char_count = FGets( file_index,  line_content );
-            line_content = FileReadHelper.TrimComment(line_content);
+            line_content = TraderNpcText.Clean(line_content);
 
             if (line_content.Contains("<FileEnd>") || line_content.Length() < 16)
                 continue;
@@ -836,7 +836,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
     bool OpenNewFileForReading(string line_content, out FileHandle file_index)
     {
         line_content.Replace("<OpenFile>", "");
-        line_content = FileReadHelper.TrimComment(line_content);
+        line_content = TraderNpcText.Clean(line_content);
 
         CloseFile(file_index);
         file_index = OpenFile("$profile:Trader/" + line_content, FileMode.READ);
@@ -899,9 +899,9 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
         
         string line_content = "";
         
-        line_content = FileReadHelper.SearchForNextTermInFile(file_index, "<CurrencyName>", "");
+        line_content = TraderNpcText.NextTerm(file_index, "<CurrencyName>", "");
         line_content.Replace("<CurrencyName>", "");
-        line_content = FileReadHelper.TrimComment(line_content);
+        line_content = TraderNpcText.Clean(line_content);
         m_Trader_CurrencyName = line_content;
         TraderMessage.ServerLog("[TRADER] CURRENCY NAME ENTRY " + m_Trader_CurrencyName);
 
@@ -910,9 +910,9 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
         line_content = "";
         while (currencyCounter <= 500 && !line_content.Contains("<Trader>"))
         {
-            line_content = FileReadHelper.SearchForNextTermInFile(file_index, "<Currency>", "<Trader>");
+            line_content = TraderNpcText.NextTerm(file_index, "<Currency>", "<Trader>");
             line_content.Replace("<Currency>", "");
-            line_content = FileReadHelper.TrimComment(line_content);
+            line_content = TraderNpcText.Clean(line_content);
 
             if (line_content.Contains("<Trader>"))
                 break;
@@ -921,10 +921,10 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             line_content.Split( ",", crys );
 
             string currencyClassname = crys.Get(0);
-            currencyClassname = FileReadHelper.TrimSpaces(currencyClassname);
+            currencyClassname = TraderNpcText.Tidy(currencyClassname);
             
             string currencyValue = crys.Get(1);
-            currencyValue = FileReadHelper.TrimSpaces(currencyValue);
+            currencyValue = TraderNpcText.Tidy(currencyValue);
 
             m_Trader_CurrencyClassnames.Insert(currencyClassname);
             m_Trader_CurrencyValues.Insert(currencyValue.ToInt());
@@ -940,7 +940,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
         while (traderCounter <= 5000 && line_content != "<FileEnd>")
         {            
             if (traderInstanceDone == false)
-                line_content = FileReadHelper.SearchForNextTermsInFile(file_index, {"<Trader>", "<OpenFile>"}, "");
+                line_content = TraderNpcText.NextTerms(file_index, {"<Trader>", "<OpenFile>"}, "");
             else
                 traderInstanceDone = false;
             
@@ -953,7 +953,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             }
 
             line_content.Replace("<Trader>", "");
-            line_content = FileReadHelper.TrimComment(line_content);
+            line_content = TraderNpcText.Clean(line_content);
             
             TraderMessage.ServerLog("[TRADER] READING TRADER ENTRY " + line_content);
             m_Trader_TraderNames.Insert(line_content);
@@ -963,7 +963,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             line_content = "";
             while (categoryCounter <= 5000 && line_content != "<FileEnd>")
             {
-                line_content = FileReadHelper.TrimComment(FileReadHelper.SearchForNextTermsInFile(file_index, {"<Category>", "<OpenFile>"}, "<Trader>"));
+                line_content = TraderNpcText.Clean(TraderNpcText.NextTerms(file_index, {"<Category>", "<OpenFile>"}, "<Trader>"));
                 
                 if (line_content.Contains("<OpenFile>"))
                 {
@@ -986,7 +986,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
                 }
                 
                 line_content.Replace("<Category>", "");
-                string category = FileReadHelper.TrimComment(line_content);
+                string category = TraderNpcText.Clean(line_content);
                 m_Trader_Categorys.Insert(category);
                 m_Trader_CategorysTraderKey.Insert(traderCounter);
                 TraderMessage.ServerLog("[TRADER] READING CATEGORY ENTRY " + category);
@@ -1023,7 +1023,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
         {
             char_count = FGets( file_index,  line_content );
             
-            line_content = FileReadHelper.TrimComment(line_content);
+            line_content = TraderNpcText.Clean(line_content);
 
             if (line_content.Contains("<OpenFile>"))
             {
@@ -1055,7 +1055,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
         
             if (line_content.Contains("<SellCoef>"))
             {
-                float newCoef = FileReadHelper.TrimSpaces(TraderAutoPrices.TagValue(line_content)).ToFloat();
+                float newCoef = TraderNpcText.Tidy(TraderAutoPrices.TagValue(line_content)).ToFloat();
                 if (newCoef > 0.0 && newCoef <= 1.0)
                 {
                     if (inCategoryBlock)
@@ -1076,10 +1076,10 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             line_content.Split( ",", strs );
             
             string itemStr = strs.Get(0);
-            itemStr = FileReadHelper.TrimSpaces(itemStr);
+            itemStr = TraderNpcText.Tidy(itemStr);
             
             string qntStr = strs.Get(1);
-            qntStr = FileReadHelper.TrimSpaces(qntStr);
+            qntStr = TraderNpcText.Tidy(qntStr);
             
             if (qntStr.Contains("*") || qntStr.Contains("-1"))
             {
@@ -1102,13 +1102,13 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             }
 
             string buyStr = strs.Get(2);
-            buyStr = FileReadHelper.TrimSpaces(buyStr);
+            buyStr = TraderNpcText.Tidy(buyStr);
 
             // 4th field is optional: "Class, Qty, Buy" -> sell = Buy * SellCoef,
             // and "*" in the sell field does the same for an explicit buy price.
             string sellStr = "*";
             if (strs.Count() >= 4)
-                sellStr = FileReadHelper.TrimSpaces(strs.Get(3));
+                sellStr = TraderNpcText.Tidy(strs.Get(3));
 
             // понятные слова вместо "-1": nobuy = торговец не продаёт, nosell = не покупает
             if ( buyStr == "nobuy" || buyStr == "NOBUY" )
@@ -1140,7 +1140,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             // "empty" = пустой, иначе класс патрона.
             string ammoStr = "";
             if ( strs.Count() >= 5 )
-                ammoStr = FileReadHelper.TrimSpaces( strs.Get( 4 ) );
+                ammoStr = TraderNpcText.Tidy( strs.Get( 4 ) );
             m_Trader_ItemsAmmo.Insert( ammoStr );
             
             itemCounter++;
@@ -1166,7 +1166,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
         while ( markerCounter <= 5000 && line_content.Contains("<FileEnd>") == false)
         {
             if (!skipLine)
-                line_content = FileReadHelper.SearchForNextTermsInFile(file_index, {"<TraderMarker>", "<OpenFile>"}, "<FileEnd>");
+                line_content = TraderNpcText.NextTerms(file_index, {"<TraderMarker>", "<OpenFile>"}, "<FileEnd>");
             else
                 skipLine = false;    
 
@@ -1180,29 +1180,29 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
                 continue;
             
             line_content.Replace("<TraderMarker>", "");
-            line_content = FileReadHelper.TrimComment(line_content);
-            line_content = FileReadHelper.TrimSpaces(line_content);
+            line_content = TraderNpcText.Clean(line_content);
+            line_content = TraderNpcText.Tidy(line_content);
             
             TraderMessage.ServerLog("[TRADER] MARKER ID ENTRY " + line_content);
             currentTraderID = line_content.ToInt();
             m_Trader_TraderIDs.Insert(currentTraderID);
             
-            line_content = FileReadHelper.SearchForNextTermInFile(file_index, "<TraderMarkerPosition>", "<FileEnd>");
+            line_content = TraderNpcText.NextTerm(file_index, "<TraderMarkerPosition>", "<FileEnd>");
             
             line_content.Replace("<TraderMarkerPosition>", "");
-            line_content = FileReadHelper.TrimComment(line_content);
+            line_content = TraderNpcText.Clean(line_content);
             
             TStringArray strsm = new TStringArray;
             line_content.Split( ",", strsm );
             
             string traderMarkerPosX = strsm.Get(0);
-            traderMarkerPosX = FileReadHelper.TrimSpaces(traderMarkerPosX);
+            traderMarkerPosX = TraderNpcText.Tidy(traderMarkerPosX);
             
             string traderMarkerPosY = strsm.Get(1);
-            traderMarkerPosY = FileReadHelper.TrimSpaces(traderMarkerPosY);
+            traderMarkerPosY = TraderNpcText.Tidy(traderMarkerPosY);
             
             string traderMarkerPosZ = strsm.Get(2);
-            traderMarkerPosZ = FileReadHelper.TrimSpaces(traderMarkerPosZ);
+            traderMarkerPosZ = TraderNpcText.Tidy(traderMarkerPosZ);
             
             vector markerPosition = "0 0 0";
             markerPosition[0] = traderMarkerPosX.ToFloat();
@@ -1235,11 +1235,11 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
                 TraderMessage.ServerLog("[TRADER][ERROR] Marker couldn't find an object at position " + markerPosition);
             }
             
-            line_content = FileReadHelper.SearchForNextTermInFile(file_index, "<TraderMarkerSafezone>", "<FileEnd>");
+            line_content = TraderNpcText.NextTerm(file_index, "<TraderMarkerSafezone>", "<FileEnd>");
             
             line_content.Replace("<TraderMarkerSafezone>", "");
-            line_content = FileReadHelper.TrimComment(line_content);
-            line_content = FileReadHelper.TrimSpaces(line_content);    
+            line_content = TraderNpcText.Clean(line_content);
+            line_content = TraderNpcText.Tidy(line_content);    
             
             m_Trader_TraderSafezones.Insert(line_content.ToInt());
 
@@ -1260,7 +1260,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
                 }
             }
             
-            line_content = FileReadHelper.SearchForNextTermInFile(file_index, "<VehicleSpawn>", "<TraderMarker>");
+            line_content = TraderNpcText.NextTerm(file_index, "<VehicleSpawn>", "<TraderMarker>");
 
             if(line_content == string.Empty)
                 break;
@@ -1274,19 +1274,19 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             }
 
             line_content.Replace("<VehicleSpawn>", "");
-            line_content = FileReadHelper.TrimComment(line_content);
+            line_content = TraderNpcText.Clean(line_content);
 
             TStringArray strtmv = new TStringArray;
             line_content.Split( ",", strtmv );
             
             string traderMarkerVehiclePosX = strtmv.Get(0);
-            traderMarkerVehiclePosX = FileReadHelper.TrimSpaces(traderMarkerVehiclePosX);
+            traderMarkerVehiclePosX = TraderNpcText.Tidy(traderMarkerVehiclePosX);
             
             string traderMarkerVehiclePosY = strtmv.Get(1);
-            traderMarkerVehiclePosY = FileReadHelper.TrimSpaces(traderMarkerVehiclePosY);
+            traderMarkerVehiclePosY = TraderNpcText.Tidy(traderMarkerVehiclePosY);
             
             string traderMarkerVehiclePosZ = strtmv.Get(2);
-            traderMarkerVehiclePosZ = FileReadHelper.TrimSpaces(traderMarkerVehiclePosZ);
+            traderMarkerVehiclePosZ = TraderNpcText.Tidy(traderMarkerVehiclePosZ);
             
             vector markerVehiclePosition = "0 0 0";
             markerVehiclePosition[0] = traderMarkerVehiclePosX.ToFloat();
@@ -1297,7 +1297,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
 
             m_Trader_TraderVehicleSpawns.Insert(markerVehiclePosition);
 
-            line_content = FileReadHelper.SearchForNextTermInFile(file_index, "<VehicleSpawnOri>", "<TraderMarker>");
+            line_content = TraderNpcText.NextTerm(file_index, "<VehicleSpawnOri>", "<TraderMarker>");
 
             if(line_content == string.Empty)
                 break;
@@ -1310,19 +1310,19 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             }
 
             line_content.Replace("<VehicleSpawnOri>", "");
-            line_content = FileReadHelper.TrimComment(line_content);
+            line_content = TraderNpcText.Clean(line_content);
 
             TStringArray strtmvd = new TStringArray;
             line_content.Split( ",", strtmvd );
             
             string traderMarkerVehicleOriX = strtmvd.Get(0);
-            traderMarkerVehicleOriX = FileReadHelper.TrimSpaces(traderMarkerVehicleOriX);
+            traderMarkerVehicleOriX = TraderNpcText.Tidy(traderMarkerVehicleOriX);
             
             string traderMarkerVehicleOriY = strtmvd.Get(1);
-            traderMarkerVehicleOriY = FileReadHelper.TrimSpaces(traderMarkerVehicleOriY);
+            traderMarkerVehicleOriY = TraderNpcText.Tidy(traderMarkerVehicleOriY);
             
             string traderMarkerVehicleOriZ = strtmvd.Get(2);
-            traderMarkerVehicleOriZ = FileReadHelper.TrimSpaces(traderMarkerVehicleOriZ);
+            traderMarkerVehicleOriZ = TraderNpcText.Tidy(traderMarkerVehicleOriZ);
             
             vector markerVehicleOrientation = "0 0 0";
             markerVehicleOrientation[0] = traderMarkerVehicleOriX.ToFloat();
