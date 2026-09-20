@@ -98,22 +98,6 @@ FrameWidgetClass TraderMenu {
     "text valign" center
     text "#tm_trader"
    }
-   CheckBoxWidgetClass SellablesCheckBox {
-    visible 0
-    ignorepointer 0
-    position 0.62 0.22
-    size 0.34 0.50
-    halign left_ref
-    valign top_ref
-    hexactpos 0
-    vexactpos 0
-    hexactsize 0
-    vexactsize 0
-    priority 2
-    style Default
-    font "gui/fonts/Metron22"
-    text "#tm_sellables_only"
-   }
    }
   }
   XComboBoxWidgetClass xcombobox_categorys {
@@ -615,7 +599,7 @@ FrameWidgetClass TraderMenu {
     "listen to input" 1
    }
    ImageWidgetClass SellHintIcon {
-    visible 1
+    visible 0
     ignorepointer 1
     color 1 1 1 1
     fixaspect fixwidth
@@ -635,7 +619,7 @@ FrameWidgetClass TraderMenu {
     priority 3
    }
    TextWidgetClass SellHint {
-    visible 1
+    visible 0
     clipchildren 0
     ignorepointer 1
     position 12 0
@@ -657,6 +641,22 @@ FrameWidgetClass TraderMenu {
     "text halign" right
     "text valign" center
    }
+     CheckBoxWidgetClass SellablesCheckBox {
+      visible 1
+      ignorepointer 0
+      position 12 0
+      size 246 44
+      halign right_ref
+      valign top_ref
+      hexactpos 1
+      vexactpos 1
+      hexactsize 1
+      vexactsize 1
+      priority 3
+      style Default
+      font "gui/fonts/Metron22"
+      text "#tm_sellables_only"
+     }
    }
   }
   ButtonWidgetClass btn_cancel {
