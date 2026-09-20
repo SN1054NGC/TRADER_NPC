@@ -185,6 +185,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
     {
         m_Trader_NPCDummyClasses = new array<string>;
         m_Trader_ObjectsList = new array<Object>;
+        TraderVoiceRegistry.Reset();
         TraderMessage.ServerLog("[TRADER] READING TRADER OBJECTS FILE");
         FileHandle file_index = OpenFile(m_Trader_ObjectsFilePath, FileMode.READ);
                 
@@ -213,6 +214,16 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             line_content = TraderNpcText.Tidy(line_content);
             
             string traderObjectType = line_content;
+            // необязательное переопределение голоса: "<Object> SurvivorF_Eva, male_2"
+            string voiceOverride = "";
+            if ( traderObjectType.Contains( "," ) )
+            {
+                TStringArray voiceParts = new TStringArray;
+                traderObjectType.Split( ",", voiceParts );
+                traderObjectType = TraderNpcText.Tidy( voiceParts.Get( 0 ) );
+                if ( voiceParts.Count() > 1 )
+                    voiceOverride = TraderNpcText.Tidy( voiceParts.Get( 1 ) );
+            }
             TraderMessage.ServerLog("[TRADER] OBJECT TYPE ENTRY " + line_content);
             
             line_content = TraderNpcText.NextTerm(file_index, "<ObjectPosition>", "<FileEnd>");
@@ -288,6 +299,7 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
                 if (newtraderObj)
                 {            
                     m_Trader_ObjectsList.Insert(newtraderObj);
+        TraderVoiceRegistry.Register( newtraderObj, TraderVoiceRegistry.PickVoice( traderObjectType, voiceOverride ) );
                     newtraderObj.SetPosition(objectPosition);
                     newtraderObj.SetOrientation(objectOrientation);
                     EntityAI entity = EntityAI.Cast(newtraderObj);
