@@ -119,9 +119,10 @@ class TraderRatingHud
 			int textW, textH;
 			info.GetTextSize( textW, textH );
 
-			float panelW = ( textW + 150 ) / 0.70;
-			if ( panelW < 380 )
-				panelW = 380;
+			// текст занимает долю 0.20..0.52, справа пиксельные контролы (~380 px)
+			float panelW = ( textW + 60 ) / 0.50;
+			if ( panelW < 900 )
+				panelW = 900;
 			if ( panelW > 1250 )
 				panelW = 1250;
 
