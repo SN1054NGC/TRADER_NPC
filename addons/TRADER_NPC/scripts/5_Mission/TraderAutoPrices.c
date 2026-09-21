@@ -520,7 +520,34 @@ static bool IsVehicle( string cls )
 		return true;
 	if ( GetGame().IsKindOf( cls, "BoatScript" ) )
 		return true;
+	if ( GetGame().IsKindOf( cls, "HelicopterScript" ) )
+		return true;
+
+	// страховка: известные семьи машин и лодок по префиксу имени
+	if ( StartsWithOne( cls, "OffroadHatchback" ) )
+		return true;
+	if ( StartsWithOne( cls, "Hatchback_02" ) )
+		return true;
+	if ( StartsWithOne( cls, "Sedan_02" ) )
+		return true;
+	if ( StartsWithOne( cls, "CivilianSedan" ) )
+		return true;
+	if ( StartsWithOne( cls, "Truck_01" ) )
+		return true;
+	if ( StartsWithOne( cls, "Truck_02" ) )
+		return true;
+	if ( StartsWithOne( cls, "Offroad_02" ) )
+		return true;
+	if ( StartsWithOne( cls, "Boat_01" ) )
+		return true;
+	if ( StartsWithOne( cls, "Boat_02" ) )
+		return true;
 	return false;
+}
+
+static bool StartsWithOne( string cls, string prefix )
+{
+	return cls.IndexOf( prefix ) == 0;
 }
 static string DisplayCat( string ceCat )
 	{
