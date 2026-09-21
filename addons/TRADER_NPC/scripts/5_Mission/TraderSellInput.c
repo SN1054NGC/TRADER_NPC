@@ -86,10 +86,61 @@ class TraderSellInput
 		return TraderBuys( player, item.GetType() );
 	}
 
+	// Диагностика правой кнопки: объясняет, почему окно продажи не открылось.
+	// Молчит, если игрок вообще не у торговца (там причина очевидна), иначе
+	// пишет в чат одну строку: нет данных / нет в списке / цена < 0.
+	static void Explain( EntityAI item )
+	{
+		if ( !item )
+			return;
+
+		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
+		if ( !player )
+			return;
+		if ( !TraderInRange( player ) )
+			return;
+
+		if ( !player.HasReceivedAllTraderData() )
+		{
+			g_Game.Chat( "[TRADER] данные торговца ещё не получены", "colorAction" );
+			return;
+		}
+
+		string type = item.GetType();
+		string lowered = type;
+		lowered.ToLower();
+
+		if ( player.m_Trader_ItemsClassnames && player.m_Trader_ItemsSellValue )
+		{
+			for ( int i = 0; i < player.m_Trader_ItemsClassnames.Count(); i++ )
+			{
+				string row = player.m_Trader_ItemsClassnames.Get( i );
+				row.ToLower();
+				if ( row != lowered )
+					continue;
+
+				if ( i >= player.m_Trader_ItemsSellValue.Count() )
+					break;
+
+				int price = player.m_Trader_ItemsSellValue.Get( i );
+				if ( price < 0 )
+					g_Game.Chat( "[TRADER] " + type + ": торговец не покупает (цена " + price + ")", "colorAction" );
+				else
+					g_Game.Chat( "[TRADER] " + type + ": цена " + price + ", окно должно было открыться", "colorAction" );
+				return;
+			}
+		}
+
+		g_Game.Chat( "[TRADER] " + type + ": нет ни у одного торговца в списке", "colorAction" );
+	}
+
 	static bool Open( EntityAI item )
 	{
 		if ( !CanOpen( item ) )
+		{
+			Explain( item );
 			return false;
+		}
 
 		InventoryMenu menu = InventoryMenu.Cast( GetGame().GetUIManager().FindMenu( MENU_INVENTORY ) );
 		if ( !menu )
