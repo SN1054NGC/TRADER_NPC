@@ -500,11 +500,27 @@ class TraderAutoPrices
 // в инвентаре, и клиент падает при выборе категории с таким предметом.
 static bool HasModel( string cls )
 {
-	string path = CFG_VEHICLESPATH + " " + cls + " model";
-	if ( !GetGame().ConfigIsExisting( path ) )
-		return false;
+	// Модель лежит в РАЗНЫХ конфигах: у предметов - CfgVehicles, у магазинов
+	// и патронов - CfgMagazines, у оружия - CfgWeapons. Плюс модель может быть
+	// унаследована от базового класса, а ConfigIsExisting по наследованию не
+	// ходит. Из-за старой проверки только CfgVehicles + ConfigIsExisting из
+	// ассортимента выпадало ВСЁ оружие, магазины и патроны (в логе сервера -
+	// 37 магазинов, 28 видов патронов, M4A1/AKM/SVD и т.д.), поэтому правая
+	// кнопка не находила их у торговца.
+	if ( HasModelIn( CFG_VEHICLESPATH, cls ) )
+		return true;
+	if ( HasModelIn( CFG_MAGAZINESPATH, cls ) )
+		return true;
+	if ( HasModelIn( CFG_WEAPONSPATH, cls ) )
+		return true;
+	return false;
+}
+
+static bool HasModelIn( string cfgPath, string cls )
+{
 	string model = "";
-	GetGame().ConfigGetText( path, model );
+	if ( !GetGame().ConfigGetText( cfgPath + " " + cls + " model", model ) )
+		return false;
 	return model != "";
 }
 
