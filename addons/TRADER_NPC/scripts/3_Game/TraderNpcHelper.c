@@ -10,62 +10,11 @@ class TR_Helper
 
     static float GetTraderSellAllowedDistance()
     {
-        return 12.0;
+    	// <SellAnywhere> yes: продавать можно из любого места карты (скупщик работает везде)
+    	if ( TraderNpcFeatures.s_SellAnywhere )
+    		return 999999.0;
+    	return 12.0;
     }
-
-    static bool ItemHasQuantity(string itemClassname)
-    {
-        return GetItemMaxQuantity(itemClassname) > 0;
-    }
-
-    static int GetItemMaxQuantity(string itemClassname)
-    {
-        string path = CFG_VEHICLESPATH + " " + itemClassname + " varQuantityMax";
-        if (GetGame().ConfigIsExisting(path))
-            return GetGame().ConfigGetInt(path);
-        return -1;
-    }
-
-    static bool ItemHasCount(string itemClassname)
-    {
-        return GetItemCount(itemClassname) > 0;
-    }
-
-    static int GetItemCount(string itemClassname)
-    {
-        string path = CFG_MAGAZINESPATH  + " " + itemClassname + " count";
-        if (GetGame().ConfigIsExisting(path))
-            return GetGame().ConfigGetInt(path);
-        return -1;
-    }
-
-    static bool HasQuantityBar(string itemClassname)
-    {
-        string path = CFG_VEHICLESPATH  + " " + itemClassname + " quantityBar";
-        if (GetGame().ConfigIsExisting(path))        
-            return GetGame().ConfigGetInt(path) == 1;
-
-        return false;
-    }
-
-    static int GetItemSlotCount(string classname)
-	{
-		string config_path = string.Format("CfgVehicles %1 Cargo itemsCargoSize", classname);
-		if ( GetGame().ConfigIsExisting( config_path ) )
-		{
-			TIntArray CargoAlt = new TIntArray;
-			g_Game.ConfigGetIntArray(config_path, CargoAlt);
-			return CargoAlt[0]*CargoAlt[1];
-		}
-		string Vpath = CFG_VEHICLESPATH + " " + classname + " itemsCargoSize";
-		if ( GetGame().ConfigIsExisting( Vpath ) )
-		{
-			TIntArray Cargo = new TIntArray;
-			g_Game.ConfigGetIntArray(Vpath, Cargo);
-			return Cargo[0]*Cargo[1];
-		}
-		return 0;
-	}
 
     static ref TStringArray KitIgnoreArray = 
     {

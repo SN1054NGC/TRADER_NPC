@@ -29,6 +29,7 @@ class TraderNpcFeatures
 	static bool  s_Rating = true;
 	static bool  s_Sound = true;
 	static bool  s_SafezoneTrade = true;
+	static bool  s_SellAnywhere = false;   // <SellAnywhere> yes - продажа правой кнопкой из любой точки карты
 	static bool  s_MapTools = true;
 	static bool  s_Hud = true;
 	static bool  s_KillReward = true;
@@ -49,6 +50,7 @@ class TraderNpcFeatures
 		if (lineContent.Contains("<FeatureRating>"))        { s_Rating = on;        return true; }
 		if (lineContent.Contains("<FeatureSound>"))         { s_Sound = on;         return true; }
 		if (lineContent.Contains("<FeatureSafezoneTrade>")) { s_SafezoneTrade = on; return true; }
+		if (lineContent.Contains("<SellAnywhere>")) { s_SellAnywhere = on; return true; }
 		if (lineContent.Contains("<FeatureMapTools>"))      { s_MapTools = on;      return true; }
 		if (lineContent.Contains("<FeatureHud>"))           { s_Hud = on;           return true; }
 		if (lineContent.Contains("<FeatureKillReward>"))    { s_KillReward = on;    return true; }
