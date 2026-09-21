@@ -720,7 +720,64 @@ int m_Trader_LastApprTime = 0;   // лимит частоты запросов �
             return;
         }
 
-        TraderMessage.PlayerWhite("!кар add <ник> - дать доступ | !кар del <ник> - забрать | !кар list - список | !кар lock / unlock | !кар who", player);
+        if (action == "sell" || action == "продать")
+        {
+            // нельзя продать машину, в которой кто-то сидит
+            for (int ci = 0; ci < car.CrewSize(); ci++)
+            {
+                if (!car.CrewMember(ci))
+                    continue;
+                TraderMessage.PlayerRed("Сначала выйдите из машины (в ней есть люди).", player);
+                return;
+            }
+
+            int row = TraderVehicleShop.FindSellRow(player, car.GetType());
+            if (row < 0)
+            {
+                TraderMessage.PlayerRed("Эту машину здесь не скупают: " + car.GetType(), player);
+                return;
+            }
+
+            int traderId = player.m_Trader_ItemsTraderId.Get(row);
+            float limit = TR_Helper.GetTraderSellAllowedDistance();
+            if (player.m_Trader_TraderSafezones && traderId >= 0 && traderId < player.m_Trader_TraderSafezones.Count())
+            {
+                float zoneRadius = player.m_Trader_TraderSafezones.Get(traderId);
+                if (zoneRadius > limit)
+                    limit = zoneRadius;
+            }
+
+            vector sellTraderPos = player.m_Trader_TraderPositions.Get(traderId);
+            if (vector.Distance(player.GetPosition(), sellTraderPos) > limit && !player.IsInSafeZone())
+            {
+                TraderMessage.PlayerRed("Подъедь к торговцу, который скупает машины.", player);
+                return;
+            }
+
+            int price = TraderVehicleShop.ComputeSellPrice(player, row, car);
+            if (price < 1)
+            {
+                TraderMessage.PlayerRed("В таком состоянии машину не скупают.", player);
+                return;
+            }
+
+            traderTradesLog("sold vehicle " + car.GetType() + " for " + price);
+            GetGame().ObjectDelete(car);
+            increasePlayerCurrency(price);
+            TraderVoice.Play(player, "sell_1");
+            TraderMessage.PlayerGreen("Машина продана за " + price + ".", player);
+            return;
+        }
+
+        if (action == "service" || action == "заправка")
+        {
+            TraderVehicleShop.Service(car);
+            TraderMessage.PlayerGreen("Машина обслужена: полный бак, охлаждение и заряженный аккумулятор.", player);
+            traderTradesLog("vehicle serviced: " + car.GetType());
+            return;
+        }
+
+        TraderMessage.PlayerWhite("!кар add <ник> - доступ | !кар del <ник> - забрать | !кар list - список | !кар lock / unlock | !кар service - заправить | !кар sell - продать | !кар who", player);
     }
 
     void handleSellRPC(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx)

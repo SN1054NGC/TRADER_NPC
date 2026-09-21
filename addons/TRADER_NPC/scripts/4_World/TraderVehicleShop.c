@@ -104,6 +104,65 @@ class TraderVehicleShop
 		return attached;
 	}
 
+	// строка конфига, по которой какой-нибудь торговец скупает этот класс.
+	// -1 = никто не скупает.
+	static int FindSellRow(PlayerBase player, string className)
+	{
+		if (!player.m_Trader_ItemsClassnames || !player.m_Trader_ItemsSellValue)
+			return -1;
+		for (int i = 0; i < player.m_Trader_ItemsClassnames.Count(); i++)
+		{
+			if (player.m_Trader_ItemsClassnames.Get(i) != className)
+				continue;
+			if (player.m_Trader_ItemsSellValue.Get(i) >= 0)
+				return i;
+		}
+		return -1;
+	}
+
+	// цена продажи с учётом состояния: здоровье машины плюс небольшая надбавка
+	// за топливо в баке. Ржавую машину скупают за минимум 10% цены строки.
+	static int ComputeSellPrice(PlayerBase player, int row, CarScript car)
+	{
+		int base = player.m_Trader_ItemsSellValue.Get(row);
+		if (base < 1)
+			return 0;
+
+		float condition = car.GetHealth01();
+		if (condition < 0.1)
+			condition = 0.1;
+
+		float coef = condition + (car.GetFluidFraction(CarFluid.FUEL) * 0.05);
+		if (coef > 1.0)
+			coef = 1.0;
+
+		int price = Math.Round(base * coef);
+		if (price < 1)
+			price = 1;
+		return price;
+	}
+
+	// полный бак + охлаждение + заряженный АКБ (ванильные Fill / SetEnergy0To1).
+	// Нужно и при выдаче машины, и для команды !кар service.
+	static void Service(CarScript car)
+	{
+		if (!car)
+			return;
+
+		car.Fill(CarFluid.FUEL, car.GetFluidCapacity(CarFluid.FUEL));
+		car.Fill(CarFluid.COOLANT, car.GetFluidCapacity(CarFluid.COOLANT));
+
+		ItemBase battery = car.GetBattery();
+		if (!battery)
+			return;
+
+		ComponentEnergyManager em = battery.GetCompEM();
+		if (!em)
+			return;
+
+		em.SetEnergy0To1(1.0);
+	}
+
 	// выдаёт машину покупателю. false = не выдали, деньги списывать нельзя
 	static bool Deliver(PlayerBase player, string className, int traderIndex)
 	{
@@ -136,6 +195,12 @@ class TraderVehicleShop
 		car.SetOrientation(orientation);
 
 		int parts = AttachParts(car, className);
+
+		// Только что созданная машина приходит с пустым баком и разряженным АКБ:
+		// без этого двигатель не заводится.
+		Service(car);
+
+		TraderMessage.ServerLog("[TRADER] vehicle ready: parts=" + parts + " fuel=" + car.GetFluidFraction(CarFluid.FUEL));
 
 		string uid;
 		string pname;
