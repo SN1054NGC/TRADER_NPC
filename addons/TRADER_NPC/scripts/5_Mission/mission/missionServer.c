@@ -1154,6 +1154,14 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
                     sellValue = buyValue;
             }
 
+            // Класс без модели нельзя ни создать, ни показать в инвентаре:
+            // такие позиции пропускаем и пишем в лог (раньше это роняло клиент).
+            if ( !TraderAutoPrices.HasModel( itemStr ) )
+            {
+            	TraderMessage.ServerLog( "[TRADER] skipped (no model in config): " + itemStr );
+            	itemCounter++;
+            	continue;
+            }
             m_Trader_ItemsTraderId.Insert(traderID);
             m_Trader_ItemsCategoryId.Insert(categoryId);
             m_Trader_ItemsClassnames.Insert(itemStr);
