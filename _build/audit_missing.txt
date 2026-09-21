@@ -1,0 +1,239 @@
+# классы из TraderNpcConfig.txt, которых нет ни в types.xml, ни в ванильных конфигах
+CrocodileSteakMeat	Consume Trader
+CrocodileVest_Dark	Consume Trader
+CrocodileVest_Green	Consume Trader
+CrocodileVest_Brown	Consume Trader
+CrocodileVest_Grey	Consume Trader
+CrocodileVest_Albine	Consume Trader
+Gambler_Hat_Black	Consume Trader
+Gambler_Hat_BlackStraps_Dark	Consume Trader
+Gambler_Hat_BlackStraps_Green	Consume Trader
+Gambler_Hat_BlackStraps_Brown	Consume Trader
+Gambler_Hat_BlackStraps_Grey	Consume Trader
+Gambler_Hat_BlackStraps_Albine	Consume Trader
+CrocodileDundeeKnife	Consume Trader
+CrocodileSkin_Dark	Consume Trader
+CrocodileSkin_Green	Consume Trader
+CrocodileSkin_Brown	Consume Trader
+CrocodileSkin_Grey	Consume Trader
+CrocodileSkin_Albine	Consume Trader
+CrocodileSkinHands_Dark	Consume Trader
+CrocodileSkinHands_Green	Consume Trader
+CrocodileSkinHands_Brown	Consume Trader
+CrocodileSkinHands_Grey	Consume Trader
+CrocodileSkinHands_Albine	Consume Trader
+CrocodileSkinParts_Dark	Consume Trader
+CrocodileSkinParts_Green	Consume Trader
+CrocodileSkinParts_Brown	Consume Trader
+CrocodileSkinParts_Grey	Consume Trader
+CrocodileSkinParts_Albine	Consume Trader
+CrocodileTeeth	Consume Trader
+CrocodileLeatherStrapTeeth_Dark	Consume Trader
+CrocodileLeatherStrapTeeth_Green	Consume Trader
+CrocodileLeatherStrapTeeth_Brown	Consume Trader
+CrocodileLeatherStrapTeeth_Grey	Consume Trader
+CrocodileLeatherStrapTeeth_Albine	Consume Trader
+CrocodileLeatherStrap_Dark	Consume Trader
+CrocodileLeatherStrap_Green	Consume Trader
+CrocodileLeatherStrap_Brown	Consume Trader
+CrocodileLeatherStrap_Grey	Consume Trader
+CrocodileLeatherStrap_Albine	Consume Trader
+fangknife	Consume Trader
+fangDressing	Consume Trader
+legspear	Consume Trader
+spiderMeat	Consume Trader
+spiderMeatB	Consume Trader
+spiderEgg	Consume Trader
+PanterSteakMeat	Consume Trader
+PanterPelt	Consume Trader
+RhinoSteakMeat	Consume Trader
+RhinoHead	Consume Trader
+TigerSteakMeat	Consume Trader
+TigerPelt	Consume Trader
+BRDK_ForestMonster_heart	Consume Trader
+BRDK_Infernal_pelt	Consume Trader
+BRDK_Doberpelt	Consume Trader
+BRDK_Doberguts	Consume Trader
+BRDK_Doberlard	Consume Trader
+BRDK_Spiker1_head	Consume Trader
+BRDK_Spiker1_hand	Consume Trader
+BRDK_Spiker1_leg	Consume Trader
+BRDK_Spiker2_head	Consume Trader
+BRDK_Spiker2_hand	Consume Trader
+BRDK_Spiker2_leg	Consume Trader
+BRDK_Spiker3_head	Consume Trader
+BRDK_Spiker3_hand	Consume Trader
+BRDK_Spiker3_leg	Consume Trader
+BRDK_OpenHead1_head	Consume Trader
+BRDK_OpenHead1_hand	Consume Trader
+BRDK_OpenHead1_leg	Consume Trader
+BRDK_OpenHead2_head	Consume Trader
+BRDK_OpenHead2_hand	Consume Trader
+BRDK_OpenHead2_leg	Consume Trader
+BRDK_OpenHead3_head	Consume Trader
+BRDK_OpenHead3_hand	Consume Trader
+BRDK_OpenHead3_leg	Consume Trader
+BRDK_MumyGiant_head	Consume Trader
+BRDK_MumyGiant_hand	Consume Trader
+BRDK_Infernal_head	Consume Trader
+BRDK_InfectedMutant_head	Consume Trader
+BRDK_InfectedMutant_hand	Consume Trader
+BRDK_InfectedMutant_Leg	Consume Trader
+BRDK_Deeper_hand	Consume Trader
+BRDK_Deeper_leg	Consume Trader
+BRDK_Deeper_little_hand	Consume Trader
+BRDK_Deeper_little_leg	Consume Trader
+TerjePillsRombiopental	Consume Trader
+TerjeAmpouleKetarol	Consume Trader
+TerjeAmpouleFlemoclav	Consume Trader
+TerjeAmpouleImipenem	Consume Trader
+TerjeAmpouleMorphine	Consume Trader
+TerjeAmpouleGexobarbital	Consume Trader
+TerjeAmpouleKetamin	Consume Trader
+TerjeAmpouleHeptral	Consume Trader
+TerjeAmpouleMetoclopramid	Consume Trader
+TerjeAmpouleActaparoxetine	Consume Trader
+TerjeAmpouleAmitriptyline	Consume Trader
+TerjeAmpouleRifampicyne	Consume Trader
+TerjeAmpouleZivirol	Consume Trader
+TerjeInjectorPromidol	Consume Trader
+TerjeInjectorTopoizomeraza	Consume Trader
+TerjeInjectorErytromixelin	Consume Trader
+TerjeInjectorStomaproxidal	Consume Trader
+TerjeInjectorRabinucoline	Consume Trader
+TerjeInjectorAmfitalicyne	Consume Trader
+TerjeInjectorReanimatal	Consume Trader
+TerjeDrinkMadBull	Consume Trader
+TerjeDrinkGang	Consume Trader
+TerjeDrinkYaguar	Consume Trader
+TerjeDrinkPrayboy	Consume Trader
+TerjeDrink6Energy	Consume Trader
+TerjePillsPotassiumCyanide	Consume Trader
+TerjePillsArsenic	Consume Trader
+TerjeAmpoulePotassiumCyanide	Consume Trader
+TerjeAmpouleArsenic	Consume Trader
+TerjeAmpouleBeladonna	Consume Trader
+TerjeAmpouleStrychnine	Consume Trader
+TerjeAmpouleKonyin	Consume Trader
+TerjePillsB190	Consume Trader
+TerjePillsHexacyanoferrate	Consume Trader
+TerjeAmpoulePentacin	Consume Trader
+TerjeAmpouleCarboxyme	Consume Trader
+Scara_Karambit	Misc Trader
+Scara_Butterfly	Misc Trader
+Scara_Huntsman	Misc Trader
+Scara_M9Bayonet	Misc Trader
+Scara_Paracord	Misc Trader
+Scara_Skeleton	Misc Trader
+Scara_Stiletto	Misc Trader
+Scara_Survival	Misc Trader
+Scara_Talon	Misc Trader
+Scara_Nomad	Misc Trader
+Scara_Bowie	Misc Trader
+Scara_Falchion	Misc Trader
+Scara_Gut	Misc Trader
+IceAxe	Weapon Trader
+OPG_SVU	Weapon Trader
+Ammo_40mm_Chemgas	Weapon Trader
+AmmoBox_00buck_10Rnd	Weapon Trader
+AmmoBox_9x19_25Rnd	Weapon Trader
+AmmoBox_45ACP_25Rnd	Weapon Trader
+Mag_CZ527_5Rnd	Weapon Trader
+sps_FNP45_MRDSOptic	Weapon Trader
+sps_PistolOptic	Weapon Trader
+sps_scope_b	Weapon Trader
+sps_scope_a	Weapon Trader
+KA_Bayonet	Weapon Trader
+sps_Helmet_black_10	Clothing Trader
+sps_Helmet_black_1	Clothing Trader
+BandanaMask_PolkaPattern	Clothing Trader
+BandanaMask_RedPattern	Clothing Trader
+Tshirt_10thAnniversary	Clothing Trader
+SPS_PlateCarrier_4x10	Clothing Trader
+SPS_PlateCarrier_3x10	Clothing Trader
+SPS_PlateCarrier_2x10	Clothing Trader
+SPS_PlateCarrier_non	Clothing Trader
+SPS_PlateCarrier_admin	Clothing Trader
+SPS_PlateCarrierVest_Black_no_p	Clothing Trader
+SPS_PlateCarrierVest_Black_admin	Clothing Trader
+SPS_PlateCarrierVest_Green_no_p	Clothing Trader
+SPS_PlateCarrierVest_Green_admin	Clothing Trader
+sps_Pouches_black_10x4	Clothing Trader
+sps_Pouches_camo_10x4	Clothing Trader
+sps_Pouches_tan_10x4	Clothing Trader
+sps_Pouches_green_10x4	Clothing Trader
+sps_Pouches_black_10x12	Clothing Trader
+sps_Pouches_camo_10x12	Clothing Trader
+sps_Pouches_tan_10x12	Clothing Trader
+sps_Pouches_green_10x12	Clothing Trader
+SmershBagTan	Clothing Trader
+AliceBag_GorkaA	Clothing Trader
+
+# есть в ваниле, но не в types.xml
+Kiwi
+Orange
+Banana
+AmanitaMushroom
+PsilocybeMushroom
+SteelheadTrout
+GlassBottle
+AnniversaryBox
+ScientificBriefcase
+Flag_Crook
+Flag_Rex
+Flag_Zagorky
+ScientificBriefcaseKeys
+StunBaton
+CattleProd
+Mace
+Sword
+Ammo_CupidsBolt
+Anniversary_FireworksLauncher
+Mag_STANAG_60Rnd
+MK4Optic_Tan
+MK4Optic_Green
+MK4Optic_Black
+SportingOptic
+Armband_Crook
+Armband_Rex
+Armband_Zagorky
+WoolGlovesFingerless_Black
+WoolGlovesFingerless_Green
+WoolGlovesFingerless_Tan
+WoolGlovesFingerless_White
+WoolGloves_Black
+WoolGloves_Green
+WoolGloves_Tan
+WoolGloves_White
+WoolGloves_ChristmasBlue
+WoolGloves_ChristmasRed
+PaddedGloves_Beige
+PaddedGloves_Brown
+PaddedGloves_Threat
+OKZKCap_Beige
+OKZKCap_Green
+PetushokHat_Black
+PetushokHat_Green
+PetushokHat_Yellow
+WinterCoif_Black
+WinterCoif_Blue
+WinterCoif_Green
+WinterCoif_Skull
+BallisticHelmet_Desert
+Chainmail
+Chainmail_Coif
+Chainmail_Leggings
+Chestplate
+NorseHelm
+MedievalBoots
+ChristmasHeadband_Antlers
+ChristmasHeadband_Gingerbread
+ChristmasHeadband_Trees
+MorozkoHat
+DrysackBag_Green
+DrysackBag_Orange
+DrysackBag_Yellow
+Attack2Bag_Ttsko
+Attack2Bag_Black
+Attack2Bag_Green
+Attack2Bag_Yeger
