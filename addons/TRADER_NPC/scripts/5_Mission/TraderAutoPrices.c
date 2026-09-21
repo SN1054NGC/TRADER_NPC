@@ -496,7 +496,18 @@ class TraderAutoPrices
 	// main entry - called once after readTraderData(), server only
 	// ------------------------------------------------------------------
 	// Понятное имя категории: для файла-справочника и для списка категорий в UI
-	static string DisplayCat( string ceCat )
+	// У класса должна быть модель: иначе предмет нельзя ни создать, ни показать
+// в инвентаре, и клиент падает при выборе категории с таким предметом.
+static bool HasModel( string cls )
+{
+	string path = CFG_VEHICLESPATH + " " + cls + " model";
+	if ( !GetGame().ConfigIsExisting( path ) )
+		return false;
+	string model = "";
+	GetGame().ConfigGetText( path, model );
+	return model != "";
+}
+static string DisplayCat( string ceCat )
 	{
 		if ( ceCat == "" )          return "Other";
 		if ( ceCat == "ammo" )      return "Ammo";
@@ -600,6 +611,11 @@ class TraderAutoPrices
 				if ( cls == "" )
 					continue;
 				if ( InList( m_SkipCats, cat ) || InList( m_SkipPrefix, cls ) || InList( m_SkipClasses, cls ) )
+				{
+					skipped++;
+					continue;
+				}
+				if ( !HasModel( cls ) )
 				{
 					skipped++;
 					continue;
