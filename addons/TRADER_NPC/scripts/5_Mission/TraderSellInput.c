@@ -54,8 +54,17 @@ class TraderSellInput
 
 		for ( int i = 0; i < player.m_Trader_TraderPositions.Count(); i++ )
 		{
+			// радиус сейф-зоны этого торговца, если он больше базового
+			float limit = allowed;
+			if ( player.m_Trader_TraderSafezones && i < player.m_Trader_TraderSafezones.Count() )
+			{
+				float zoneRadius = player.m_Trader_TraderSafezones.Get( i );
+				if ( zoneRadius > limit )
+					limit = zoneRadius;
+			}
+
 			float d = vector.Distance( pos, player.m_Trader_TraderPositions.Get( i ) );
-			if ( d <= allowed || player.IsInSafeZone() )
+			if ( d <= limit || player.IsInSafeZone() )
 				return true;
 		}
 		return false;

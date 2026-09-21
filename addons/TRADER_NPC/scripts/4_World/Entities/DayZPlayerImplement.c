@@ -505,7 +505,15 @@ int m_Trader_LastApprTime = 0;   // лимит частоты запросов �
 
         vector playerPosition = GetPosition();    
         PlayerBase player = PlayerBase.Cast(this);
-        if (vector.Distance(playerPosition, m_Trader_TraderPositions.Get(traderIndex)) > TR_Helper.GetTraderSellAllowedDistance() && !player.IsInSafeZone())
+        // Продажа разрешена в радиусе сейф-зоны торговца (если она больше базовых 12 м)
+        float sellLimit = TR_Helper.GetTraderSellAllowedDistance();
+        if ( m_Trader_TraderSafezones && traderIndex < m_Trader_TraderSafezones.Count() )
+        {
+            float zoneRadius = m_Trader_TraderSafezones.Get(traderIndex);
+            if ( zoneRadius > sellLimit )
+                sellLimit = zoneRadius;
+        }
+        if (vector.Distance(playerPosition, m_Trader_TraderPositions.Get(traderIndex)) > sellLimit && !player.IsInSafeZone())
         {
             traderServerLog("tried to access the Trader out of Range! This could be an Hacker!");
             return;
@@ -733,7 +741,14 @@ void handleSellAppraiseRPC(PlayerIdentity sender, int rpc_type, ParamsReadContex
         return;
 
     vector playerPosition = GetPosition();
-    if (vector.Distance(playerPosition, m_Trader_TraderPositions.Get(traderIndex)) > TR_Helper.GetTraderSellAllowedDistance() && !PlayerBase.Cast(this).IsInSafeZone())
+    float apprLimit = TR_Helper.GetTraderSellAllowedDistance();
+    if ( m_Trader_TraderSafezones && traderIndex < m_Trader_TraderSafezones.Count() )
+    {
+        float apprZone = m_Trader_TraderSafezones.Get(traderIndex);
+        if ( apprZone > apprLimit )
+            apprLimit = apprZone;
+    }
+    if (vector.Distance(playerPosition, m_Trader_TraderPositions.Get(traderIndex)) > apprLimit && !PlayerBase.Cast(this).IsInSafeZone())
         return;
 
     string itemType = m_Trader_ItemsClassnames.Get(itemID);
