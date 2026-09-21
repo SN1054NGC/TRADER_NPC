@@ -1215,10 +1215,18 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
             {
                 if (!OpenNewFileForReading(line_content, file_index))
                     return;
+                continue;   // дальше читаем уже из подключённого файла
             }                
             
             if (!line_content.Contains("<TraderMarker>"))
-                continue;
+            {
+                // Конец файла. Ключевой момент: если в файле объектов нет <FileEnd>,
+                // то NextTerms возвращает пустую строку, условие цикла
+                // line_content.Contains("<FileEnd>") остаётся вечно ложным и сервер
+                // уходит в бесконечный цикл - freezecheck убивает его через 5 минут,
+                // а игроки не могут зайти. Поэтому выходим сразу.
+                break;
+            }
             
             line_content.Replace("<TraderMarker>", "");
             line_content = TraderNpcText.Clean(line_content);
