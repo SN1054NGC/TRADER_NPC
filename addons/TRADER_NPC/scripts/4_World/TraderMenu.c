@@ -280,6 +280,9 @@ class TraderMenu extends UIScriptedMenu
 	
 	override void OnHide()
 	{
+		PlayerBase byePlayer = PlayerBase.Cast( g_Game.GetPlayer() );
+		if ( byePlayer )
+			GetGame().RPCSingleParam( byePlayer, TRPCs.RPC_TRADER_BYE, new Param1<bool>( true ), true );
 		super.OnHide();
 		UnlockControls();
 		PPEffects.SetBlurMenu(0);
