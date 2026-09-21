@@ -507,6 +507,21 @@ static bool HasModel( string cls )
 	GetGame().ConfigGetText( path, model );
 	return model != "";
 }
+
+// Транспорт (машины, лодки, вертолёты) в авто-цены не попадает.
+// В types.xml у машин НЕТ <category>, поэтому фильтр по категориям их не
+// ловит, и целиком машина уходила в справочник по цене 150 (как тряпка).
+// Проверяем наследование по ванильному IsKindOf.
+static bool IsVehicle( string cls )
+{
+	if ( GetGame().IsKindOf( cls, "Transport" ) )
+		return true;
+	if ( GetGame().IsKindOf( cls, "CarScript" ) )
+		return true;
+	if ( GetGame().IsKindOf( cls, "BoatScript" ) )
+		return true;
+	return false;
+}
 static string DisplayCat( string ceCat )
 	{
 		if ( ceCat == "" )          return "Other";
@@ -611,6 +626,11 @@ static string DisplayCat( string ceCat )
 				if ( cls == "" )
 					continue;
 				if ( InList( m_SkipCats, cat ) || InList( m_SkipPrefix, cls ) || InList( m_SkipClasses, cls ) )
+				{
+					skipped++;
+					continue;
+				}
+				if ( IsVehicle( cls ) )
 				{
 					skipped++;
 					continue;

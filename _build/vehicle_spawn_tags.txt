@@ -1,0 +1,2 @@
+<VehicleSpawn> 13332.00, 9.65, 11008.00
+<VehicleSpawnOri> 0, 0, 0

@@ -355,6 +355,8 @@ int m_Trader_LastApprTime = 0;   // лимит частоты запросов �
 			handleTraderByeRPC(sender, rpc_type, ctx);
 		if (rpc_type == TRPCs.RPC_AI_ASK)
 			handleAiAskRPC(sender, rpc_type, ctx);
+		if (rpc_type == TRPCs.RPC_VEHICLE_CMD)
+			handleVehicleCmdRPC(sender, rpc_type, ctx);
 	}
 
     void handleBuyRPC(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx)
@@ -466,9 +468,259 @@ int m_Trader_LastApprTime = 0;   // лимит частоты запросов �
         if ( m_Trader_ItemsAmmo && itemID >= 0 && itemID < m_Trader_ItemsAmmo.Count() )
             buyAmmoClass = m_Trader_ItemsAmmo.Get( itemID );
 
+        // ---- покупка МАШИНЫ: создаём транспорт и запираем на покупателя ----
+        if ( TraderVehicleShop.IsVehicleRow( itemQuantity ) )
+        {
+            if ( !TraderVehicleShop.Deliver( player, itemType, traderIndex ) )
+            {
+                TraderMessage.PlayerRed("Машину не удалось выдать, деньги не списаны. Сообщите админу.", player);
+                traderServerLog("vehicle delivery FAILED: " + itemType);
+                return;
+            }
+            deductPlayerCurrency(payCosts);
+            TraderPlaySoundForAll("pickUpPaper_SoundSet", GetPosition());
+            return;
+        }
+
         deductPlayerCurrency(payCosts);
         TraderPlaySoundForAll("pickUpPaper_SoundSet", GetPosition());
         CreateItemInInventory(player, itemType, buyAmount, buyAmmoClass);
+    }
+
+    // ============================================================
+    // !кар - доступ к купленной машине. Владелец выдаёт доступ по нику.
+    // Команды: !кар add <ник> | del <ник> | list | lock | unlock | who
+    // ============================================================
+    PlayerBase TraderFindPlayerByName(string name)
+    {
+        if (name == "")
+            return null;
+
+        string lower = name;
+        lower.ToLower();
+
+        array<Man> players = new array<Man>;
+        g_Game.GetPlayers(players);
+
+        PlayerBase partial = null;
+        for (int i = 0; i < players.Count(); i++)
+        {
+            PlayerBase pb = PlayerBase.Cast(players.Get(i));
+            if (!pb)
+                continue;
+            PlayerIdentity ident = pb.GetIdentity();
+            if (!ident)
+                continue;
+
+            string pname = ident.GetName();
+            string plower = pname;
+            plower.ToLower();
+
+            if (plower == lower)
+                return pb;
+            if (!partial && plower.Contains(lower))
+                partial = pb;
+        }
+        return partial;
+    }
+
+    void handleVehicleCmdRPC(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx)
+    {
+        Param1<string> rpc = new Param1<string>("");
+        if (!ctx.Read(rpc))
+            return;
+
+        PlayerBase player = PlayerBase.Cast(this);
+        if (!player)
+            return;
+
+        string cmd = TraderNpcText.Clean(rpc.param1);
+        if (cmd == "")
+            return;
+
+        TraderVehicleCommand(player, cmd);
+    }
+
+    void TraderVehicleCommand(PlayerBase player, string cmd)
+    {
+        string text = cmd;
+        text.ToLower();
+
+        TStringArray tok = new TStringArray;
+        text.Split(" ", tok);
+
+        string action = "help";
+        if (tok.Count() >= 2)
+            action = tok.Get(1);
+
+        string targetName = "";
+        for (int t = 2; t < tok.Count(); t++)
+        {
+            string part = tok.Get(t);
+            if (part == "")
+                continue;
+            if (targetName != "")
+                targetName = targetName + " ";
+            targetName = targetName + part;
+        }
+
+        CarScript car = TraderVehicleLock.FindPlayerVehicle(player);
+        if (!car)
+        {
+            TraderMessage.PlayerWhite("Рядом нет машины: сядьте в неё или подойдите ближе (30 м).", player);
+            return;
+        }
+
+        string uid = "";
+        string pname = "";
+        TraderVehicleLock.GetPlayerId(player, uid, pname);
+
+        string ownerId = car.TraderVehicleGetOwnerId();
+        string ownerName = car.TraderVehicleGetOwnerName();
+        bool isOwner = (ownerId != "" && ownerId == uid);
+
+        if (action == "who")
+        {
+            if (ownerId == "")
+                TraderMessage.PlayerWhite("У этой машины нет владельца (не куплена у торговца).", player);
+            else
+                TraderMessage.PlayerWhite("Владелец машины: " + ownerName + " | доступов: " + car.TraderVehicleAccessCount(), player);
+            return;
+        }
+
+        if (ownerId == "")
+        {
+            TraderMessage.PlayerWhite("У этой машины нет владельца: её нельзя запирать. Купите машину у торговца.", player);
+            return;
+        }
+
+        if (!isOwner)
+        {
+            TraderMessage.PlayerRed("Вы не владелец этой машины. Владелец: " + ownerName, player);
+            return;
+        }
+
+        if (action == "add")
+        {
+            if (targetName == "")
+            {
+                TraderMessage.PlayerWhite("Укажите ник: !кар add <ник>", player);
+                return;
+            }
+
+            PlayerBase target = TraderFindPlayerByName(targetName);
+            if (!target)
+            {
+                TraderMessage.PlayerRed("Игрок " + targetName + " не найден в сети.", player);
+                return;
+            }
+
+            string targetUid = "";
+            string targetPname = "";
+            if (!TraderVehicleLock.GetPlayerId(target, targetUid, targetPname))
+            {
+                TraderMessage.PlayerRed("Не удалось определить ID игрока.", player);
+                return;
+            }
+
+            if (targetUid == uid)
+            {
+                TraderMessage.PlayerWhite("Это вы и есть, доступ не нужен.", player);
+                return;
+            }
+
+            if (car.TraderVehicleHasAccess(targetUid))
+            {
+                TraderMessage.PlayerWhite(targetPname + " уже имеет доступ.", player);
+                return;
+            }
+
+            car.TraderVehicleAddAccess(targetUid, targetPname);
+            TraderMessage.PlayerGreen(targetPname + " получил доступ к вашей машине.", player);
+            TraderMessage.PlayerGreen(pname + " дал вам доступ к машине " + car.GetType() + ".", target);
+            traderTradesLog("vehicle access granted: " + car.GetType() + " -> " + targetPname + " (" + targetUid + ")");
+            return;
+        }
+
+        if (action == "del" || action == "remove")
+        {
+            if (targetName == "")
+            {
+                TraderMessage.PlayerWhite("Укажите ник: !кар del <ник>", player);
+                return;
+            }
+
+            PlayerBase delTarget = TraderFindPlayerByName(targetName);
+            string delUid = "";
+            if (delTarget)
+                TraderVehicleLock.GetPlayerId(delTarget, delUid, targetName);
+
+            if (delUid == "")
+            {
+                // игрок мог выйти: ищем по нику в списке допущенных
+                string lowerDel = targetName;
+                lowerDel.ToLower();
+                for (int di = 0; di < car.TraderVehicleAccessCount(); di++)
+                {
+                    string accName = car.TraderVehicleAccessName(di);
+                    string accLower = accName;
+                    accLower.ToLower();
+                    if (accLower != lowerDel)
+                        continue;
+                    delUid = car.TraderVehicleAccessId(di);
+                    break;
+                }
+            }
+
+            if (delUid == "")
+            {
+                TraderMessage.PlayerRed("Не нашёл доступ для " + targetName + ".", player);
+                return;
+            }
+
+            if (car.TraderVehicleRemoveAccess(delUid))
+            {
+                TraderMessage.PlayerGreen("Доступ для " + targetName + " отозван.", player);
+                traderTradesLog("vehicle access revoked: " + car.GetType() + " -> " + targetName);
+            }
+            else
+            {
+                TraderMessage.PlayerWhite("У " + targetName + " и так нет доступа.", player);
+            }
+            return;
+        }
+
+        if (action == "list")
+        {
+            TraderMessage.PlayerWhite("Владелец: " + ownerName + ". Доступы:", player);
+            int count = car.TraderVehicleAccessCount();
+            if (count <= 0)
+            {
+                TraderMessage.PlayerWhite("  (пусто)", player);
+                return;
+            }
+            for (int li = 0; li < count; li++)
+            {
+                TraderMessage.PlayerWhite("  " + car.TraderVehicleAccessName(li), player, 10);
+            }
+            return;
+        }
+
+        if (action == "lock")
+        {
+            car.TraderVehicleSetLocked(true);
+            TraderMessage.PlayerGreen("Машина заперта.", player);
+            return;
+        }
+
+        if (action == "unlock")
+        {
+            car.TraderVehicleSetLocked(false);
+            TraderMessage.PlayerGreen("Машина отперта (доступ у вас всё равно остаётся).", player);
+            return;
+        }
+
+        TraderMessage.PlayerWhite("!кар add <ник> - дать доступ | !кар del <ник> - забрать | !кар list - список | !кар lock / unlock | !кар who", player);
     }
 
     void handleSellRPC(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx)

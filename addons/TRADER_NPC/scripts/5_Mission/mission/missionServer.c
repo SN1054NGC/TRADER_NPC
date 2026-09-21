@@ -1119,6 +1119,14 @@ int   m_Trader_KillReward = 0;            // 0 = авто: цена 1 шт. са
 
             if (qntStr == "S" || qntStr == "s")
                 qntStr = "-5";
+
+            // Машины: VNK = без ключа (наш основной вариант), V = с ключом.
+            // Ключа-предмета нет: машина запирается на ID покупателя.
+            if (qntStr == "VNK" || qntStr == "vnk")
+                qntStr = "-6";
+
+            if (qntStr == "V" || qntStr == "v")
+                qntStr = "-7";
             
             if (strs.Count() < 3)
             {

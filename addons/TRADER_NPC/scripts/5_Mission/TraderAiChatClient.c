@@ -31,11 +31,26 @@ modded class ChatInputMenu
 		// но меню закроется штатно
 		box.SetText("");
 
+		// !кар ... - команды машины, а не вопрос модели
+		string lower = question;
+		lower.ToLower();
+		bool isVehicleCmd = false;
+		if (lower.IndexOf("кар") == 0 || lower.IndexOf("car") == 0 || lower.IndexOf("машина") == 0)
+			isVehicleCmd = true;
+
 		PlayerBase player = PlayerBase.Cast(g_Game.GetPlayer());
 		if (player)
 		{
-			GetGame().RPCSingleParam(player, TRPCs.RPC_AI_ASK, new Param1<string>(question), true);
-			g_Game.Chat("Вы -> торговец: " + question, "colorAction");
+			if (isVehicleCmd)
+			{
+				GetGame().RPCSingleParam(player, TRPCs.RPC_VEHICLE_CMD, new Param1<string>(question), true);
+				g_Game.Chat("Вы -> машина: !" + question, "colorAction");
+			}
+			else
+			{
+				GetGame().RPCSingleParam(player, TRPCs.RPC_AI_ASK, new Param1<string>(question), true);
+				g_Game.Chat("Вы -> торговец: " + question, "colorAction");
+			}
 		}
 
 		return super.OnChange(w, x, y, finished);
