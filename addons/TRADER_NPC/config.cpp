@@ -81,6 +81,24 @@ class CfgMods
 // ============================================================
 class CfgVehicles
 {
+	class RedCaviar;
+
+	// Монеты TRADER_NPC: ванильная банка икры (модель red_caviar.p3d), но стакается счетом
+	// и имеет вес. 1 монета = weight грамм, пачка до 99999 штук.
+	class TraderNpcCoin: RedCaviar
+	{
+		scope=2;
+		displayName="$STR_tm_coin";
+		descriptionShort="$STR_tm_coin_desc";
+		weight=5;
+		stackedUnit="pc.";
+		varQuantityInit=1;
+		varQuantityMin=0;
+		varQuantityMax=99999;
+		varQuantityDestroyOnMin=1;
+		canBeSplit=1;
+		quantityBar=0;
+	};
 	class Paper;
 
 	class TraderNpcMoney: Paper
