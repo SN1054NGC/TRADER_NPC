@@ -19,3 +19,10 @@ ArmorStats/
 Profiles/Trader_NPC_Prof/TraderNpc*.txt
 !Profiles/Trader_NPC_Prof/*.example.txt
 _build/*.js
+# --- internal docs and local plans (not published) ---
+/AI_PLAN.md
+/PLAN.md
+/ROLLBACK.md
+_build/WORKING.md
+# generated emulator data
+_build/layout_emulator/data.js

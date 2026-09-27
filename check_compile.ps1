@@ -20,19 +20,22 @@
 param(
   [int]$TimeoutSec = 240,
   [int]$TraderCheckSeconds = 0,
-  [switch]$KeepRunning
+  [switch]$KeepRunning,
+  # Defaults match a typical install; override with parameters (all paths are portable).
+  [string]$Srv        = "D:\steam\steamapps\common\DayZServer",
+  [string]$PboConsole = "C:\Program Files\PBO Manager v.1.4 beta\PBOConsole.exe",
+  [string]$ServerMods = "@AntifreeZe;@sps_zmb_01;",
+  [string]$Mods       = "@CF;@Community-Online-Tools;@LuxRedux;@Dabs Framework;@DayZ Editor Loader;@TRADER_NPC;@sps_item;"
 )
 $ErrorActionPreference = "Stop"
 
-$Srv      = "D:\steam\steamapps\common\DayZServer"
 $Profiles = Join-Path $Srv "Profiles"
 $Exe      = Join-Path $Srv "DayZServer_x64.exe"
 $SrvPbo   = Join-Path $Srv "@TRADER_NPC\addons\TRADER_NPC.pbo"
-$Root     = "D:\DAYZDISKP\@TRADER_NPC\_build"
+$Root     = Join-Path $PSScriptRoot "_build"
 $LogDir   = Join-Path $Root "log"
 $Report   = Join-Path $LogDir "compile_report.txt"
-$PboConsole = "C:\Program Files\PBO Manager v.1.4 beta\PBOConsole.exe"
-$ServerArgs = '-config=serverDZ.cfg -port=2302 -cpuCount=1 -exThreads=2 -maxMem=32768 -dologs -adminlog -netlog -freezecheck -filePatching "-servermod=@AntifreeZe;@sps_zmb_01;" -profiles=Profiles "-mod=@CF;@Community-Online-Tools;@LuxRedux;@Dabs Framework;@DayZ Editor Loader;@TRADER_NPC;@sps_item;"'
+$ServerArgs = '-config=serverDZ.cfg -port=2302 -cpuCount=1 -exThreads=2 -maxMem=32768 -dologs -adminlog -netlog -freezecheck -filePatching "-servermod=' + $ServerMods + '" -profiles=Profiles "-mod=' + $Mods + '"'
 
 New-Item -ItemType Directory -Force -Path $LogDir | Out-Null
 $Lines = New-Object System.Collections.ArrayList
